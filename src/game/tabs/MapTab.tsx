@@ -1,41 +1,29 @@
 import { useState } from "react";
-import { MapPin, Users } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { actions } from "@/engine";
-import { BIOMES, CITIES, REGIONS } from "@/data";
-import { compact, useGame } from "../GameContext";
+import { MapPin } from "lucide-react";
+import { CITIES } from "@/data";
+import { useGame } from "../GameContext";
 import { Panel, Section } from "../ui";
 
+const BIOME: Record<string, string> = { european_classic: "Europäisch klassisch", modern_industrial: "Modern industriell", asian_zen: "Asiatisch Zen", tropical_colonial: "Tropisch kolonial" };
+
 export function MapTab() {
-  const { state, set } = useGame();
-  const [region, setRegion] = useState<string | null>(null);
+  const { state } = useGame();
   const [biome, setBiome] = useState<string | null>(null);
-  const list = CITIES.filter((c) => (!region || c.region === region) && (!biome || c.biome === biome));
+  const biomes = Array.from(new Set(CITIES.map((c) => c.biome)));
+  const cls = (a: boolean) => `shrink-0 rounded-full border px-3 py-1 text-xs ${a ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-muted-foreground"}`;
   return (
     <Section title="Weltkarte">
-      <Chips options={REGIONS} value={region} onChange={setRegion} all="Alle Regionen" />
-      <Chips options={BIOMES} value={biome} onChange={setBiome} all="Alle Biome" />
-      {list.map((c) => {
-        const owned = state.cafes.filter((x) => x.cityId === c.id).length;
-        return (
-          <Panel key={c.id}>
-            <div className="flex items-start gap-3">
-              <MapPin className="mt-0.5 h-6 w-6 text-primary" />
-              <div className="flex-1 text-sm">
-                <div className="font-semibold">{c.name} <span className="font-normal text-muted-foreground">· {c.country}</span></div>
-                <div className="text-xs text-muted-foreground">{c.region} · {c.biome}</div>
-                <div className="mt-1 flex gap-3 text-xs"><span className="flex items-center gap-1"><Users className="h-3 w-3" />{(c.population / 1e6).toFixed(1)} Mio</span><span>Nachfrage {Math.round(c.demand * 100)}%</span><span>Miete {compact(c.rent)}</span></div>
-                {owned > 0 && <div className="mt-1 text-xs text-primary">{owned} eigene Cafés</div>}
-              </div>
-            </div>
-            <Button className="mt-2 w-full" size="sm" disabled={state.cash < c.cafeCost} onClick={() => set((s) => actions.openCafe(s, c.id))}>Café eröffnen · {compact(c.cafeCost)}</Button>
-          </Panel>
-        );
-      })}
+      <div className="mb-2 flex gap-2 overflow-x-auto pb-1"><button className={cls(!biome)} onClick={() => setBiome(null)}>Alle Biome</button>{biomes.map((b) => <button key={b} className={cls(biome === b)} onClick={() => setBiome(b)}>{BIOME[b]}</button>)}</div>
+      {CITIES.filter((c) => !biome || c.biome === biome).map((c) => (
+        <Panel key={c.id}>
+          <div className="flex items-start gap-3"><MapPin className="mt-0.5 h-6 w-6 text-primary" />
+            <div className="flex-1 text-sm">
+              <div className="font-semibold">{c.name} {state.city.id === c.id && <span className="ml-1 text-xs text-primary">· Heimatstadt</span>}</div>
+              <div className="text-xs text-muted-foreground">{BIOME[c.biome]} · Kaufkraft {c.purchasingPower.toFixed(1)}× · Kaffeekultur {c.coffeeCultureIndex}</div>
+              <ul className="mt-2 space-y-1 text-xs">{c.districts.map((d) => <li key={d.id} className="flex justify-between"><span>{d.name}</span><span className="text-muted-foreground">Laufkundschaft {d.footTraffic} · Miete {d.rentWeekly} €/Wo</span></li>)}</ul>
+            </div></div>
+        </Panel>
+      ))}
     </Section>
   );
-}
-function Chips({ options, value, onChange, all }: { options: string[]; value: string | null; onChange: (v: string | null) => void; all: string }) {
-  const cls = (a: boolean) => `shrink-0 rounded-full border px-3 py-1 text-xs ${a ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-muted-foreground"}`;
-  return <div className="mb-2 flex gap-2 overflow-x-auto pb-1"><button className={cls(!value)} onClick={() => onChange(null)}>{all}</button>{options.map((o) => <button key={o} className={cls(value === o)} onClick={() => onChange(o)}>{o}</button>)}</div>;
 }

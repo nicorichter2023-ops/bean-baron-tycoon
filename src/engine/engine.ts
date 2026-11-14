@@ -802,5 +802,6 @@ export function processTurn(state: GameState): GameState {
     market,
     b2b,
     capitalMarkets,
+    lastReport,
   };
 }
