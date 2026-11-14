@@ -55,6 +55,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const result = turned.week > state.week ? applyExpansionWeek(turned, exp) : { game: turned, exp };
     saveGame(result.game); saveExpansion(result.exp);
     setState(result.game); setExp(result.exp);
+    if (turned.week > state.week) window.__lovableEvents?.track?.("project.week_completed", {
+      week: turned.week,
+      guests: turned.stores.reduce((n, st) => n + st.customersServedLastWeek, 0),
+      weekly_revenue: Math.round(turned.stores.reduce((n, st) => n + st.weeklyRevenue, 0)),
+      expansion_bonus: result.exp.lastBonus,
+      active_campaigns: exp.campaigns.length,
+      recipe_count: exp.recipes.length,
+      store_count: turned.stores.length,
+    });
     if (result.exp.lastBonus && turned.week > state.week) toast.success(`Labor & Marketing: +${eur(result.exp.lastBonus)}`);
   };
   return <GameCtx.Provider value={{ state, set, perform, nextWeek, loaded, exp, setBoth }}>{children}</GameCtx.Provider>;
