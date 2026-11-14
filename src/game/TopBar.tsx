@@ -1,7 +1,8 @@
-import { ChevronRight, TrendingDown, TrendingUp, Wallet, Building2, CalendarDays } from "lucide-react";
+import { TrendingDown, TrendingUp } from "lucide-react";
 import { compact, useGame } from "./GameContext";
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
+import { HUD } from './sheetArt';
 
 export function TopBar() {
   const { state, nextWeek } = useGame();
@@ -15,9 +16,9 @@ export function TopBar() {
     <header className="fixed inset-x-0 top-0 z-30 border-b border-border bg-card/95 backdrop-blur pt-[env(safe-area-inset-top)]">
       <div className={`hud mx-auto flex max-w-5xl items-center gap-2 px-3 py-2 ${flash ? 'hud-flash' : ''}`}>
         <div className="grid flex-1 grid-cols-2 gap-x-2 gap-y-1 text-[11px]">
-          <Stat icon={<Wallet className="h-3.5 w-3.5" />} label="Bar" value={compact(state.cash)} />
-          <Stat icon={<Building2 className="h-3.5 w-3.5" />} label="Wert" value={compact(state.companyValuation)} />
-          <Stat icon={<CalendarDays className="h-3.5 w-3.5" />} label={date} value={`Wo ${state.week}`} />
+          <Stat icon={<img src={HUD.cash} alt="" className="h-5 w-5 object-contain" />} label="Bar" value={compact(state.cash)} />
+          <Stat icon={<img src={HUD.valuation} alt="" className="h-5 w-5 object-contain" />} label="Wert" value={compact(state.companyValuation)} />
+          <Stat icon={<img src={HUD.calendar} alt="" className="h-5 w-5 object-contain" />} label={date} value={`Wo ${state.week}`} />
           <div className="flex items-center gap-1 whitespace-nowrap">
             {up ? <TrendingUp className="h-3.5 w-3.5 text-success" /> : <TrendingDown className="h-3.5 w-3.5 text-destructive" />}
             <span className="text-muted-foreground">Bohne</span>
@@ -25,7 +26,7 @@ export function TopBar() {
           </div>
         </div>
         <Button aria-label="Nächste Woche" onClick={nextWeek} disabled={Boolean(state.pendingEvent)} className="flex h-14 items-center gap-1 rounded-lg bg-primary px-3 font-display text-sm font-bold text-primary-foreground shadow-glow active:scale-95 transition disabled:opacity-50 disabled:active:scale-100">
-          {state.pendingEvent ? <>Ereignis<br />wählen</> : <>Nächste<br />Woche</>} <ChevronRight className="h-5 w-5" />
+          {state.pendingEvent ? <>Ereignis<br />wählen</> : <>Nächste<br />Woche</>} <img src={HUD.nextWeek} alt="" className="h-7 w-7 object-contain" />
         </Button>
       </div>
     </header>

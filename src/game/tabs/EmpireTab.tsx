@@ -6,7 +6,7 @@ import { fireEmployee, hireEmployee, openStore, storeOpeningCost, upgradeStore }
 import { eur, useGame } from "../GameContext";
 import { translateEngineNote } from "../logMessages";
 import { Empty, Panel, Section, StoreFilter } from "../ui";
-import { Sprite } from '../Sprite';
+import { staffArt } from '../sheetArt';
 import { COMPANY_ARTWORK, getStoreArtwork } from "../artwork";
 import type { StoreTier } from "@/engine/types";
 
@@ -85,7 +85,7 @@ export function EmpireTab() {
             </div>
             {store.employees.length > 0 && <ul className="mt-2 divide-y divide-border rounded-lg border border-border px-2">
               {store.employees.map((employee) => <li key={employee.id} className="flex items-center gap-2 py-2 text-xs">
-                <Sprite sheet="staff" index={employee.role === 'manager' ? 8 : 1} className="h-11 w-11" />
+                <img src={staffArt(employee.role, employee.skill)} alt="" className="h-11 w-11 rounded-full object-cover object-top" />
                 <span className="flex-1">{employee.name} · {employee.role === "manager" ? "Manager" : "Barista"} <span className="text-muted-foreground">Skill {employee.skill}</span></span>
                 <span className="font-mono">{eur(employee.salaryWeekly)}/Wo</span>
                 <Button variant="ghost" size="icon" aria-label={`${employee.name} entlassen`} className="shrink-0 text-muted-foreground hover:text-destructive" onClick={() => perform((current) => fireEmployee(current, store.id, employee.id))}><UserMinus className="h-4 w-4" /></Button>

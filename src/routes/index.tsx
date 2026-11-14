@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { Building2, Globe2, ArrowLeftRight, Landmark } from "lucide-react";
+import { HUD } from "@/game/sheetArt";
 import { GameProvider, useGame } from "@/game/GameContext";
 import { Button } from "@/components/ui/button";
 import { SceneView, type Place } from "@/game/SceneView";
@@ -23,10 +23,10 @@ export const Route = createFileRoute("/")({
 });
 
 const TABS = [
-  { id: "empire", label: "Imperium", icon: Building2 },
-  { id: "map", label: "Weltkarte", icon: Globe2 },
-  { id: "market", label: "Markt & B2B", icon: ArrowLeftRight },
-  { id: "finance", label: "Finanzen", icon: Landmark },
+  { id: "empire", label: "Imperium", icon: HUD.empire },
+  { id: "map", label: "Weltkarte", icon: HUD.map },
+  { id: "market", label: "Markt & B2B", icon: HUD.market },
+  { id: "finance", label: "Finanzen", icon: HUD.finance },
 ] as const;
 
 function Game() {
@@ -47,7 +47,7 @@ function GameWorld() {
           <div className="mx-auto grid max-w-3xl grid-cols-4">
             {TABS.map((t) => (
               <Button variant="ghost" aria-label={t.label} aria-current={tab === t.id ? 'page' : undefined} key={t.id} onClick={() => { setTab(t.id); setPlace(t.id === 'market' ? 'roastery' : t.id === 'finance' ? 'office' : 'cafe'); window.scrollTo(0, 0); }} className={`nav-tab flex h-16 flex-col items-center gap-1 py-2.5 text-[11px] transition ${tab === t.id ? "text-primary" : "text-muted-foreground"}`}>
-                <t.icon className="h-5 w-5" />{t.label}
+                <img src={t.icon} alt="" className="h-7 w-7 object-contain" />{t.label}
               </Button>
             ))}
           </div>
