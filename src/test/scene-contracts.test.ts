@@ -19,7 +19,7 @@ describe('Visuelle Spielwelt verwendet die bestehenden Spielregeln', () => {
     expect(loadGame().cash).toBe(after.cash);
     expect(after.cash).toBeCloseTo(before.cash + (after.lastReport?.netIncome ?? 0), 2);
     expect(loadGame().week).toBe(before.week + 1);
-    expect(loadGame().schemaVersion).toBe(2);
+    expect(loadGame().schemaVersion).toBe(3);
   });
   it('ein belegtes Grundstück bleibt auch in der Szenenauswahl nicht erneut eröffnungsfähig', () => {
     const state = createInitialState();

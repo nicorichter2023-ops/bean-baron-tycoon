@@ -77,7 +77,7 @@ export function useGame() {
   return context;
 }
 
-export const eur = (value: number) => value.toLocaleString("de-DE", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
+export const eur = (value: number) => (Math.round(value) === 0 ? 0 : value).toLocaleString("de-DE", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
 export const compact = (value: number) => {
   const absolute = Math.abs(value);
   const format = (amount: number, unit: string) => `${amount.toLocaleString("de-DE", { maximumFractionDigits: 1 })} ${unit}€`;

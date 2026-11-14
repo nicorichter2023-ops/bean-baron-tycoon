@@ -17,10 +17,10 @@ export interface AccountingWeek {
 }
 export interface ManagementState {
   executives: Executive[]; delegation: boolean; openingCash: number; openingInventory: number; journal: CashJournal;
-  oneOff: number; history: AccountingWeek[];
+  oneOff: number; beanPurchases: number; history: AccountingWeek[];
 }
 const money = (n: number) => Math.round(n * 100) / 100;
-export const createManagement = (cash: number, inventory = 0): ManagementState => ({ executives: [], delegation: false, openingCash: cash, openingInventory: inventory, journal: { operating: 0, investing: 0, financing: 0 }, oneOff: 0, history: [] });
+export const createManagement = (cash: number, inventory = 0): ManagementState => ({ executives: [], delegation: false, openingCash: cash, openingInventory: inventory, journal: { operating: 0, investing: 0, financing: 0 }, oneOff: 0, beanPurchases: 0, history: [] });
 export const hasExecutive = (g: GameState, role: ExecutiveRole) => g.management?.executives.some(e => e.role === role) ?? false;
 export const effectiveInterestRate = (g: GameState) => Math.min(GAME_CONFIG.MAX_WEEKLY_INTEREST, Math.max(0, g.weeklyInterestRate)) * (hasExecutive(g, 'cfo') ? 0.8 : 1);
 export function hireExecutive(game: GameState, role: ExecutiveRole) {
@@ -54,7 +54,7 @@ export function recordManagementAction(before: GameState, after: GameState): Gam
     || before.roastery.owned !== after.roastery.owned || JSON.stringify(before.capitalMarkets) !== JSON.stringify(after.capitalMarkets);
   const inventoryPurchase = after.roastery.rawBeanStockKg > before.roastery.rawBeanStockKg;
   const category = debtDelta ? 'financing' : investment ? 'investing' : 'operating';
-  return { ...after, management: { ...m, journal: { ...m.journal, [category]: money(m.journal[category] + delta) }, oneOff: money(m.oneOff + (category === 'operating' && !inventoryPurchase ? -delta : 0)) } };
+  return { ...after, management: { ...m, journal: { ...m.journal, [category]: money(m.journal[category] + delta) }, beanPurchases: money(m.beanPurchases + (inventoryPurchase ? -delta : 0)), oneOff: money(m.oneOff + (category === 'operating' && !inventoryPurchase ? -delta : 0)) } };
 }
 
 export function processManagementWeek(state: GameState, exp: ExpansionState) {
@@ -98,9 +98,9 @@ export function processManagementWeek(state: GameState, exp: ExpansionState) {
   const cashOperating = money(m.journal.operating + gameCash - state.cash);
   const row: AccountingWeek = {
     week: turned.week, cups: money(r.revenueCafes + recipeRevenue), b2b: r.revenueB2B, other,
-    ingredients: money(ingredients), salaries: r.costSalaries + salary, rent: r.costRent, beans: r.costBeans,
+    ingredients: money(ingredients), salaries: r.costSalaries + salary, rent: r.costRent, beans: money(r.costBeans + m.beanPurchases),
     interest: r.costInterest, upkeep: r.costLuxuryUpkeep, tax, oneOff: money(m.oneOff + recruitment), inventoryChange,
-    profit: money(r.revenueTotal + expansion.exp.lastBonus - r.costTotal - salary - (tax - r.costTax) - m.oneOff - recruitment + inventoryChange),
+    profit: money(r.revenueTotal + expansion.exp.lastBonus - r.costTotal - salary - (tax - r.costTax) - m.oneOff - recruitment - m.beanPurchases + inventoryChange),
     cashStart: m.openingCash, cashEnd: gameCash, operating: cashOperating, investing: m.journal.investing, financing: m.journal.financing,
     cooHires, interestSaved: money(state.debt * Math.min(GAME_CONFIG.MAX_WEEKLY_INTEREST, Math.max(0, baseRate)) - r.costInterest),
   };
@@ -108,7 +108,7 @@ export function processManagementWeek(state: GameState, exp: ExpansionState) {
     costBeans: money(row.beans + row.ingredients), costTax: tax, costTotal: money(r.costTotal + salary + ingredients + tax - r.costTax),
     netIncome: money(gameCash - prepared.cash), notes: [...r.notes, ...(cooHires ? [`COO: ${cooHires} Baristas eingestellt.`] : []), ...(salary ? [`HQ-Gehälter: ${salary} €.`] : [])] };
   const game: GameState = { ...expansion.game, cash: gameCash, weeklyInterestRate: baseRate, lastReport: report,
-    management: { ...m, openingCash: gameCash, openingInventory: balanceSheet(turned).inventory, journal: { operating: 0, investing: 0, financing: 0 }, oneOff: 0, history: [...m.history, row].slice(-104) } };
+    management: { ...m, openingCash: gameCash, openingInventory: balanceSheet(turned).inventory, journal: { operating: 0, investing: 0, financing: 0 }, oneOff: 0, beanPurchases: 0, history: [...m.history, row].slice(-104) } };
   game.companyValuation = calculateCompanyValuation(game);
   game.lastReport = { ...report, companyValuation: game.companyValuation };
   return { game, exp: expansion.exp };
