@@ -32,7 +32,7 @@ export function MapTab() {
           <button className="mb-2 flex w-full items-start gap-3 text-left" onClick={() => set((current) => ({ ...current, city }))}>
             <img src={getCityArtwork(city).src} alt={getCityArtwork(city).alt} loading="lazy" decoding="async" className="h-24 w-24 shrink-0 rounded-lg bg-artwork object-contain p-1" />
             <span className="flex-1 text-sm"><span className="block font-semibold">{city.name}, {city.country} {state.city.id === city.id && <span className="ml-1 text-xs text-primary">· ausgewählt</span>}</span>
-              <span className="block text-xs text-muted-foreground">{city.landmarkName} · {BIOME[city.biome]}</span>
+              <span className="block text-xs text-muted-foreground">{getCityArtwork(city).label} · {BIOME[city.biome]}</span>
               <span className="block text-xs text-muted-foreground">Kaufkraft {city.purchasingPower.toFixed(2)}× · Kaffeekultur {city.coffeeCultureIndex}</span></span>
           </button>
           <ul className="space-y-2 border-t border-border pt-2">{city.districts.map((district) => {
