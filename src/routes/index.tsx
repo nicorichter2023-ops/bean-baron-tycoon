@@ -1,23 +1,52 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { Building2, Globe2, ArrowLeftRight, Landmark } from "lucide-react";
+import { GameProvider } from "@/game/GameContext";
+import { TopBar } from "@/game/TopBar";
+import { EmpireTab } from "@/game/tabs/EmpireTab";
+import { MapTab } from "@/game/tabs/MapTab";
+import { MarketTab } from "@/game/tabs/MarketTab";
+import { FinanceTab } from "@/game/tabs/FinanceTab";
 
-// The home route ships no og:image, so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "Coffee Empire – Kaffee-Tycoon" },
+      { name: "description", content: "Baue dein Kaffee-Imperium: Cafés, Röstereien, Bohnenmarkt, B2B und Finanzen." },
+      { property: "og:title", content: "Coffee Empire – Kaffee-Tycoon" },
+      { property: "og:description", content: "Mobiles Tycoon-Spiel rund um Kaffee." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
+  component: Game,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+const TABS = [
+  { id: "empire", label: "Imperium", icon: Building2, C: EmpireTab },
+  { id: "map", label: "Weltkarte", icon: Globe2, C: MapTab },
+  { id: "market", label: "Markt & B2B", icon: ArrowLeftRight, C: MarketTab },
+  { id: "finance", label: "Finanzen", icon: Landmark, C: FinanceTab },
+] as const;
+
+function Game() {
+  const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("empire");
+  const Active = TABS.find((t) => t.id === tab)!.C;
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <GameProvider>
+      <div className="mx-auto min-h-dvh max-w-md bg-background">
+        <TopBar />
+        <main className="px-3 pb-28 pt-[calc(5.5rem+env(safe-area-inset-top))]"><Active /></main>
+        <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card/95 backdrop-blur pb-[env(safe-area-inset-bottom)]">
+          <div className="mx-auto grid max-w-md grid-cols-4">
+            {TABS.map((t) => (
+              <button key={t.id} onClick={() => setTab(t.id)} className={`flex flex-col items-center gap-1 py-2.5 text-[11px] transition ${tab === t.id ? "text-primary" : "text-muted-foreground"}`}>
+                <t.icon className="h-5 w-5" />{t.label}
+              </button>
+            ))}
+          </div>
+        </nav>
+      </div>
+    </GameProvider>
   );
 }
