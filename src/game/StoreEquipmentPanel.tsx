@@ -14,7 +14,7 @@ export function StoreEquipmentPanel({ store }: { store: Store }) {
   const effects = equipmentEffects(store);
   const [selected, setSelected] = useState<EquipmentLevel>(1);
   const options = EQUIPMENT[category];
-  const level = options[selected] ? selected : 1;
+  const level = Math.min(options.length - 1, Math.max(selected, current[category] + 1)) as EquipmentLevel;
   const cost = equipmentUpgradeCost(store, category, level);
   return <div className="mt-4 border-t border-border pt-4" aria-label={`Ausstattung ${store.name}`}>
     <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="flex items-center gap-2 text-sm font-semibold"><Wrench className="h-4 w-4" /> Ausstattung</h3><span className="text-xs text-muted-foreground">Anlagenwert {eur(current.bookValue)}</span></div>

@@ -1,4 +1,5 @@
 import type { ActionResult, GameState, Store } from './types';
+import { calculateCompanyValuation } from './engine';
 
 export type EquipmentLevel = 0 | 1 | 2;
 export type EquipmentCategory = 'espresso' | 'grinder' | 'interior';
@@ -45,8 +46,8 @@ export function upgradeEquipment(g: GameState, storeId: string, category: Equipm
   if (g.cash < cost) return reject('Nicht genug Barvermögen für diese Ausstattung.');
   const e = equipmentOf(s);
   const equipment = { ...e, [category]: level, bookValue: e.bookValue + cost } as StoreEquipment;
-  return { ok: true, reason: `${s.name}: ${EQUIPMENT[category][level]?.label} eingebaut.`, state: { ...g, cash: g.cash - cost,
-    stores: g.stores.map(item => item.id === s.id ? { ...item, equipment } : item) } };
+  const state = { ...g, cash: g.cash - cost, stores: g.stores.map(item => item.id === s.id ? { ...item, equipment } : item) };
+  return { ok: true, reason: `${s.name}: ${EQUIPMENT[category][level]?.label} eingebaut.`, state: { ...state, companyValuation: calculateCompanyValuation(state) } };
 }
 /** Company-wide operational standard, distinct from the included baseline. Never downgrade premium equipment. */
 export function standardRetrofitCost(g: GameState) {
