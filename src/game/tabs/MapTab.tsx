@@ -17,7 +17,7 @@ export function MapTab() {
   const cities = state.cities.filter((city) => (biome === "all" || city.biome === biome) && (country === "all" || city.country === country));
 
   return (
-    <Section title={`Weltkarte · ${cities.length} Städte`}>
+    <Section title={`Weltkarte · ${cities.length} ${cities.length === 1 ? "Stadt" : "Städte"}`}>
       <div className="mb-3 flex gap-2">
         <select aria-label="Nach Biom filtern" className={selectClass} value={biome} onChange={(event) => setBiome(event.target.value)}>
           <option value="all">Alle Biome</option>{biomes.map((value) => <option key={value} value={value}>{BIOME[value]}</option>)}

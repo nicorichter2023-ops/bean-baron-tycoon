@@ -635,11 +635,11 @@ export function purchaseRoastery(state: GameState): {
     return { state, ok: false, reason: 'INSUFFICIENT_CASH' };
   }
   return {
-    state: {
+    state: finalizeAction({
       ...state,
       cash: round2(state.cash - GAME_CONFIG.ROASTERY_COST),
       roastery: { ...state.roastery, owned: true },
-    },
+    }),
     ok: true,
     reason: 'PURCHASED',
   };
