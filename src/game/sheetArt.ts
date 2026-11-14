@@ -49,3 +49,12 @@ export const equipmentArt = (category: keyof typeof EQUIPMENT_ART, level: number
 // District tiles: shopping, scene/art, nightlife, finance, old town, park, office, campus…
 const DISTRICT_TILE_ORDER = [0, 2, 4, 12, 5, 1, 13, 14, 6, 9];
 export const districtTileArt = (i: number) => art('districts', DISTRICT_TILE_ORDER[i % DISTRICT_TILE_ORDER.length] ?? 0);
+
+const CITY_BUILDING_ART: Record<string, number[]> = {
+  shopping: [0, 17, 18, 22, 25, 31], pedestrian: [0, 13, 17, 25, 27, 30],
+  financial: [6, 7, 9, 12, 14, 16, 21, 28], residential: [0, 13, 17, 25, 31], student: [6, 14, 20, 21, 27],
+};
+export const cityBuildingArt = (zone: string, index: number) => {
+  const options = CITY_BUILDING_ART[zone] ?? [0]; return art('districts', options[index % options.length] ?? 0);
+};
+export const airportArt = art('districts', 32);
