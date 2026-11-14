@@ -22,8 +22,8 @@ export const ATLASES = Object.fromEntries(Object.entries(atlasFiles).map(([path,
 
 // Positions are percentages on the supplied illustrated world, not GIS coordinates.
 export const CITY_POSITIONS: Record<string, [number, number]> = {
-  paris: [48, 30], wien: [52, 31], mailand: [50, 34], berlin: [52, 27], london: [46, 26], kopenhagen: [53, 23],
-  seattle: [14, 31], new_york: [28, 34], toronto: [26, 30], melbourne: [85, 82], sydney: [88, 78],
-  tokio: [87, 38], seoul: [83, 35], singapur: [78, 58], ho_chi_minh_stadt: [81, 51],
+  paris: [49, 34], wien: [60, 34], mailand: [55, 42], berlin: [55, 26], london: [44, 25], kopenhagen: [59, 17],
+  seattle: [14, 31], new_york: [30, 37], toronto: [26, 28], melbourne: [81, 86], sydney: [89, 77],
+  tokio: [88, 40], seoul: [82, 33], singapur: [76, 60], ho_chi_minh_stadt: [82, 51],
   bogota: [28, 59], sao_paulo: [35, 72], addis_abeba: [59, 55], kapstadt: [53, 78], havanna: [25, 48],
 };

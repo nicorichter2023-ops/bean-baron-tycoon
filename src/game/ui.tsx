@@ -1,5 +1,6 @@
 import { createContext, useContext, type ReactNode } from "react";
 export const SectionFilter = createContext<string[] | null>(null);
+export const StoreFilter = createContext<string | null>(null);
 export function Section({ title, children, action }: { title: string; children: ReactNode; action?: ReactNode }) {
   const filter = useContext(SectionFilter);
   if (filter && !filter.some((prefix) => title.startsWith(prefix))) return null;

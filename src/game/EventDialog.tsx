@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "@/components/ui/button";
 import { applyEventChoice } from "@/engine";
 import { eur, useGame } from "./GameContext";
+import { Sprite } from './Sprite';
 
 export function EventDialog() {
   const { state, perform } = useGame();
@@ -19,6 +20,7 @@ export function EventDialog() {
         {event && (
           <>
             <DialogHeader className="text-left">
+              <Sprite sheet="finance" index={12} className="mx-auto h-20 w-20" />
               <div className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary">
                 <CalendarClock className="h-4 w-4" /> Ereignis · Woche {state.week}
               </div>

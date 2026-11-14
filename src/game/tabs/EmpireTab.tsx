@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { ArrowUpCircle, Factory, MapPin, UserMinus, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GAME_CONFIG, purchaseRoastery } from "@/engine";
 import { fireEmployee, hireEmployee, openStore, storeOpeningCost, upgradeStore } from "@/engine/engine";
 import { eur, useGame } from "../GameContext";
 import { translateEngineNote } from "../logMessages";
-import { Empty, Panel, Section } from "../ui";
+import { Empty, Panel, Section, StoreFilter } from "../ui";
+import { Sprite } from '../Sprite';
 import { COMPANY_ARTWORK, getStoreArtwork } from "../artwork";
 import type { StoreTier } from "@/engine/types";
 
@@ -15,6 +16,7 @@ const inputClass = "h-9 w-full rounded-md border border-input bg-background px-3
 
 export function EmpireTab() {
   const { state, set, perform } = useGame();
+  const selectedStore = useContext(StoreFilter);
   const [districtId, setDistrictId] = useState(state.city.districts[0]?.id ?? "");
   const [tier, setTier] = useState<StoreTier>(1);
   const district = state.city.districts.find((item) => item.id === districtId) ?? state.city.districts[0];
@@ -69,7 +71,7 @@ export function EmpireTab() {
       </Section>
 
       <Section title="Filialen">
-        {state.stores.map((store) => {
+        {state.stores.filter((store) => !selectedStore || store.id === selectedStore).map((store) => {
           const city = state.cities.find((item) => item.id === store.cityId);
           const storeDistrict = city?.districts.find((item) => item.id === store.districtId);
           return <Panel key={store.id}>
@@ -83,6 +85,7 @@ export function EmpireTab() {
             </div>
             {store.employees.length > 0 && <ul className="mt-2 divide-y divide-border rounded-lg border border-border px-2">
               {store.employees.map((employee) => <li key={employee.id} className="flex items-center gap-2 py-2 text-xs">
+                <Sprite sheet="staff" index={employee.role === 'manager' ? 8 : 1} className="h-11 w-11" />
                 <span className="flex-1">{employee.name} · {employee.role === "manager" ? "Manager" : "Barista"} <span className="text-muted-foreground">Skill {employee.skill}</span></span>
                 <span className="font-mono">{eur(employee.salaryWeekly)}/Wo</span>
                 <Button variant="ghost" size="icon" aria-label={`${employee.name} entlassen`} className="shrink-0 text-muted-foreground hover:text-destructive" onClick={() => perform((current) => fireEmployee(current, store.id, employee.id))}><UserMinus className="h-4 w-4" /></Button>
