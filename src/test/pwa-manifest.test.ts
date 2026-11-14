@@ -1,9 +1,10 @@
 import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 describe("PWA-Manifest", () => {
   it("startet installiert im Vollbild und bietet die benötigten Android-Symbole", () => {
-    const manifest = JSON.parse(readFileSync(new URL("../../public/manifest.webmanifest", import.meta.url), "utf8"));
+    const manifest = JSON.parse(readFileSync(resolve(process.cwd(), "public/manifest.webmanifest"), "utf8"));
 
     expect(manifest.display).toBe("standalone");
     expect(manifest.display_override).toContain("fullscreen");
