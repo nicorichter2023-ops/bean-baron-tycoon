@@ -1,6 +1,7 @@
 import type { GameState, TurnReport } from './types';
 import { GAME_CONFIG, calculateCompanyValuation, hireEmployee, processTurn } from './engine';
 import { applyExpansionWeek, type ExpansionState, cupsSold, recipeCost, CAMPAIGNS } from './expansion';
+import { equipmentOf } from './equipment';
 
 export type ExecutiveRole = 'coo' | 'cfo';
 export const EXECUTIVES = {
@@ -33,7 +34,8 @@ export function releaseExecutive(game: GameState, role: ExecutiveRole): GameStat
   return { ...game, management: { ...(game.management ?? createManagement(game.cash)), executives: (game.management?.executives ?? []).filter(e => e.role !== role), delegation: role === 'coo' ? false : game.management?.delegation ?? false } };
 }
 export function balanceSheet(game: GameState) {
-  const stores = game.stores.reduce((n, s) => n + GAME_CONFIG.TIER_BASE_VALUE[s.tier] * (0.5 + s.qualityIndex / 100), 0);
+  const equipment = game.stores.reduce((n, s) => n + equipmentOf(s).bookValue, 0);
+  const stores = game.stores.reduce((n, s) => n + GAME_CONFIG.TIER_BASE_VALUE[s.tier] * (0.5 + s.qualityIndex / 100), 0) + equipment;
   const inventory = game.roastery.rawBeanStockKg * game.market.futuresPricePerKg + game.roastery.roastedStockKg * game.market.futuresPricePerKg * GAME_CONFIG.ROASTED_VALUE_MULTIPLIER;
   const roastery = game.roastery.owned ? GAME_CONFIG.ROASTERY_COST * 0.9 : 0;
   const investments = game.capitalMarkets.holdings.reduce((n, h) => n + h.shares * (game.capitalMarkets.rivals.find(r => r.id === h.companyId)?.sharePrice ?? 0), 0)
@@ -41,7 +43,7 @@ export function balanceSheet(game: GameState) {
     + game.capitalMarkets.rivals.filter(r => r.acquired).reduce((n, r) => n + r.valuation * 0.8, 0);
   const luxury = game.capitalMarkets.luxuryGoods.filter(l => l.owned).reduce((n, l) => n + l.purchaseCost, 0);
   const assets = money(game.cash + stores + inventory + roastery + investments + luxury);
-  return { cash: game.cash, stores: money(stores), inventory: money(inventory), roastery, investments: money(investments), luxury, assets, debt: game.debt, equity: money(assets - game.debt) };
+  return { cash: game.cash, stores: money(stores), equipment, inventory: money(inventory), roastery, investments: money(investments), luxury, assets, debt: game.debt, equity: money(assets - game.debt) };
 }
 /** Every successful action is journalled once, using the actual cash movement. */
 export function recordManagementAction(before: GameState, after: GameState): GameState {
@@ -50,7 +52,7 @@ export function recordManagementAction(before: GameState, after: GameState): Gam
   const m = after.management ?? createManagement(before.cash);
   if (!delta) return { ...after, management: m };
   const debtDelta = money(after.debt - before.debt);
-  const investment = before.stores.length !== after.stores.length || before.stores.some((s, i) => s.tier !== after.stores[i]?.tier)
+  const investment = before.stores.length !== after.stores.length || before.stores.some((s, i) => s.tier !== after.stores[i]?.tier || equipmentOf(s).bookValue !== (after.stores[i] ? equipmentOf(after.stores[i]).bookValue : 0))
     || before.roastery.owned !== after.roastery.owned || JSON.stringify(before.capitalMarkets) !== JSON.stringify(after.capitalMarkets);
   const inventoryPurchase = after.roastery.rawBeanStockKg > before.roastery.rawBeanStockKg;
   const category = debtDelta ? 'financing' : investment ? 'investing' : 'operating';

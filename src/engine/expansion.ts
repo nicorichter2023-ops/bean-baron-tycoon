@@ -1,5 +1,6 @@
 // Erweiterung: Rezeptur-Labor & Marketing. Eigener Speicherstand, damit engine.ts/types.ts unverändert bleiben.
 import type { GameState, Store } from './types';
+import { equipmentEffects } from './equipment';
 
 export const EXPANSION_SCHEMA = 1;
 export const EXPANSION_KEY = 'coffee-empire-expansion';
@@ -47,7 +48,7 @@ export const fairPrice = (r: Pick<Recipe, 'base' | 'milk' | 'extra'>) => +(recip
 export function cupsSold(r: Recipe, store: Store, biome: string, boost: number) {
   const taste = BIOME_TASTE[biome];
   const match = (taste?.milk === r.milk ? 1.25 : 1) * (taste?.base === r.base ? 1.2 : 1);
-  const priceFactor = Math.max(0, Math.min(1.3, 1.5 - (r.price / fairPrice(r)) * 0.5));
+  const priceFactor = Math.max(0, Math.min(1.3, 1.5 - (r.price / (fairPrice(r) * equipmentEffects(store).signatureWillingness)) * 0.5));
   return Math.round(store.customersServedLastWeek * 0.12 * match * priceFactor * (1 + boost));
 }
 
