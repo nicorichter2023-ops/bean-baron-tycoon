@@ -1,0 +1,121 @@
+import type { GameState, TurnReport } from './types';
+import { GAME_CONFIG, calculateCompanyValuation, hireEmployee, processTurn } from './engine';
+import { applyExpansionWeek, type ExpansionState, cupsSold, recipeCost, CAMPAIGNS } from './expansion';
+
+export type ExecutiveRole = 'coo' | 'cfo';
+export const EXECUTIVES = {
+  coo: { name: 'Clara Hoffmann', title: 'Chief Operating Officer', fee: 12000, salary: 1800 },
+  cfo: { name: 'David Weber', title: 'Chief Financial Officer', fee: 10000, salary: 1500 },
+} as const;
+export interface Executive { role: ExecutiveRole; hiredWeek: number; }
+export interface CashJournal { operating: number; investing: number; financing: number; }
+export interface AccountingWeek {
+  week: number; cups: number; b2b: number; other: number; ingredients: number;
+  salaries: number; rent: number; beans: number; interest: number; upkeep: number; tax: number;
+  oneOff: number; inventoryChange: number; profit: number; cashStart: number; cashEnd: number;
+  operating: number; investing: number; financing: number; cooHires: number; interestSaved: number;
+}
+export interface ManagementState {
+  executives: Executive[]; delegation: boolean; openingCash: number; journal: CashJournal;
+  oneOff: number; history: AccountingWeek[];
+}
+const money = (n: number) => Math.round(n * 100) / 100;
+export const createManagement = (cash: number): ManagementState => ({ executives: [], delegation: false, openingCash: cash, journal: { operating: 0, investing: 0, financing: 0 }, oneOff: 0, history: [] });
+export const hasExecutive = (g: GameState, role: ExecutiveRole) => g.management?.executives.some(e => e.role === role) ?? false;
+export const effectiveInterestRate = (g: GameState) => Math.min(GAME_CONFIG.MAX_WEEKLY_INTEREST, Math.max(0, g.weeklyInterestRate)) * (hasExecutive(g, 'cfo') ? 0.8 : 1);
+export function hireExecutive(game: GameState, role: ExecutiveRole) {
+  if (hasExecutive(game, role)) return 'Diese Position ist bereits besetzt.';
+  const candidate = EXECUTIVES[role];
+  if (game.cash < candidate.fee) return 'Nicht genug Barvermögen für die Einstellung.';
+  return { ...game, cash: money(game.cash - candidate.fee), management: { ...(game.management ?? createManagement(game.cash)), executives: [...(game.management?.executives ?? []), { role, hiredWeek: game.week }] } };
+}
+export function releaseExecutive(game: GameState, role: ExecutiveRole): GameState {
+  return { ...game, management: { ...(game.management ?? createManagement(game.cash)), executives: (game.management?.executives ?? []).filter(e => e.role !== role), delegation: role === 'coo' ? false : game.management?.delegation ?? false } };
+}
+export function balanceSheet(game: GameState) {
+  const stores = game.stores.reduce((n, s) => n + GAME_CONFIG.TIER_BASE_VALUE[s.tier] * (0.5 + s.qualityIndex / 100), 0);
+  const inventory = game.roastery.rawBeanStockKg * game.market.futuresPricePerKg + game.roastery.roastedStockKg * game.market.futuresPricePerKg * GAME_CONFIG.ROASTED_VALUE_MULTIPLIER;
+  const roastery = game.roastery.owned ? GAME_CONFIG.ROASTERY_COST * 0.9 : 0;
+  const investments = game.capitalMarkets.holdings.reduce((n, h) => n + h.shares * (game.capitalMarkets.rivals.find(r => r.id === h.companyId)?.sharePrice ?? 0), 0)
+    + game.capitalMarkets.startups.reduce((n, s) => n + (s.acquired ? s.valuation * 0.8 : s.status === 'active' ? s.investedAmount : 0), 0)
+    + game.capitalMarkets.rivals.filter(r => r.acquired).reduce((n, r) => n + r.valuation * 0.8, 0);
+  const luxury = game.capitalMarkets.luxuryGoods.filter(l => l.owned).reduce((n, l) => n + l.purchaseCost, 0);
+  const assets = money(game.cash + stores + inventory + roastery + investments + luxury);
+  return { cash: game.cash, stores: money(stores), inventory: money(inventory), roastery, investments: money(investments), luxury, assets, debt: game.debt, equity: money(assets - game.debt) };
+}
+/** Every successful action is journalled once, using the actual cash movement. */
+export function recordManagementAction(before: GameState, after: GameState): GameState {
+  if (after.week < before.week) return after;
+  const delta = money(after.cash - before.cash);
+  const m = after.management ?? createManagement(before.cash);
+  if (!delta) return { ...after, management: m };
+  const debtDelta = money(after.debt - before.debt);
+  const investment = before.stores.length !== after.stores.length || before.stores.some((s, i) => s.tier !== after.stores[i]?.tier)
+    || before.roastery.owned !== after.roastery.owned || JSON.stringify(before.capitalMarkets) !== JSON.stringify(after.capitalMarkets);
+  const inventoryPurchase = after.roastery.rawBeanStockKg > before.roastery.rawBeanStockKg;
+  const category = debtDelta ? 'financing' : investment ? 'investing' : 'operating';
+  return { ...after, management: { ...m, journal: { ...m.journal, [category]: money(m.journal[category] + delta) }, oneOff: money(m.oneOff + (category === 'operating' && !inventoryPurchase ? -delta : 0)) } };
+}
+
+export function processManagementWeek(state: GameState, exp: ExpansionState) {
+  if (state.pendingEvent || state.week >= GAME_CONFIG.MAX_WEEK) return { game: state, exp };
+  const m = state.management ?? createManagement(state.cash);
+  let prepared = state;
+  let cooHires = 0;
+  if (hasExecutive(state, 'coo') && m.delegation) {
+    for (const store of state.stores) {
+      const needed = Math.max(0, GAME_CONFIG.TIER_REQUIRED_STAFF[store.tier] - store.employees.length);
+      for (let i = 0; i < needed; i++) {
+        const result = hireEmployee(prepared, store.id, 'barista');
+        if (!result.ok) break;
+        prepared = result.state; cooHires++;
+      }
+    }
+    if (prepared.roastery.owned) prepared = { ...prepared, roastery: { ...prepared.roastery, autoRestock: true } };
+  }
+  const recruitment = money(state.cash - prepared.cash);
+  const baseRate = prepared.weeklyInterestRate;
+  const turned = processTurn({ ...prepared, weeklyInterestRate: effectiveInterestRate(prepared) });
+  const r = turned.lastReport;
+  if (!r) return { game: state, exp };
+  const salary = m.executives.reduce((n, e) => n + EXECUTIVES[e.role].salary, 0);
+  const expansion = applyExpansionWeek(turned, exp);
+  let recipeRevenue = 0, ingredients = 0, marketingRevenue = 0;
+  for (const store of turned.stores) {
+    const boost = exp.campaigns.filter(c => c.cityId === store.cityId).reduce((n, c) => n + CAMPAIGNS[c.kind].boost, 0);
+    marketingRevenue += store.weeklyRevenue * boost * 0.5;
+    for (const recipe of exp.recipes) {
+      const cups = cupsSold(recipe, store, turned.cities.find(c => c.id === store.cityId)?.biome ?? '', boost);
+      recipeRevenue += cups * recipe.price; ingredients += cups * recipeCost(recipe);
+    }
+  }
+  // Preserve existing rounded laboratory payout, but expose gross sales and ingredient costs separately.
+  const other = money(r.revenueCapital + expansion.exp.lastBonus + ingredients - recipeRevenue);
+  const taxableBonus = expansion.exp.lastBonus - salary;
+  const basePreTax = r.costTax > 0 ? r.costTax / GAME_CONFIG.TAX_RATE : r.revenueCafes + r.revenueB2B - r.costSalaries - r.costRent - r.costBeans - r.costInterest - r.costLuxuryUpkeep;
+  const tax = money(Math.max(0, basePreTax + taxableBonus) * GAME_CONFIG.TAX_RATE);
+  const gameCash = money(expansion.game.cash - salary - (tax - r.costTax));
+  const inventoryChange = money(balanceSheet(turned).inventory - balanceSheet(state).inventory);
+  const cashOperating = money(m.journal.operating + gameCash - state.cash);
+  const row: AccountingWeek = {
+    week: turned.week, cups: money(r.revenueCafes + recipeRevenue), b2b: r.revenueB2B, other,
+    ingredients: money(ingredients), salaries: r.costSalaries + salary, rent: r.costRent, beans: r.costBeans,
+    interest: r.costInterest, upkeep: r.costLuxuryUpkeep, tax, oneOff: money(m.oneOff + recruitment), inventoryChange,
+    profit: money(r.revenueTotal + expansion.exp.lastBonus - r.costTotal - salary - (tax - r.costTax) - m.oneOff - recruitment + inventoryChange),
+    cashStart: m.openingCash, cashEnd: gameCash, operating: cashOperating, investing: m.journal.investing, financing: m.journal.financing,
+    cooHires, interestSaved: money(state.debt * Math.min(GAME_CONFIG.MAX_WEEKLY_INTEREST, Math.max(0, baseRate)) - r.costInterest),
+  };
+  const report: TurnReport = { ...r, revenueCafes: row.cups, revenueCapital: other, revenueTotal: money(row.cups + row.b2b + other), costSalaries: row.salaries,
+    costBeans: money(row.beans + row.ingredients), costTax: tax, costTotal: money(r.costTotal + salary + ingredients + tax - r.costTax),
+    netIncome: money(gameCash - prepared.cash), notes: [...r.notes, ...(cooHires ? [`COO: ${cooHires} Baristas eingestellt.`] : []), ...(salary ? [`HQ-Gehälter: ${salary} €.`] : [])] };
+  const game: GameState = { ...expansion.game, cash: gameCash, weeklyInterestRate: baseRate, lastReport: report,
+    management: { ...m, openingCash: gameCash, journal: { operating: 0, investing: 0, financing: 0 }, oneOff: 0, history: [...m.history, row].slice(-104) } };
+  game.companyValuation = calculateCompanyValuation(game);
+  game.lastReport = { ...report, companyValuation: game.companyValuation };
+  return { game, exp: expansion.exp };
+}
+export function financialForecast(game: GameState) {
+  const last = game.management?.history.at(-1);
+  const weekly = last ? last.operating - (last.oneOff ? -last.oneOff : 0) : -(game.management?.executives.reduce((n, e) => n + EXECUTIVES[e.role].salary, 0) ?? 0);
+  return { weekly: money(weekly), cashInFourWeeks: money(game.cash + weekly * 4), interest: money(game.debt * effectiveInterestRate(game)) };
+}
