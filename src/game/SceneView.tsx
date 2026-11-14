@@ -5,7 +5,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { eur, useGame } from './GameContext';
 import { SCENES } from './sceneAssets';
 import { Sprite } from './Sprite';
-import { CAFE_LOADOUT, CAFE_MENU, ROAST_LEVELS, art, cafeLoadoutArt } from './sheetArt';
+import { CAFE_LOADOUT, CAFE_MENU, ROAST_LEVELS, cafeLoadoutArt } from './sheetArt';
 import { SectionFilter, StoreFilter } from './ui';
 import { EmpireTab } from './tabs/EmpireTab';
 import { FinanceTab } from './tabs/FinanceTab';
@@ -60,8 +60,6 @@ export function SceneView({ place, onPlace, destinations }: { place: Place; onPl
     <div className={`scene-stage ${zen ? 'zen' : ''} ${pulse ? 'week-pulse' : ''}`} key={place}>
       {place === 'roastery' ? <img className="scene-image" src={roasteryScene} alt="Isometrische Rösterei mit Großröstern, Silos und Jutesäcken" width={1536} height={864} /> : <img className="scene-image" src={details.image} alt={details.title} fetchPriority="high" />}
       {isCafe && <><Hotspot x={33} y={56} label="Café verwalten" icon={<Coffee />} onClick={() => open('Café & Ausbau', 'empire', ['Filialen'])} /><Hotspot x={67} y={66} label="Personal" icon={<Users />} onClick={() => open('Personal & Filialen', 'empire', ['Filialen'])} /><Hotspot x={80} y={36} label="Neue Filiale" icon={<Store />} onClick={() => open('Expansion', 'empire', ['Neue Filiale'])} />
-        {store && store.employees.length > 0 && <img src={art('people', 1)} alt="" className="scene-person barista object-contain" />}
-        {store && store.customersServedLastWeek > 0 && <img src={art('traffic', 2)} alt="" className="scene-person customer object-contain" />}
         <span className="coffee-steam" aria-hidden="true">∿</span>
         {pulse && store && <div className="income-float" role="status">+{eur(store.weeklyRevenue)}</div>}
       </>}
