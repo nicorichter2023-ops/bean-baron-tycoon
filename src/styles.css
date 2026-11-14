@@ -334,3 +334,16 @@ select, input { min-height:44px; }
   .world-scroll { height:min(420px,52dvh); }
   .action-sheet { max-height:88dvh; overflow-y:auto; padding-bottom:calc(16px + env(safe-area-inset-bottom)); }
 }
+
+/* Unified sprite scale: 48px items, 56px tiles, 8px gaps */
+:root { --sprite-sm:28px; --sprite-md:48px; --sprite-lg:64px; --sprite-gap:8px; }
+.art-strip { gap:var(--sprite-gap); }
+.art-strip img, .loadout-grid img, .district-tiles img { width:var(--sprite-md); height:var(--sprite-md); object-fit:contain; }
+.city-directory > div { gap:4px var(--sprite-gap); }
+.city-directory button { height:60px !important; min-height:44px; padding:6px; gap:8px; }
+.city-directory img { width:var(--sprite-md) !important; height:var(--sprite-md) !important; flex-shrink:0; }
+.store-tile img { width:var(--sprite-lg); height:var(--sprite-lg); object-fit:contain; border-radius:8px; mix-blend-mode:multiply; background:transparent; }
+.store-tile { height:auto; min-height:76px; padding:6px 10px; }
+.loadout-grid button { min-height:76px; justify-content:center; }
+.city-marker img { width:36px; height:36px; }
+.scene-heading img, .scene-heading [class*="sprite"] { width:var(--sprite-md); height:var(--sprite-md); }
