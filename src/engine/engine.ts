@@ -4,6 +4,7 @@
 // ============================================================
 
 import type {
+  ActionResult,
   B2BContract,
   B2BState,
   CapitalMarketsState,
@@ -28,8 +29,10 @@ import type {
 // -----------------------------------------------------------
 
 export const GAME_CONFIG = {
-  SCHEMA_VERSION: 1 as const,
+  SCHEMA_VERSION: 2 as const,
   START_CASH: 50_000,
+  STORE_OPENING_COST: { 1: 12_000, 2: 55_000, 3: 180_000 } as Record<StoreTier, number>,
+  STORE_UPGRADE_COST: { 2: 45_000, 3: 160_000 } as Record<2 | 3, number>,
   START_DATE: '2026-01-05',
   /** Sicherheitsgrenze für Spielwochen (~1.900 Jahre, Date bleibt gültig) */
   MAX_WEEK: 100_000,
@@ -338,14 +341,13 @@ function processRoastery(
   if (!roastery.owned) return { roastery, autoBuyCost: 0 };
 
   let rawBeanStockKg = Math.max(0, roastery.rawBeanStockKg);
+  let beanLots = roastery.beanLots.map((lot) => ({ ...lot }));
   const roastedStockKg = Math.max(0, roastery.roastedStockKg);
   const capacity = Math.max(0, roastery.capacityKgPerWeek);
   const yieldFactor = 1 - clamp(roastery.roastLossPercent, 0, 60) / 100;
 
   const roasterBoost = 1 + average(roastery.employees.map((e) => e.skill)) / 500;
   const maxInput = capacity * roasterBoost;
-
-  // Es wird nur so viel geröstet, wie das Lager (Deckel: Wochenkapazität × Faktor) aufnehmen kann.
   const stockCap = capacity * GAME_CONFIG.ROASTED_STOCK_CAP_WEEKS;
   const room = Math.max(0, stockCap - roastedStockKg);
   const targetInput = Math.min(maxInput, room / yieldFactor);
@@ -360,16 +362,36 @@ function processRoastery(
       if (affordableKg > 0) {
         rawBeanStockKg += affordableKg;
         autoBuyCost = round2(affordableKg * pricePerKg);
+        const beanId = beanLots[0]?.beanId ?? 'house_blend';
+        const existing = beanLots.find((lot) => lot.beanId === beanId);
+        if (existing) {
+          const total = existing.quantityKg + affordableKg;
+          existing.averagePricePerKg = round2(
+            (existing.quantityKg * existing.averagePricePerKg + affordableKg * pricePerKg) / total,
+          );
+          existing.quantityKg = round2(total);
+        } else {
+          beanLots.push({ beanId, quantityKg: round2(affordableKg), averagePricePerKg: round2(pricePerKg) });
+        }
       }
     }
   }
 
   const roastInput = Math.max(0, Math.min(rawBeanStockKg, targetInput));
   const produced = roastInput * yieldFactor;
+  let consumptionLeft = roastInput;
+  beanLots = beanLots
+    .map((lot) => {
+      const consumed = Math.min(lot.quantityKg, consumptionLeft);
+      consumptionLeft -= consumed;
+      return { ...lot, quantityKg: round2(lot.quantityKg - consumed) };
+    })
+    .filter((lot) => lot.quantityKg > 0.001);
 
   return {
     roastery: {
       ...roastery,
+      beanLots,
       rawBeanStockKg: round2(rawBeanStockKg - roastInput),
       roastedStockKg: round2(roastedStockKg + produced),
     },
