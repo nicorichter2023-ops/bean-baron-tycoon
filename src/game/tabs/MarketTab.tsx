@@ -26,7 +26,7 @@ export function MarketTab() {
         <Panel>
           <div className="flex items-center gap-3">
             <img src={COMPANY_ARTWORK.port} alt="Isometrischer Kaffee-Handelshafen" className="h-24 w-32 shrink-0 rounded-lg bg-artwork object-contain p-1" />
-            <div className="text-sm"><div className="font-semibold">Hafen & Terminmarkt</div><div className="mt-1 text-xs text-muted-foreground">Internationale Lieferketten, Bohnenpreise und B2B-Exporte auf einen Blick.</div></div>
+            <div className="text-sm"><div className="font-semibold">Hafen & Terminmarkt</div></div>
           </div>
         </Panel>
         <Panel>

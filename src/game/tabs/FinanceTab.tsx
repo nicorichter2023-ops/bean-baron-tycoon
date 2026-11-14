@@ -56,7 +56,7 @@ export function FinanceTab() {
         </Panel>)}
       </Section>
 
-      <Button variant="ghost" className="w-full text-muted-foreground" onClick={() => { if (confirm("Spielstand wirklich löschen?")) { resetGame(); set(() => createInitialState()); } }}><RotateCcw /> Neues Spiel</Button>
+      <Section title="Spielstand"><Button variant="ghost" className="w-full text-muted-foreground" onClick={() => { if (confirm("Spielstand wirklich löschen?")) { resetGame(); set(() => createInitialState()); } }}><RotateCcw /> Neues Spiel</Button></Section>
     </>
   );
 }

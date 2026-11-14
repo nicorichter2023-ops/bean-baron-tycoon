@@ -17,7 +17,8 @@ export function EmpireTab() {
   const { state, set, perform } = useGame();
   const [districtId, setDistrictId] = useState(state.city.districts[0]?.id ?? "");
   const [tier, setTier] = useState<StoreTier>(1);
-  const district = state.city.districts.find((item) => item.id === districtId) ?? state.city.districts[0]!;
+  const district = state.city.districts.find((item) => item.id === districtId) ?? state.city.districts[0];
+  if (!district) return null;
   const cost = storeOpeningCost(district, Math.min(tier, district.maxStoreTier) as StoreTier);
   const canRoast = state.unlockedModules.includes("roastery");
   const report = state.lastReport;
@@ -43,7 +44,7 @@ export function EmpireTab() {
         <Panel>
           <div className="mb-3 flex items-center gap-3">
             <img src={getStoreArtwork(state.city.biome, tier)} alt={`${TIER_NAME[tier]} in ${state.city.name}`} className="h-28 w-32 shrink-0 rounded-lg bg-artwork object-contain p-1" />
-            <div className="text-sm"><div className="font-semibold">{TIER_NAME[tier]} · {state.city.name}</div><div className="mt-1 text-xs text-muted-foreground">Das Gebäude passt sich dem Stadt-Biom und der gewählten Ausbaustufe an.</div></div>
+            <div className="text-sm"><div className="font-semibold">{TIER_NAME[tier]} · {state.city.name}</div></div>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <label className="col-span-2 text-xs text-muted-foreground">Stadt
@@ -84,7 +85,7 @@ export function EmpireTab() {
               {store.employees.map((employee) => <li key={employee.id} className="flex items-center gap-2 py-2 text-xs">
                 <span className="flex-1">{employee.name} · {employee.role === "manager" ? "Manager" : "Barista"} <span className="text-muted-foreground">Skill {employee.skill}</span></span>
                 <span className="font-mono">{eur(employee.salaryWeekly)}/Wo</span>
-                <button aria-label={`${employee.name} entlassen`} className="rounded-md p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive" onClick={() => perform((current) => fireEmployee(current, store.id, employee.id))}><UserMinus className="h-4 w-4" /></button>
+                <Button variant="ghost" size="icon" aria-label={`${employee.name} entlassen`} className="shrink-0 text-muted-foreground hover:text-destructive" onClick={() => perform((current) => fireEmployee(current, store.id, employee.id))}><UserMinus className="h-4 w-4" /></Button>
               </li>)}
             </ul>}
             <Button className="mt-2 w-full" size="sm" variant="secondary" disabled={store.tier >= 3 || !storeDistrict || store.tier + 1 > storeDistrict.maxStoreTier} onClick={() => perform((current) => upgradeStore(current, store.id))}>
