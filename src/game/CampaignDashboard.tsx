@@ -1,13 +1,14 @@
-import { Bar, BarChart, CartesianGrid, Line, LineChart, ReferenceArea, XAxis, YAxis } from 'recharts';
+import { Bar, BarChart, CartesianGrid, ComposedChart, LabelList, Line, XAxis, YAxis } from 'recharts';
 import { BarChart3 } from 'lucide-react';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
-import { compact, useGame } from './GameContext';
+import { compact, eur, useGame } from './GameContext';
 import { compareCampaignWeeks } from '@/engine/expansion';
 
 const config = {
   ohne: { label: 'Ohne Kampagne', color: 'var(--muted-foreground)' },
   mit: { label: 'Mit Kampagne', color: 'var(--primary)' },
-  guests: { label: 'Gäste', color: 'var(--secondary)' },
+  guests: { label: 'Gäste', color: 'var(--success)' },
+  active: { label: 'Kampagne aktiv', color: 'var(--primary)' },
   revenue: { label: 'Umsatz', color: 'var(--primary)' },
 } satisfies ChartConfig;
 
@@ -19,6 +20,8 @@ export function CampaignDashboard() {
     { metric: 'Gäste / Woche', ohne: cmp.without.guests, mit: cmp.with.guests },
     { metric: 'Umsatz / Woche', ohne: cmp.without.revenue, mit: cmp.with.revenue },
   ];
+  const maxRev = Math.max(...h.map((r) => r.revenue), 1);
+  const line = h.map((r) => ({ ...r, active: r.campaigns > 0 ? maxRev : 0 }));
   const lift = (a: number, b: number) => (b > 0 ? `${a >= b ? '+' : ''}${Math.round(((a - b) / b) * 100)} %` : '–');
   return <section className="lab-card">
     <h2 className="flex items-center gap-2"><BarChart3 className="h-4 w-4 text-primary" /> Kampagnen-Auswertung</h2>
@@ -29,22 +32,22 @@ export function CampaignDashboard() {
       </div>
       <p className="mt-1 text-[11px] text-muted-foreground">{cmp.with.weeks} Wochen mit, {cmp.without.weeks} ohne Kampagne</p>
       {(['Gäste / Woche', 'Umsatz / Woche'] as const).map((m, i) => <div key={m} className="mt-3"><p className="text-xs">{m} im Schnitt</p>
-        <ChartContainer config={config} className="h-32 w-full"><BarChart data={[bars[i]]} layout="vertical" margin={{ left: 0, right: 8 }}>
+        <ChartContainer config={config} className="h-24 w-full"><BarChart data={[bars[i]]} layout="vertical" margin={{ left: 0, right: 8 }}>
           <XAxis type="number" hide /><YAxis type="category" dataKey="metric" hide />
           <ChartTooltip content={<ChartTooltipContent />} />
-          <Bar dataKey="ohne" fill="var(--color-ohne)" radius={4} /><Bar dataKey="mit" fill="var(--color-mit)" radius={4} />
+          <Bar dataKey="ohne" fill="var(--color-ohne)" radius={4}><LabelList dataKey="ohne" position="insideLeft" fill="var(--background)" fontSize={11} formatter={(v: number) => `Ohne: ${i ? eur(v) : v}`} /></Bar><Bar dataKey="mit" fill="var(--color-mit)" radius={4}><LabelList dataKey="mit" position="insideLeft" fill="var(--background)" fontSize={11} formatter={(v: number) => `Mit: ${i ? eur(v) : v}`} /></Bar>
         </BarChart></ChartContainer></div>)}
-      <p className="mt-3 text-xs">Verlauf (goldene Flächen = Kampagne aktiv)</p>
-      <ChartContainer config={config} className="h-44 w-full"><LineChart data={h} margin={{ left: -12, right: 8 }}>
+      <p className="mt-3 text-xs">Verlauf: <span className="text-success">— Gäste</span> · <span className="text-primary">— Umsatz</span> · helle Balken = Kampagne aktiv</p>
+      <ChartContainer config={config} className="h-44 w-full"><ComposedChart data={line} margin={{ left: 0, right: 0 }}>
         <CartesianGrid vertical={false} strokeOpacity={0.2} />
         <XAxis dataKey="week" tickLine={false} fontSize={10} tickFormatter={(w) => `W${w}`} />
-        <YAxis yAxisId="g" fontSize={10} tickLine={false} width={36} />
-        <YAxis yAxisId="r" orientation="right" fontSize={10} tickLine={false} width={44} tickFormatter={(v) => compact(v)} />
-        {h.filter((r) => r.campaigns > 0).map((r) => <ReferenceArea key={r.week} yAxisId="g" x1={r.week} x2={r.week} fill="var(--primary)" fillOpacity={0.15} ifOverflow="extendDomain" />)}
+        <YAxis yAxisId="g" fontSize={10} tickLine={false} width={40} />
+        <YAxis yAxisId="r" orientation="right" fontSize={10} tickLine={false} width={52} tickFormatter={(v) => compact(v).replace(' Tsd €', 'k')} />
+        <Bar yAxisId="r" dataKey="active" fill="var(--color-active)" fillOpacity={0.18} barSize={18} />
         <ChartTooltip content={<ChartTooltipContent />} />
         <Line yAxisId="g" dataKey="guests" stroke="var(--color-guests)" dot={false} strokeWidth={2} />
         <Line yAxisId="r" dataKey="revenue" stroke="var(--color-revenue)" dot={false} strokeWidth={2} />
-      </LineChart></ChartContainer>
+      </ComposedChart></ChartContainer>
     </>}
   </section>;
 }
