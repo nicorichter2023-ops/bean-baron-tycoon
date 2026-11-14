@@ -475,14 +475,30 @@ function processCapitalMarkets(
     return { ...s, status: 'failed' as const };
   });
 
-  // Rivalen wachsen langsam mit (verhindert triviale Übernahmen im Late-Game)
+  // Börsenwerte und Aktienkurse entwickeln sich gemeinsam, damit Kauf/Verkauf und M&A konsistent bleiben.
   const rivals: RivalCompany[] = cm.rivals.map((r) => {
     if (r.acquired) return r;
     const rng = mulberry32(hashSeed(week * 7907 + hashString(r.id)));
     const growth = GAME_CONFIG.RIVAL_WEEKLY_GROWTH + (rng() - 0.5) * 0.01;
     const valuation = Math.round(clamp(r.valuation * (1 + growth), 1, GAME_CONFIG.MONEY_CAP));
-    return { ...r, valuation };
+    const sharePrice = round2(
+      clamp(valuation / Math.max(1, r.sharesOutstanding), GAME_CONFIG.MIN_SHARE_PRICE, GAME_CONFIG.MAX_SHARE_PRICE),
+    );
+    return { ...r, valuation, sharePrice };
   });
+
+  const dividendCash = round2(
+    cm.holdings.reduce((sum, holding) => {
+      const company = rivals.find((r) => r.id === holding.companyId);
+      if (!company || company.acquired) return sum;
+      return sum + holding.shares * company.sharePrice * (company.dividendYield / 52);
+    }, 0),
+  );
+  if (dividendCash > 0) {
+    cashDelta += dividendCash;
+    taxableGain += dividendCash;
+    notes.push(`DIVIDENDS:${dividendCash}`);
+  }
 
   // Aktienkurs: Rückkehr zum fairen Wert (Asset-Bewertung / Aktien) + Performance + Rauschen
   let sharePrice = cm.sharePrice;
@@ -536,8 +552,18 @@ export function calculateAssetValuation(state: GameState): number {
     Math.max(0, state.roastery.rawBeanStockKg) * futures;
   const roasteryValue = state.roastery.owned ? GAME_CONFIG.ROASTERY_COST * 0.9 : 0;
   const startupBookValue = state.capitalMarkets.startups
-    .filter((s) => s.status === 'active')
-    .reduce((sum, s) => sum + Math.max(0, s.investedAmount), 0);
+    .filter((s) => s.status === 'active' || s.acquired)
+    .reduce(
+      (sum, s) => sum + (s.acquired ? Math.max(0, s.valuation) * 0.8 : Math.max(0, s.investedAmount)),
+      0,
+    );
+  const stockValue = state.capitalMarkets.holdings.reduce((sum, holding) => {
+    const company = state.capitalMarkets.rivals.find((r) => r.id === holding.companyId);
+    return sum + (company ? holding.shares * company.sharePrice : 0);
+  }, 0);
+  const acquiredRivalValue = state.capitalMarkets.rivals
+    .filter((r) => r.acquired)
+    .reduce((sum, r) => sum + r.valuation * 0.8, 0);
   const b2bValue = state.b2b.contracts.reduce(
     (sum, c) =>
       sum +
@@ -555,6 +581,8 @@ export function calculateAssetValuation(state: GameState): number {
       roasteryValue +
       inventoryValue +
       startupBookValue +
+      stockValue +
+      acquiredRivalValue +
       b2bValue +
       brandValue -
       state.debt,
@@ -622,7 +650,7 @@ export function purchaseRoastery(state: GameState): {
 // -----------------------------------------------------------
 
 export function processTurn(state: GameState): GameState {
-  if (state.week >= GAME_CONFIG.MAX_WEEK) return state;
+  if (state.week >= GAME_CONFIG.MAX_WEEK || state.pendingEvent) return state;
 
   const week = state.week + 1;
   const dateIso = dateForWeek(week);
@@ -659,10 +687,11 @@ export function processTurn(state: GameState): GameState {
   let costRent = 0;
   let roastedPool = roastery.roastedStockKg;
   const externalPrice = externalRoastedPricePerKg(futuresPricePerKg);
-  const districtById = new Map(state.city.districts.map((d) => [d.id, d]));
+  const districtById = new Map(state.cities.flatMap((city) => city.districts.map((d) => [d.id, d] as const)));
   const stores = state.stores.map((store) => {
     const district = districtById.get(store.districtId);
-    if (!district) {
+    const storeCity = state.cities.find((city) => city.id === store.cityId);
+    if (!district || !storeCity) {
       notes.push(`ORPHAN_STORE:${store.name}`);
       costSalaries += store.employees.reduce((sum, e) => sum + Math.max(0, e.salaryWeekly), 0);
       return store;
@@ -670,7 +699,7 @@ export function processTurn(state: GameState): GameState {
     const { store: updated, result } = processStore(
       store,
       district,
-      state.city,
+      storeCity,
       ownRoasteryActive ? roastedPool : null,
     );
     if (ownRoasteryActive) {
