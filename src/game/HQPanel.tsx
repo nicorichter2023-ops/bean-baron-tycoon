@@ -4,6 +4,7 @@ import { Switch } from '@/components/ui/switch';
 import { createManagement, EXECUTIVES, financialForecast, hasExecutive, hireExecutive, releaseExecutive } from '@/engine/management';
 import { eur, useGame } from './GameContext';
 import { SCENES } from './sceneAssets';
+import { MASTER } from '@/data/master';
 
 export function HQPanel() {
   const { state, set, setBoth } = useGame();
@@ -12,10 +13,11 @@ export function HQPanel() {
   return <section>
     <div className="scene-heading"><div><p className="eyebrow">Coffee Empire · Konzern</p><h1>Headquarters</h1></div><Building2 className="h-8 w-8 text-primary" /></div>
     <img src={SCENES.office.url} alt="Isometrisches Coffee Empire Hauptquartier" className="hq-scene" />
-    <div className="scene-metrics"><div><span>Filialen</span><strong>{state.stores.length}</strong></div><div><span>HQ-Gehälter / Woche</span><strong>{eur(state.management?.executives.reduce((n, e) => n + EXECUTIVES[e.role].salary, 0) ?? 0)}</strong></div><div><span>C-Level</span><strong>{state.management?.executives.length ?? 0} / 2</strong></div></div>
+    <div className="scene-metrics"><div><span>Filialen</span><strong>{state.stores.length}</strong></div><div><span>HQ-Gehälter / Woche</span><strong>{eur(state.management.executives.reduce((n, e) => n + EXECUTIVES[e.role].salary, 0) + state.world.candidates.reduce((n, id) => n + (MASTER.cSuiteCandidates.find(c => c.id === id)?.weeklySalary ?? 0), 0))}</strong></div><div><span>C-Level</span><strong>{state.management.executives.length + state.world.candidates.length} / 4</strong></div></div>
     <h2 className="my-4 font-display text-lg font-bold">Konzernleitung</h2>
     <div className="grid gap-3 md:grid-cols-2">{(['coo', 'cfo'] as const).map(role => {
-      const c = EXECUTIVES[role], hired = hasExecutive(state, role);
+      const candidate = MASTER.cSuiteCandidates.find(c => state.world.candidates.includes(c.id) && c.role.toLowerCase() === role);
+      const c = candidate ? { name: candidate.name, title: candidate.specialty, fee: candidate.signingBonus, salary: candidate.weeklySalary } : EXECUTIVES[role], hired = hasExecutive(state, role);
       return <article key={role} className="rounded-lg border border-border bg-card p-4">
         <div className="flex items-start gap-3"><BriefcaseBusiness className="h-8 w-8 shrink-0 text-primary" /><div><h3 className="font-display text-lg font-bold">{role.toUpperCase()} · {c.name}</h3><p className="text-xs text-muted-foreground">{c.title}</p></div></div>
         <p className="my-3 text-sm">{role === 'coo' ? 'Delegation: ergänzt Baristas bis zur Sollbesetzung jeder Filiale und aktiviert den automatischen Bohnennachkauf in deiner Rösterei. Personal wird regulär bezahlt; keine automatischen Ausbauten.' : 'Senkt den effektiven Kreditzins um 20 % und liefert eine Vier-Wochen-Liquiditätsprognose. Bestehende und neue Kredite profitieren, solange der CFO angestellt ist.'}</p>

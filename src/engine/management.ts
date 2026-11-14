@@ -3,7 +3,7 @@ import { GAME_CONFIG, calculateCompanyValuation, hireEmployee, processTurn } fro
 import { applyExpansionWeek, type ExpansionState, cupsSold, recipeCost, CAMPAIGNS } from './expansion';
 import { equipmentOf } from './equipment';
 import { MASTER } from '@/data/master';
-import { advanceWorld, worldWeeklyFlows } from './world';
+import { advanceWorld, applyWorldSupply, worldWeeklyFlows } from './world';
 
 export type ExecutiveRole = 'coo' | 'cfo';
 export const EXECUTIVES = {
@@ -80,7 +80,7 @@ export function processManagementWeek(state: GameState, exp: ExpansionState) {
   }
   const recruitment = money(state.cash - prepared.cash);
   const baseRate = prepared.weeklyInterestRate;
-  const turned = advanceWorld(processTurn({ ...prepared, weeklyInterestRate: effectiveInterestRate(prepared) }));
+  const turned = applyWorldSupply(advanceWorld(processTurn({ ...prepared, weeklyInterestRate: effectiveInterestRate(prepared) })));
   const r = turned.lastReport;
   if (!r) return { game: state, exp };
   const salary = m.executives.reduce((n, e) => n + EXECUTIVES[e.role].salary, 0);

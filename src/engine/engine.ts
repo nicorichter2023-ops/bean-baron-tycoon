@@ -878,6 +878,7 @@ export function acquireRival(state: GameState, companyId: string, offeredPrice: 
       ...state,
       cash: round2(state.cash - offeredPrice),
       brandReputation: clamp(state.brandReputation + 5, 0, 100),
+      world: { ...state.world, occupants: Object.fromEntries(Object.entries(state.world.occupants).filter(([, occupant]) => occupant !== companyId)) },
       capitalMarkets: {
         ...state.capitalMarkets,
         holdings: state.capitalMarkets.holdings.filter((holding) => holding.companyId !== companyId),
