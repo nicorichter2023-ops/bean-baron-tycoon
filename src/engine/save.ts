@@ -3,6 +3,8 @@ import { GAME_CONFIG, calculateCompanyValuation } from "./engine";
 import { createInitialState } from "@/data/initialState";
 import { balanceSheet, createManagement } from './management';
 import { createEquipment } from './equipment';
+import { createWorld } from './world';
+import { MASTER_CITIES, MASTER_STOCKS, MASTER_STARTUPS } from '@/data/master';
 
 const KEY = "coffee-empire-save";
 
@@ -46,7 +48,21 @@ export function migrateV2ToV3(state: Omit<GameState, 'management'> & { managemen
 export function migrateV3ToV4(state: GameState): GameState {
   return { ...state, schemaVersion: 4, stores: state.stores.map(s => ({ ...s, equipment: { ...createEquipment(), ...s.equipment } })) };
 }
-const migrations: Record<number, (state: any) => GameState> = { 1: migrateV1ToV2, 2: migrateV2ToV3, 3: migrateV3ToV4 };
+export function migrateV4ToV5(state: GameState): GameState {
+  const world = state.world ?? createWorld();
+  // Preserve legacy locations in the save; the 30 named master properties are added, never substituted for an owned lease.
+  const cities = MASTER_CITIES.map(c => {
+    const old = state.cities.find(x => x.id === c.id);
+    return { ...c, districts: [...c.districts, ...(old?.districts.filter(d => !c.districts.some(x => x.id === d.id) && state.stores.some(s => s.districtId === d.id)) ?? [])] };
+  });
+  for (const c of state.cities.filter(c => !cities.some(x => x.id === c.id) && state.stores.some(s => s.cityId === c.id))) cities.push(c);
+  for (const s of state.stores) delete world.occupants[s.districtId];
+  return { ...state, schemaVersion: 5, world, cities, city: cities.find(c => c.id === state.city.id) ?? cities[0] ?? state.city,
+    capitalMarkets: { ...state.capitalMarkets,
+      rivals: [...state.capitalMarkets.rivals, ...MASTER_STOCKS.filter(s => !state.capitalMarkets.rivals.some(x => x.id === s.id))],
+      startups: [...state.capitalMarkets.startups, ...MASTER_STARTUPS.filter(s => !state.capitalMarkets.startups.some(x => x.id === s.id))] } };
+}
+const migrations: Record<number, (state: any) => GameState> = { 1: migrateV1ToV2, 2: migrateV2ToV3, 3: migrateV3ToV4, 4: migrateV4ToV5 };
 
 export function loadGame(): GameState {
   try {

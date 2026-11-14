@@ -3,13 +3,17 @@ import { GAME_CONFIG, calculateCompanyValuation, dateForWeek } from "@/engine/en
 import { BEAN_VARIETIES, CITIES, GAME_EVENTS, PUBLIC_COMPANIES, STARTUPS } from "./cities";
 import { createManagement } from '@/engine/management';
 import { createEquipment } from '@/engine/equipment';
+import { createWorld } from '@/engine/world';
 
 export function createInitialState(): GameState {
-  const city = CITIES.find((candidate) => candidate.id === "berlin") ?? CITIES[0]!;
-  const district = city.districts.find((candidate) => candidate.name === "Kreuzberg") ?? city.districts[0]!;
+  const city = CITIES.find((candidate) => candidate.id === "berlin") ?? CITIES[0];
+  if (!city) throw new Error('Startstadt fehlt');
+  const district = city.districts.find((candidate) => candidate.id === 'berlin-09') ?? city.districts[0];
+  if (!district) throw new Error('Startstandort fehlt');
   const state: GameState = {
     schemaVersion: GAME_CONFIG.SCHEMA_VERSION,
     management: createManagement(GAME_CONFIG.START_CASH),
+    world: createWorld(),
     week: 1,
     dateIso: dateForWeek(1),
     cash: GAME_CONFIG.START_CASH,
