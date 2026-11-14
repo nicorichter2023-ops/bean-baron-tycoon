@@ -33,3 +33,4 @@ use the editor.
 - SceneView and MapTab form the visual presentation layer; SectionFilter exposes existing action panels in sheets, so economic actions stay on the existing engine path.
 - New uploaded media is served through asset JSON pointers; sprite atlases use a 4×4 grid to limit requests and keep scene composition browser-safe.
 - Register the public offline service worker only in production; cache only successful same-origin public GET assets and navigations, never authenticated requests or API responses.
+- Sheet artwork is cut into public/assets/sheets/<sheet>/<index>.webp and referenced only through src/game/sheetArt.ts index maps, so re-cutting a sheet needs edits in one place.
