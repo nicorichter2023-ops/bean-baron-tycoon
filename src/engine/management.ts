@@ -105,8 +105,8 @@ export function processManagementWeek(state: GameState, exp: ExpansionState) {
     cooHires, interestSaved: money(state.debt * Math.min(GAME_CONFIG.MAX_WEEKLY_INTEREST, Math.max(0, baseRate)) - r.costInterest),
   };
   const report: TurnReport = { ...r, revenueCafes: row.cups, revenueCapital: other, revenueTotal: money(row.cups + row.b2b + other), costSalaries: row.salaries,
-    costBeans: money(row.beans + row.ingredients), costTax: tax, costTotal: money(r.costTotal + salary + ingredients + tax - r.costTax),
-    netIncome: money(gameCash - prepared.cash), notes: [...r.notes, ...(cooHires ? [`COO: ${cooHires} Baristas eingestellt.`] : []), ...(salary ? [`HQ-Gehälter: ${salary} €.`] : [])] };
+    costBeans: money(row.beans + row.ingredients), costTax: tax, costTotal: money(row.cups + row.b2b + row.other - row.profit),
+    netIncome: row.profit, notes: [...r.notes, ...(cooHires ? [`COO: ${cooHires} Baristas eingestellt.`] : []), ...(salary ? [`HQ-Gehälter: ${salary} €.`] : [])] };
   const game: GameState = { ...expansion.game, cash: gameCash, weeklyInterestRate: baseRate, lastReport: report,
     management: { ...m, openingCash: gameCash, openingInventory: balanceSheet(turned).inventory, journal: { operating: 0, investing: 0, financing: 0 }, oneOff: 0, beanPurchases: 0, history: [...m.history, row].slice(-104) } };
   game.companyValuation = calculateCompanyValuation(game);
