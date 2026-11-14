@@ -137,6 +137,7 @@ export interface StockHolding {
 }
 
 export interface StartupInvestment {
+  exitWeeks?: number;
   id: string;
   name: string;
   sector: string;
@@ -210,6 +211,7 @@ export interface TurnReport {
 }
 
 export interface GameState {
+  world: WorldState;
   schemaVersion: SchemaVersion;
   management: ManagementState;
   week: number;
