@@ -43,6 +43,8 @@ export const CAFE_LOADOUT: { tier: 1 | 2 | 3; label: string; index: number }[] =
   { tier: 3, label: 'Custom-Maschine', index: 3 }, { tier: 3, label: 'Cold Drip', index: 6 }, { tier: 3, label: 'Sandwich-Vitrine', index: 12 }, { tier: 3, label: 'Lounge-Sessel', index: 19 }, { tier: 3, label: 'Eckbank', index: 22 }, { tier: 3, label: 'Menü-Screens', index: 29 }, { tier: 3, label: 'Mooswand', index: 25 },
 ].map((p) => ({ ...p, tier: p.tier as 1 | 2 | 3 }));
 export const cafeLoadoutArt = (index: number) => art('interior', index);
+export const EQUIPMENT_ART = { espresso: [1, 2, 3], grinder: [4, 5], interior: [20, 26, 19] } as const;
+export const equipmentArt = (category: keyof typeof EQUIPMENT_ART, level: number) => art('interior', EQUIPMENT_ART[category][level] ?? 1);
 
 // District tiles: shopping, scene/art, nightlife, finance, old town, park, office, campus…
 const DISTRICT_TILE_ORDER = [0, 2, 4, 12, 5, 1, 13, 14, 6, 9];
