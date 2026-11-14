@@ -14,6 +14,7 @@
 - [x] Installierbare Vollbild-App für Galaxy S21 FE konfigurieren und mobil prüfen.
 
 ## Visuelle Spielwelt
+- [ ] Filial-Ausstattung, Maschinen-Effekte, Anlagenwerte und COO-Nachrüstung einbauen und prüfen.
 - [x] Management-Navigation mit direkter Filialübersicht umsetzen.
 - [x] Wöchentliche GuV, Bilanz und abgestimmten Cashflow ergänzen.
 - [x] HQ mit COO/CFO, Delegation, Gehältern und Prognose ergänzen und testen.
