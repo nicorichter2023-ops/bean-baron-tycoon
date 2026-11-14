@@ -1,6 +1,7 @@
 import type { GameState } from "./types";
 import { GAME_CONFIG, calculateCompanyValuation } from "./engine";
 import { createInitialState } from "@/data/initialState";
+import { createManagement } from './management';
 
 const KEY = "coffee-empire-save";
 
@@ -37,7 +38,10 @@ function migrateV1ToV2(old: any): GameState {
   return { ...migrated, companyValuation: calculateCompanyValuation(migrated) };
 }
 
-const migrations: Record<number, (state: any) => GameState> = { 1: migrateV1ToV2 };
+export function migrateV2ToV3(state: GameState): GameState {
+  return { ...state, schemaVersion: 3, management: state.management ?? createManagement(state.cash) };
+}
+const migrations: Record<number, (state: any) => GameState> = { 1: migrateV1ToV2, 2: migrateV2ToV3 };
 
 export function loadGame(): GameState {
   try {
@@ -53,7 +57,7 @@ export function loadGame(): GameState {
     if (state.schemaVersion !== GAME_CONFIG.SCHEMA_VERSION || !Array.isArray(state.cities) || !state.market?.beanVarieties) {
       return createInitialState();
     }
-    return state as GameState;
+    return { ...state, management: state.management ?? createManagement(state.cash) } as GameState;
   } catch {
     return createInitialState();
   }

@@ -1,9 +1,10 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { toast } from "sonner";
-import { loadGame, processTurn, saveGame, type ActionResult, type GameState } from "@/engine";
+import { loadGame, saveGame, type ActionResult, type GameState } from "@/engine";
 import { createInitialState } from "@/data";
 import { translateEngineNote } from "./logMessages";
-import { applyExpansionWeek, createExpansion, loadExpansion, saveExpansion, type ExpansionState } from "@/engine/expansion";
+import { createExpansion, loadExpansion, saveExpansion, type ExpansionState } from "@/engine/expansion";
+import { processManagementWeek, recordManagementAction } from '@/engine/management';
 
 type Ctx = {
   state: GameState;
@@ -29,13 +30,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const set = (fn: (current: GameState) => GameState) => setState((current) => {
-    const next = fn(current);
+    const next = recordManagementAction(current, fn(current));
     saveGame(next);
     return next;
   });
 
   const perform = (action: (current: GameState) => ActionResult) => setState((current) => {
-    const result = action(current);
+    const raw = action(current);
+    const result = raw.ok ? { ...raw, state: recordManagementAction(current, raw.state) } : raw;
     if (result.ok) saveGame(result.state);
     const message = translateEngineNote(result.reason);
     if (result.ok) toast.success(message);
@@ -46,13 +48,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const setBoth: Ctx["setBoth"] = (fn) => {
     const result = fn(state, exp);
     if (typeof result === "string") { toast.error(result); return; }
-    saveGame(result.game); saveExpansion(result.exp);
-    setState(result.game); setExp(result.exp);
+    const game = recordManagementAction(state, result.game);
+    saveGame(game); saveExpansion(result.exp);
+    setState(game); setExp(result.exp);
   };
   const nextWeek = () => {
-    const turned = processTurn(state);
-    // Wochenwechsel pausiert bei offenem Ereignis; Erweiterung nur bei echtem Fortschritt verrechnen.
-    const result = turned.week > state.week ? applyExpansionWeek(turned, exp) : { game: turned, exp };
+    const result = processManagementWeek(state, exp);
+    const turned = result.game;
     saveGame(result.game); saveExpansion(result.exp);
     setState(result.game); setExp(result.exp);
     if (turned.week > state.week) window.__lovableEvents?.track?.("project.week_completed", {

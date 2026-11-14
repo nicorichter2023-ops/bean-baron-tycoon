@@ -30,7 +30,8 @@ use the editor.
 <!-- LOVABLE:END -->
 
 - Game logic lives in src/engine/ (user-supplied pure types.ts/engine.ts with processTurn, plus save.ts for localStorage with schemaVersion migrations); content and createInitialState live in src/data/; UI in src/game/ only calls engine functions — keeps engine/content swappable.
-- SceneView and MapTab form the visual presentation layer; SectionFilter exposes existing action panels in sheets, so economic actions stay on the existing engine path.
+- Management navigation exposes action panels directly through SectionFilter; SceneView and MapTab remain optional visual views using the same engine actions.
+- Run weekly gameplay through processManagementWeek in src/engine/management.ts; it wraps the base engine and laboratory, journals real action cash movements, and persists HQ/accounting in schema-versioned GameState so reports reconcile without duplicate charges.
 - New uploaded media is served through asset JSON pointers; sprite atlases use a 4×4 grid to limit requests and keep scene composition browser-safe.
 - Register the public offline service worker only in production; cache only successful same-origin public GET assets and navigations, never authenticated requests or API responses.
 - Sheet artwork is cut into public/assets/sheets/<sheet>/<index>.webp and referenced only through src/game/sheetArt.ts index maps, so re-cutting a sheet needs edits in one place.
