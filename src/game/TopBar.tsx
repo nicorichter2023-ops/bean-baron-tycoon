@@ -20,8 +20,8 @@ export function TopBar() {
             <span className={`font-mono font-semibold ${up ? "text-success" : "text-destructive"}`}>{price.toFixed(2)}€</span>
           </div>
         </div>
-        <button onClick={nextWeek} className="flex h-14 items-center gap-1 rounded-xl bg-primary px-3 font-display text-sm font-bold text-primary-foreground shadow-glow active:scale-95 transition">
-          Nächste<br />Woche <ChevronRight className="h-5 w-5" />
+        <button onClick={nextWeek} disabled={Boolean(state.pendingEvent)} className="flex h-14 items-center gap-1 rounded-xl bg-primary px-3 font-display text-sm font-bold text-primary-foreground shadow-glow active:scale-95 transition disabled:opacity-50 disabled:active:scale-100">
+          {state.pendingEvent ? <>Ereignis<br />wählen</> : <>Nächste<br />Woche</>} <ChevronRight className="h-5 w-5" />
         </button>
       </div>
     </header>
