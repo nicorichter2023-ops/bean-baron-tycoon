@@ -342,3 +342,12 @@ select, input { min-height:44px; }
 .city-marker img { width:36px; height:36px; }
 .scene-heading img, .scene-heading [class*="sprite"] { width:var(--sprite-md); height:var(--sprite-md); }
 .store-tile img { mix-blend-mode:normal; background:var(--artwork, #f4ead8); padding:3px; }
+
+/* Dezenter Fokus-Modus: Symbole lassen die Grafik durchscheinen */
+.scene-hotspot, .plot-marker { opacity:.3; background:color-mix(in oklab, var(--card) 35%, transparent) !important; backdrop-filter:blur(3px); box-shadow:none; transition:opacity .25s, background .25s; }
+.scene-hotspot:hover, .scene-hotspot:focus-visible, .scene-hotspot:active, .plot-marker:hover, .plot-marker:focus-visible, .plot-marker:active { opacity:1; background:var(--card) !important; box-shadow:var(--shadow-glow); }
+.scene-stage.zen .scene-hotspot, .scene-stage.zen .scene-badge, .scene-stage.zen .scene-person, .scene-stage.zen .coffee-steam { opacity:0; pointer-events:none; }
+.zen-toggle { position:absolute; top:6px; right:6px; z-index:6; width:44px; height:44px; display:grid; place-items:center; border-radius:50%; background:color-mix(in oklab, var(--card) 45%, transparent); color:var(--foreground); opacity:.6; }
+.zen-toggle svg { width:18px; height:18px; }
+.lab-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px; margin-top:16px; }
+.lab-stat { background:var(--muted); border-radius:6px; padding:6px; } .lab-stat span { display:block; color:var(--muted-foreground); font-size:10px; }
