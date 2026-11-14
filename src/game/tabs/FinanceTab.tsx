@@ -5,6 +5,7 @@ import { acquireRival, acquireStartup, buyShares, investInStartup, repayLoan, re
 import { createInitialState } from "@/data";
 import { eur, useGame } from "../GameContext";
 import { Empty, Panel, Section } from "../ui";
+import { COMPANY_ARTWORK } from "../artwork";
 
 const inputClass = "h-9 w-full rounded-md border border-input bg-background px-3 font-mono text-sm text-foreground";
 const RISK = { low: "Niedrig", medium: "Mittel", high: "Hoch", moonshot: "Moonshot" } as const;

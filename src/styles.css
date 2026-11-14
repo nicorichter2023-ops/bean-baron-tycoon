@@ -63,6 +63,7 @@
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
   --color-success: var(--success);
+  --color-artwork: var(--artwork);
   --font-sans: "Manrope", system-ui, sans-serif;
   --font-display: "Fraunces", serif;
   --font-mono: "JetBrains Mono", monospace;

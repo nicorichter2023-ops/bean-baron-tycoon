@@ -4,8 +4,9 @@ import { openStore } from "@/engine";
 import { Button } from "@/components/ui/button";
 import { eur, useGame } from "../GameContext";
 import { Panel, Section } from "../ui";
+import { BIOME_LABEL, getCityArtwork } from "../artwork";
 
-const BIOME: Record<string, string> = { european_classic: "Europäisch klassisch", modern_industrial: "Modern industriell", asian_zen: "Asiatisch Zen", tropical_colonial: "Tropisch kolonial" };
+const BIOME = BIOME_LABEL;
 const selectClass = "h-9 min-w-0 flex-1 rounded-md border border-input bg-background px-2 text-xs text-foreground";
 
 export function MapTab() {
