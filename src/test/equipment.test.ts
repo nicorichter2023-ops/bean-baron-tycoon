@@ -16,7 +16,7 @@ describe('Filial-Ausstattung', () => {
   it('Basisausstattung ist inklusive und neue Filialen starten mit Standard', () => {
     const g = createInitialState();
     expect(g.stores[0]?.equipment).toEqual({ espresso: 0, grinder: 0, interior: 0, bookValue: 0 });
-    const d = g.city.districts.find(d => !g.stores.some(s => s.districtId === d.id));
+    const d = g.city.districts.find(d => !g.world.occupants[d.id] && !g.stores.some(s => s.districtId === d.id));
     if (!d) throw new Error('Grundstück fehlt');
     expect(openStore(g, g.city.id, d.id, 1).state.stores.at(-1)?.equipment.espresso).toBe(0);
   });
@@ -76,7 +76,7 @@ describe('Filial-Ausstattung', () => {
   });
   it('COO-Nachrüstung betrifft alle Filialen, erhält Premium und prüft Gesamtbudget atomar', () => {
     let g = upgrade(createInitialState(), 'espresso', 2);
-    const d = g.city.districts.find(d => !g.stores.some(s => s.districtId === d.id)); if (!d) throw new Error('Grundstück fehlt');
+    const d = g.city.districts.find(d => !g.world.occupants[d.id] && !g.stores.some(s => s.districtId === d.id)); if (!d) throw new Error('Grundstück fehlt');
     g = openStore({ ...g, cash: 100000 }, g.city.id, d.id, 1).state;
     expect(retrofitStandardEquipment(g).ok).toBe(false);
     const hired = hireExecutive(g, 'coo'); if (typeof hired === 'string') throw new Error(hired);
@@ -92,7 +92,7 @@ describe('Filial-Ausstattung', () => {
   it('Schema-3-Spielstände erhalten Daten und kostenlose Standards; Upgrades bleiben nach Laden erhalten', () => {
     const g = createInitialState();
     localStorage.setItem('coffee-empire-save', JSON.stringify({ ...g, schemaVersion: 3, stores: g.stores.map(({ equipment: _equipment, ...s }) => s) }));
-    const migrated = loadGame(); expect(migrated.schemaVersion).toBe(4); expect(migrated.cash).toBe(50000);
+    const migrated = loadGame(); expect(migrated.schemaVersion).toBe(5); expect(migrated.cash).toBe(50000);
     expect(migrated.management).toEqual(g.management); expect(migrated.stores[0]?.equipment.bookValue).toBe(0);
     const upgraded = upgrade(migrated, 'grinder', 1); saveGame(upgraded);
     expect(loadGame().stores[0]?.equipment).toEqual(upgraded.stores[0]?.equipment);

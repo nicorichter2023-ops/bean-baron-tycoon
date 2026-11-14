@@ -42,7 +42,7 @@ describe('Management & Accounting', () => {
     const campaign = startCampaign(g, createExpansion(), 'social', g.city.id);
     if (typeof campaign === 'string') throw new Error(campaign);
     g = recordManagementAction(g, campaign.game);
-    const district = g.city.districts.find(d => !g.stores.some(s => s.districtId === d.id));
+    const district = g.city.districts.find(d => !g.world.occupants[d.id] && !g.stores.some(s => s.districtId === d.id));
     if (!district) throw new Error('Kein Grundstück');
     g = recordManagementAction(g, openStore(g, g.city.id, district.id, 1).state);
     const result = processManagementWeek(g, campaign.exp), r = result.game.management?.history.at(-1);

@@ -106,7 +106,7 @@ export const LEGACY_STARTUPS: StartupInvestment[] = GAME_CONTENT.startups.map((s
 export const STARTUPS = MASTER_STARTUPS;
 
 const totalMarketCap = GAME_CONTENT.publicCompanies.reduce((sum, company) => sum + company.marketCap, 0);
-export const PUBLIC_COMPANIES: RivalCompany[] = GAME_CONTENT.publicCompanies.map((company, index) => ({
+export const PUBLIC_COMPANIES: RivalCompany[] = GAME_CONTENT.publicCompanies.map<RivalCompany>((company, index) => ({
   id: company.id,
   name: company.name,
   ticker: company.ticker,

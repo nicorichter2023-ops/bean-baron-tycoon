@@ -253,7 +253,7 @@ type IsJson<T> = T extends string | number | boolean | null
       : T extends readonly (infer U)[]
         ? IsJson<U>
         : T extends object
-          ? { [K in keyof T]-?: IsJson<T[K]> }[keyof T] extends true
+          ? { [K in keyof T]-?: IsJson<Exclude<T[K], undefined>> }[keyof T] extends true
             ? true
             : false
           : false;
