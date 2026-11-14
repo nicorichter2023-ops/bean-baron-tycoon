@@ -293,14 +293,14 @@ select, input { min-height:44px; }
 .art-strip { display:flex; gap:8px; overflow-x:auto; padding:8px 2px; scrollbar-width:none; }
 .art-strip img { height:52px; width:52px; object-fit:contain; flex-shrink:0; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:4px; }
 .street-walker, .street-vehicle { position:absolute; pointer-events:none; object-fit:contain; filter:drop-shadow(0 2px 2px rgb(0 0 0 / .35)); }
-.street-walker { height:16%; bottom:16%; animation:walk-across 18s linear infinite; }
-.walker-1 { animation-delay:-5s; animation-duration:22s; bottom:20%; }
-.walker-2 { animation-delay:-11s; animation-direction:reverse; bottom:12%; }
-.walker-3 { animation-delay:-15s; animation-duration:26s; animation-direction:reverse; bottom:24%; }
-.street-vehicle { height:14%; bottom:4%; animation:walk-across 9s linear infinite; }
-.vehicle-1 { animation-delay:-4s; animation-duration:13s; animation-direction:reverse; bottom:0; }
-@keyframes walk-across { from { left:-12%; } to { left:104%; } }
-@media (prefers-reduced-motion: reduce) { .street-walker, .street-vehicle { animation:none; left:40%; } }
+.street-walker { height:16%; bottom:16%; }
+.walker-0 { left:12%; }
+.walker-1 { left:34%; bottom:20%; }
+.walker-2 { left:58%; bottom:12%; }
+.walker-3 { left:78%; bottom:24%; }
+.street-vehicle { height:14%; bottom:4%; }
+.vehicle-0 { left:8%; }
+.vehicle-1 { left:55%; bottom:0; }
 .cafe-loadout { margin-top:16px; }
 .loadout-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }
 .loadout-grid button { display:flex; flex-direction:column; align-items:center; gap:2px; min-height:44px; padding:6px 2px; border-radius:12px; background:var(--card); border:1px solid var(--border); }
