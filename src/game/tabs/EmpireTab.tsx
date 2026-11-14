@@ -26,7 +26,7 @@ export function EmpireTab() {
       </Section>
       <Section title="Röstereien">
         {state.roasteries.map((r) => <Panel key={r.id}><div className="flex items-center gap-3 text-sm"><Factory className="h-6 w-6 text-primary" /><span className="flex-1 font-semibold">Rösterei {name(r.cityId)}</span><span className="text-muted-foreground">{r.capacity} kg/Woche</span></div></Panel>)}
-        <Button className="w-full" variant="outline" disabled={state.cash < 150000} onClick={() => set((s) => actions.buildRoastery(s, CITIES[0].id))}><Factory /> Rösterei bauen ({eur(150000)})</Button>
+        <Button className="w-full" variant="outline" disabled={state.cash < 150000} onClick={() => set((s) => actions.buildRoastery(s, CITIES[0]!.id))}><Factory /> Rösterei bauen ({eur(150000)})</Button>
       </Section>
       <Section title="Upgrades"><Empty>Upgrade-Baum folgt mit dem Content-JSON.</Empty></Section>
       <Section title="Ereignisse">
