@@ -15,7 +15,7 @@ export const beanArt = (beanId: string) => art('beans', BEAN_SACKS[beanId] ?? 16
 export const b2bPartnerArt = (i: number) => art('partners', i % 10);
 export const startupArt = (i: number) => art('partners', 10 + (i % 12));
 export const rivalArt = (i: number) => art('partners', 22 + (i % 12));
-export const staffArt = (role: string, i = 0) => art('people', role === 'manager' ? 2 : [0, 1][i % 2]);
+export const staffArt = (role: string, i = 0) => art('people', role === 'manager' ? 2 : i % 2);
 
 const EVENT_CARDS: [RegExp, number][] = [
   [/frost|kälte|schnee/i, 12], [/hafen|schiff|liefer|container|streik/i, 13], [/viral|social|hype|influenc|tiktok/i, 14],
