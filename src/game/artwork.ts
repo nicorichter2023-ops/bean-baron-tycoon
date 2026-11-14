@@ -71,6 +71,6 @@ export function getCityArtwork(city: Pick<City, "id" | "name" | "biome" | "landm
     alt: landmark ? `${city.name} – ${landmark.label}` : `${city.name} – ${BIOME_LABEL[city.biome]}`,
     label: landmark?.label ?? city.landmarkName,
     isLandmark: Boolean(landmark),
-    badge: `/assets/badges/${city.id}.webp`,
+    badge: landmark ? `/assets/badges/${city.id}.webp` : getStoreArtwork(city.biome, 3),
   };
 }

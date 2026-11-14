@@ -1,4 +1,5 @@
 import rawContent from "./gameContent.json";
+import { MASTER_CITIES, MASTER_STARTUPS, MASTER_STOCKS } from './master';
 import type {
   BeanVariety,
   Biome,
@@ -63,7 +64,7 @@ const slugify = (value: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 
-export const CITIES: City[] = GAME_CONTENT.cities.map((city) => ({
+export const LEGACY_CITIES: City[] = GAME_CONTENT.cities.map((city) => ({
   id: city.id,
   name: city.name,
   country: city.country,
@@ -85,11 +86,13 @@ export const CITIES: City[] = GAME_CONTENT.cities.map((city) => ({
   }),
 }));
 
+export const CITIES = MASTER_CITIES;
+
 export const BEAN_VARIETIES: BeanVariety[] = GAME_CONTENT.beanVarieties;
 export const GAME_EVENTS: GameEvent[] = GAME_CONTENT.events;
 
 const SUCCESS_CHANCE: Record<RiskClass, number> = { low: 72, medium: 52, high: 34, moonshot: 18 };
-export const STARTUPS: StartupInvestment[] = GAME_CONTENT.startups.map((startup) => ({
+export const LEGACY_STARTUPS: StartupInvestment[] = GAME_CONTENT.startups.map((startup) => ({
   ...startup,
   riskClass: startup.riskLevel,
   investedAmount: 0,
@@ -100,9 +103,10 @@ export const STARTUPS: StartupInvestment[] = GAME_CONTENT.startups.map((startup)
   acquired: false,
   acquiredAtWeek: null,
 }));
+export const STARTUPS = MASTER_STARTUPS;
 
 const totalMarketCap = GAME_CONTENT.publicCompanies.reduce((sum, company) => sum + company.marketCap, 0);
-export const PUBLIC_COMPANIES: RivalCompany[] = GAME_CONTENT.publicCompanies.map((company, index) => ({
+export const PUBLIC_COMPANIES: RivalCompany[] = GAME_CONTENT.publicCompanies.map<RivalCompany>((company, index) => ({
   id: company.id,
   name: company.name,
   ticker: company.ticker,
@@ -116,4 +120,4 @@ export const PUBLIC_COMPANIES: RivalCompany[] = GAME_CONTENT.publicCompanies.map
   strategicSynergy: 30 + ((index * 17) % 55),
   acquired: false,
   acquiredAtWeek: null,
-}));
+})).concat(MASTER_STOCKS);

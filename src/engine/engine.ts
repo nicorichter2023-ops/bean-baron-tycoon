@@ -4,6 +4,8 @@
 // ============================================================
 
 import { createEquipment, equipmentEffects, equipmentOf } from './equipment';
+import { MASTER, buildingById } from '@/data/master';
+import { locationEffects, worldEffects } from './world';
 
 import type {
   ActionResult,
@@ -31,7 +33,7 @@ import type {
 // -----------------------------------------------------------
 
 export const GAME_CONFIG = {
-  SCHEMA_VERSION: 4 as const,
+  SCHEMA_VERSION: 5 as const,
   START_CASH: 50_000,
   STORE_OPENING_COST: { 1: 12_000, 2: 55_000, 3: 180_000 } as Record<StoreTier, number>,
   STORE_UPGRADE_COST: { 2: 45_000, 3: 160_000 } as Record<2 | 3, number>,
@@ -277,6 +279,7 @@ function processStore(
   district: District,
   city: City,
   availableRoastedKg: number | null,
+  game: GameState,
 ): { store: Store; result: StoreResult } {
   const tier = store.tier;
   const staff = store.employees;
@@ -285,9 +288,10 @@ function processStore(
   const avgSkill = average(staff.map((e) => e.skill));
   const managers = staff.filter((e) => e.role === 'manager').length;
   const equipment = equipmentEffects(store);
+  const location = locationEffects(game, district.id), upgrades = worldEffects(game);
 
   // Qualitätsdrift Richtung Zielniveau (Personal, Management, Tier)
-  const targetQuality = equipment.maxQuality ? 100 : clamp(35 + avgSkill * 0.5 + managers * 4 + tier * 4 + equipment.quality + equipment.satisfaction, 0, 100);
+  const targetQuality = equipment.maxQuality ? 100 : clamp(35 + avgSkill * 0.5 + managers * 4 + tier * 4 + equipment.quality + equipment.satisfaction + location.quality + upgrades.quality, 0, 100);
   const qualityIndex = round2(
     clamp(store.qualityIndex + (targetQuality - store.qualityIndex) * 0.12, 0, 100),
   );
@@ -301,13 +305,15 @@ function processStore(
   );
   const cultureBoost = 1 + clamp(city.coffeeCultureIndex, 0, 100) / 400;
   const capacity =
-    (GAME_CONFIG.TIER_CAPACITY[tier] ?? 0) * staffingRatio * (1 + avgSkill / 600) * cultureBoost * equipment.capacity;
+    (GAME_CONFIG.TIER_CAPACITY[tier] ?? 0) * staffingRatio * (1 + avgSkill / 600) * cultureBoost * equipment.capacity * location.capacity * upgrades.capacity;
 
-  let served = Math.max(0, Math.min(Math.round(rawDemand * equipment.demand), Math.floor(capacity)));
+  const policyBoost = game.world.assets.filter(a => a.kind === 'policy' && a.cityId === city.id && a.endWeek > game.week).reduce((n, a) => n + ((MASTER.cityPolitics.find(p => p.id === a.id) as { revenueBuff?: number } | undefined)?.revenueBuff ?? 0), 0);
+  const celebrityBoost = game.world.assets.filter(a => a.kind === 'celebrity' && a.endWeek > game.week).reduce((n, a) => n + (MASTER.celebrityEndorsements.find(p => p.id === a.id)?.clienteleBoost ?? 0), 0);
+  let served = Math.max(0, Math.min(Math.round(rawDemand * equipment.demand * location.demand * upgrades.demand * (1 + policyBoost + celebrityBoost)), Math.floor(capacity)));
   let stockLimited = false;
   if (availableRoastedKg !== null) {
     // Bohnen-Limit: 18 g Röstkaffee pro Tasse
-    const beanLimited = Math.floor(Math.max(0, availableRoastedKg) / (GAME_CONFIG.KG_PER_CUP * equipment.beanFactor));
+    const beanLimited = Math.floor(Math.max(0, availableRoastedKg) / (GAME_CONFIG.KG_PER_CUP * equipment.beanFactor * upgrades.beanFactor));
     if (beanLimited < served) stockLimited = true;
     served = Math.max(0, Math.min(served, beanLimited));
   }
@@ -315,7 +321,7 @@ function processStore(
   const revenue = round2(served * Math.max(0, store.pricePerCup));
   const salaries = round2(staff.reduce((sum, e) => sum + Math.max(0, e.salaryWeekly), 0));
   const rent = round2(
-    Math.max(0, district.rentWeekly) * (GAME_CONFIG.TIER_RENT_FACTOR[tier] ?? 1),
+    Math.max(0, district.rentWeekly) * (store.propertyBookValue ? 0 : buildingById(district.id) ? 1 : (GAME_CONFIG.TIER_RENT_FACTOR[tier] ?? 1)),
   );
 
   return {
@@ -330,7 +336,7 @@ function processStore(
       salaries,
       rent,
       servedCustomers: served,
-      beansConsumedKg: round2(served * GAME_CONFIG.KG_PER_CUP * equipment.beanFactor),
+      beansConsumedKg: round2(served * GAME_CONFIG.KG_PER_CUP * equipment.beanFactor * upgrades.beanFactor),
       stockLimited,
     },
   };
@@ -465,7 +471,7 @@ function processCapitalMarkets(
   const startups: StartupInvestment[] = cm.startups.map((s) => {
     if (s.status !== 'active' || s.investedAmount <= 0) return s;
     const rng = mulberry32(hashSeed(week * 104729 + hashString(s.id)));
-    if (rng() >= GAME_CONFIG.STARTUP_RESOLUTION_HAZARD) return s;
+    if (s.exitWeeks ? week - s.investedAtWeek < s.exitWeeks : rng() >= GAME_CONFIG.STARTUP_RESOLUTION_HAZARD) return s;
     const succeeded = rng() * 100 < clamp(s.successChance, 0, 100);
     if (succeeded) {
       const payout = round2(s.investedAmount * Math.max(1, s.payoutMultiple));
@@ -546,7 +552,7 @@ export function calculateAssetValuation(state: GameState): number {
   const storeValue = state.stores.reduce(
     (sum, s) =>
       sum +
-      (GAME_CONFIG.TIER_BASE_VALUE[s.tier] ?? 0) * (0.5 + clamp(s.qualityIndex, 0, 100) / 100) + equipmentOf(s).bookValue,
+      (GAME_CONFIG.TIER_BASE_VALUE[s.tier] ?? 0) * (0.5 + clamp(s.qualityIndex, 0, 100) / 100) + equipmentOf(s).bookValue + (s.propertyBookValue ?? 0),
     0,
   );
   const futures = Math.max(0, finiteOr(state.market.futuresPricePerKg, 0));
@@ -586,6 +592,7 @@ export function calculateAssetValuation(state: GameState): number {
       startupBookValue +
       stockValue +
       acquiredRivalValue +
+      (state.world?.assets.reduce((n, a) => n + a.bookValue, 0) ?? 0) +
       b2bValue +
       brandValue -
       state.debt,
@@ -667,7 +674,7 @@ function finalizeAction(state: GameState): GameState {
 }
 
 export function storeOpeningCost(district: District, tier: StoreTier): number {
-  return Math.round(GAME_CONFIG.STORE_OPENING_COST[tier] + district.rentWeekly * GAME_CONFIG.TIER_RENT_FACTOR[tier] * 2);
+  return Math.round(GAME_CONFIG.STORE_OPENING_COST[tier] + district.rentWeekly * (buildingById(district.id) ? 1 : GAME_CONFIG.TIER_RENT_FACTOR[tier]) * 2);
 }
 
 export function openStore(
@@ -675,16 +682,20 @@ export function openStore(
   cityId: string,
   districtId: string,
   tier: StoreTier,
+  purchase = false,
 ): ActionResult {
   const city = state.cities.find((candidate) => candidate.id === cityId);
   const district = city?.districts.find((candidate) => candidate.id === districtId);
   if (!city || !district) return rejected(state, 'DISTRICT_NOT_FOUND');
+  if (state.world?.occupants[districtId]) return rejected(state, 'Dieser Standort gehört einem Konkurrenten.');
   if (state.stores.some((store) => store.districtId === districtId)) return rejected(state, 'DISTRICT_OCCUPIED');
   if (tier > district.maxStoreTier) return rejected(state, 'TIER_NOT_ALLOWED');
-  const cost = storeOpeningCost(district, tier);
+  const building = buildingById(districtId);
+  const cost = purchase && building ? GAME_CONFIG.STORE_OPENING_COST[tier] + building.purchasePrice : storeOpeningCost(district, tier);
   if (state.cash < cost) return rejected(state, 'INSUFFICIENT_CASH');
   const store: Store = {
     equipment: createEquipment(),
+    propertyBookValue: purchase && building ? building.purchasePrice : 0,
     id: `store-${state.week}-${state.stores.length + 1}`,
     cityId,
     name: `${tier === 1 ? 'Kiosk' : tier === 2 ? 'Café' : 'Flagship'} ${district.name}`,
@@ -733,12 +744,13 @@ export function hireEmployee(state: GameState, storeId: string, role: 'barista' 
   if (!store) return rejected(state, 'STORE_NOT_FOUND');
   const seed = hashSeed(state.week * 8191 + hashString(storeId) + store.employees.length * 131 + (role === 'manager' ? 17 : 0));
   const skill = 35 + (seed % 56);
-  const salaryWeekly = role === 'manager' ? 900 + skill * 9 : 420 + skill * 6;
+  const wageIndex = (MASTER.storeHrStandards.cityWageIndex as Record<string, number>)[store.cityId] ?? 1;
+  const salaryWeekly = Math.round((role === 'manager' ? 900 + skill * 9 : 420 + skill * 6) * wageIndex);
   if (state.cash < salaryWeekly) return rejected(state, 'INSUFFICIENT_CASH');
   const names = role === 'manager' ? MANAGER_NAMES : BARISTA_NAMES;
   const employee: Employee = {
     id: `emp-${state.week}-${storeId}-${store.employees.length + 1}-${role}`,
-    name: names[seed % names.length]!,
+    name: names[seed % names.length] ?? 'Alex',
     role,
     skill,
     salaryWeekly,
@@ -866,6 +878,7 @@ export function acquireRival(state: GameState, companyId: string, offeredPrice: 
       ...state,
       cash: round2(state.cash - offeredPrice),
       brandReputation: clamp(state.brandReputation + 5, 0, 100),
+      world: { ...state.world, occupants: Object.fromEntries(Object.entries(state.world.occupants).filter(([, occupant]) => occupant !== companyId)) },
       capitalMarkets: {
         ...state.capitalMarkets,
         holdings: state.capitalMarkets.holdings.filter((holding) => holding.companyId !== companyId),
@@ -1078,6 +1091,7 @@ export function processTurn(state: GameState): GameState {
       district,
       storeCity,
       ownRoasteryActive ? roastedPool : null,
+      state,
     );
     if (ownRoasteryActive) {
       roastedPool = round2(Math.max(0, roastedPool - result.beansConsumedKg));
@@ -1168,7 +1182,7 @@ export function processTurn(state: GameState): GameState {
   const avgQuality = average(stores.map((s) => s.qualityIndex));
   const prestige = capitalMarkets.luxuryGoods
     .filter((l) => l.owned)
-    .reduce((sum, l) => sum + l.prestigeBonus, 0) + average(stores.map(s => equipmentEffects(s).prestige));
+    .reduce((sum, l) => sum + l.prestigeBonus, 0) + average(stores.map(s => equipmentEffects(s).prestige + locationEffects(state, s.districtId).prestige));
   const targetReputation = clamp(avgQuality * 0.8 + Math.min(20, prestige * 0.5), 0, 100);
   const brandReputation = round2(
     clamp(state.brandReputation + (targetReputation - state.brandReputation) * 0.05, 0, 100),
@@ -1226,6 +1240,7 @@ export function processTurn(state: GameState): GameState {
   return {
     schemaVersion: GAME_CONFIG.SCHEMA_VERSION,
     management: state.management,
+    world: state.world,
     week,
     dateIso,
     cash,

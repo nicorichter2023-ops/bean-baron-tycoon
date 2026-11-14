@@ -36,7 +36,7 @@ describe("Coffee Empire Inhalte und Spieleraktionen", () => {
     const state = createInitialState();
     expect(state.cities).toHaveLength(20);
     expect(state.market.beanVarieties).toHaveLength(20);
-    expect(state.capitalMarkets.rivals).toHaveLength(15);
+    expect(state.capitalMarkets.rivals).toHaveLength(19);
     expect(state.capitalMarkets.startups).toHaveLength(20);
     expect(state.eventDeck).toHaveLength(60);
   });
@@ -44,7 +44,7 @@ describe("Coffee Empire Inhalte und Spieleraktionen", () => {
   it("eröffnet und erweitert eine Filiale in einer beliebigen Stadt", () => {
     const state = unlockedState();
     const city = state.cities.find((item) => item.id === "tokio")!;
-    const district = city.districts.find((item) => item.maxStoreTier >= 2)!;
+    const district = city.districts.find((item) => item.maxStoreTier >= 2 && !state.world.occupants[item.id])!;
     const opened = openStore(state, city.id, district.id, 1);
     expect(opened.ok).toBe(true);
     expect(opened.state.stores.at(-1)?.cityId).toBe("tokio");
@@ -141,7 +141,7 @@ describe("Coffee Empire Inhalte und Spieleraktionen", () => {
     const turned = processTurn(createInitialState());
     saveGame(turned);
     const loaded = loadGame();
-    expect(loaded.schemaVersion).toBe(4);
+    expect(loaded.schemaVersion).toBe(5);
     expect(loaded.week).toBe(2);
     expect(loaded.pendingEvent?.id).toBe(turned.pendingEvent?.id);
   });

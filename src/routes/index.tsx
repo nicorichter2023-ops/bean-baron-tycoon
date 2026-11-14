@@ -14,14 +14,15 @@ import { SectionFilter } from '@/game/ui';
 import { HQPanel } from '@/game/HQPanel';
 import { AccountingPanel } from '@/game/AccountingPanel';
 import { LabPanel } from '@/game/LabPanel';
+import { MasterCatalog } from '@/game/MasterCatalog';
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Coffee Empire – Kaffee-Tycoon" },
-      { name: "description", content: "Baue dein Kaffee-Imperium: Cafés, Röstereien, Bohnenmarkt, B2B und Finanzen." },
+      { name: "description", content: "Baue dein Kaffee-Imperium in 20 Städten mit 600 Standorten, Flughafenreisen, Rivalen und Konzernforschung." },
       { property: "og:title", content: "Coffee Empire – Kaffee-Tycoon" },
-      { property: "og:description", content: "Mobiles Tycoon-Spiel rund um Kaffee." },
+      { property: "og:description", content: "600 Standorte, Stadtviertel, Konkurrenz und internationale Expansion in Coffee Empire." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -37,7 +38,7 @@ const TABS = [
 ] as const;
 const SECTIONS = {
   empire: [['stores', 'Filialen'], ['new', 'Eröffnen'], ['cafe', 'Café'], ['roastery', 'Rösterei']],
-  hq: [['hq', 'HQ & Leitung'], ['lab', 'Labor & Marketing'], ['startups', 'Startups'], ['holding', 'Holding']],
+  hq: [['hq', 'HQ & Leitung'], ['development', 'Entwicklung'], ['lab', 'Labor & Marketing'], ['startups', 'Startups'], ['holding', 'Holding']],
   finance: [['accounting', 'Accounting'], ['bank', 'Bank'], ['stocks', 'Aktien & M&A'], ['market', 'Bohnenmarkt'], ['b2b', 'B2B']],
 } as const;
 
@@ -51,7 +52,7 @@ function GameWorld() {
   const [section, setSection] = useState('stores');
   useEffect(() => { if ('serviceWorker' in navigator && import.meta.env.PROD) navigator.serviceWorker.register('/sw.js').catch(() => undefined); }, []);
   const destinations: Place[] = section === 'roastery' ? ['roastery', 'port', 'exchange', 'farm'] : ['cafe', 'terrace'];
-  const content = section === 'hq' ? <HQPanel /> : section === 'accounting' ? <AccountingPanel /> : section === 'lab' ? <LabPanel />
+  const content = section === 'development' ? <MasterCatalog /> : section === 'hq' ? <HQPanel /> : section === 'accounting' ? <AccountingPanel /> : section === 'lab' ? <LabPanel />
     : section === 'cafe' || section === 'roastery' ? <SceneView place={place} onPlace={setPlace} destinations={destinations} />
     : <SectionFilter.Provider value={section === 'stores' ? ['Filialen'] : section === 'new' ? ['Neue Filiale'] : section === 'holding' ? ['Holding', 'Letzte Woche'] : section === 'startups' ? ['VC-Startups'] : section === 'bank' ? ['Bankkredit'] : section === 'stocks' ? ['Aktienmarkt'] : section === 'market' ? ['Kaffee-Futures', 'Bohnen einkaufen'] : ['B2B-Vertrag', 'Aktive Lieferverträge']}>
       {tab === 'empire' || section === 'holding' ? <EmpireTab /> : section === 'market' || section === 'b2b' ? <MarketTab /> : <FinanceTab />}

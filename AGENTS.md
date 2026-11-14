@@ -36,3 +36,5 @@ use the editor.
 - New uploaded media is served through asset JSON pointers; sprite atlases use a 4×4 grid to limit requests and keep scene composition browser-safe.
 - Register the public offline service worker only in production; cache only successful same-origin public GET assets and navigations, never authenticated requests or API responses.
 - Sheet artwork is cut into public/assets/sheets/<sheet>/<index>.webp and referenced only through src/game/sheetArt.ts index maps, so re-cutting a sheet needs edits in one place.
+- Preserve the complete uploaded master JSON in src/data; adapters expose engine units, while world.ts owns persisted travel, research, property occupancy and catalog actions so city UI never mutates economic rules.
+- City maps use existing indexed artwork with react-zoom-pan-pinch and deterministic per-city property placement; old owned locations remain in migrated saves instead of being reassigned to new leases.
