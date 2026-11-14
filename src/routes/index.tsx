@@ -7,6 +7,7 @@ import { EmpireTab } from "@/game/tabs/EmpireTab";
 import { MapTab } from "@/game/tabs/MapTab";
 import { MarketTab } from "@/game/tabs/MarketTab";
 import { FinanceTab } from "@/game/tabs/FinanceTab";
+import { EventDialog } from "@/game/EventDialog";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -36,6 +37,7 @@ function Game() {
     <GameProvider>
       <div className="mx-auto min-h-dvh max-w-md bg-background">
         <TopBar />
+        <EventDialog />
         <main className="px-3 pb-28 pt-[calc(5.5rem+env(safe-area-inset-top))]"><Active /></main>
         <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card/95 backdrop-blur pb-[env(safe-area-inset-bottom)]">
           <div className="mx-auto grid max-w-md grid-cols-4">

@@ -1,18 +1,56 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { loadGame, processTurn, saveGame, type GameState } from "@/engine";
+import { toast } from "sonner";
+import { loadGame, processTurn, saveGame, type ActionResult, type GameState } from "@/engine";
 import { createInitialState } from "@/data";
+import { translateEngineNote } from "./logMessages";
 
-type Ctx = { state: GameState; set: (fn: (s: GameState) => GameState) => void; nextWeek: () => void; loaded: boolean };
+type Ctx = {
+  state: GameState;
+  set: (fn: (state: GameState) => GameState) => void;
+  perform: (action: (state: GameState) => ActionResult) => void;
+  nextWeek: () => void;
+  loaded: boolean;
+};
+
 const GameCtx = createContext<Ctx | null>(null);
 
 export function GameProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<GameState>(createInitialState);
   const [loaded, setLoaded] = useState(false);
-  useEffect(() => { setState(loadGame()); setLoaded(true); }, []);
-  const set = (fn: (s: GameState) => GameState) => setState((s) => { const n = fn(s); saveGame(n); return n; });
-  const nextWeek = () => set(processTurn); // Autosave bei jedem Rundenwechsel
-  return <GameCtx.Provider value={{ state, set, nextWeek, loaded }}>{children}</GameCtx.Provider>;
+
+  useEffect(() => {
+    setState(loadGame());
+    setLoaded(true);
+  }, []);
+
+  const set = (fn: (current: GameState) => GameState) => setState((current) => {
+    const next = fn(current);
+    saveGame(next);
+    return next;
+  });
+
+  const perform = (action: (current: GameState) => ActionResult) => setState((current) => {
+    const result = action(current);
+    if (result.ok) saveGame(result.state);
+    const message = translateEngineNote(result.reason);
+    if (result.ok) toast.success(message);
+    else toast.error(message);
+    return result.state;
+  });
+
+  const nextWeek = () => set(processTurn);
+  return <GameCtx.Provider value={{ state, set, perform, nextWeek, loaded }}>{children}</GameCtx.Provider>;
 }
-export function useGame() { const c = useContext(GameCtx); if (!c) throw new Error("no GameProvider"); return c; }
-export const eur = (n: number) => n.toLocaleString("de-DE", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
-export const compact = (n: number) => { const a = Math.abs(n); const f = (v: number, u: string) => `${v.toLocaleString("de-DE", { maximumFractionDigits: 1 })} ${u}€`; return a >= 1e9 ? f(n / 1e9, "Mrd ") : a >= 1e6 ? f(n / 1e6, "Mio ") : a >= 1e3 ? f(n / 1e3, "Tsd ") : f(Math.round(n), ""); };
+
+export function useGame() {
+  const context = useContext(GameCtx);
+  if (!context) throw new Error("GameProvider fehlt");
+  return context;
+}
+
+export const eur = (value: number) => value.toLocaleString("de-DE", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
+export const compact = (value: number) => {
+  const absolute = Math.abs(value);
+  const format = (amount: number, unit: string) => `${amount.toLocaleString("de-DE", { maximumFractionDigits: 1 })} ${unit}€`;
+  return absolute >= 1e9 ? format(value / 1e9, "Mrd ") : absolute >= 1e6 ? format(value / 1e6, "Mio ") : absolute >= 1e3 ? format(value / 1e3, "Tsd ") : format(Math.round(value), "");
+};

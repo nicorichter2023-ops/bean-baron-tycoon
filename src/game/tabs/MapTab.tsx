@@ -1,27 +1,47 @@
 import { useState } from "react";
-import { MapPin } from "lucide-react";
-import { CITIES } from "@/data";
-import { useGame } from "../GameContext";
+import { MapPin, Store } from "lucide-react";
+import { openStore } from "@/engine";
+import { Button } from "@/components/ui/button";
+import { eur, useGame } from "../GameContext";
 import { Panel, Section } from "../ui";
 
 const BIOME: Record<string, string> = { european_classic: "Europäisch klassisch", modern_industrial: "Modern industriell", asian_zen: "Asiatisch Zen", tropical_colonial: "Tropisch kolonial" };
+const selectClass = "h-9 min-w-0 flex-1 rounded-md border border-input bg-background px-2 text-xs text-foreground";
 
 export function MapTab() {
-  const { state } = useGame();
-  const [biome, setBiome] = useState<string | null>(null);
-  const biomes = Array.from(new Set(CITIES.map((c) => c.biome)));
-  const cls = (a: boolean) => `shrink-0 rounded-full border px-3 py-1 text-xs ${a ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-muted-foreground"}`;
+  const { state, set, perform } = useGame();
+  const [biome, setBiome] = useState("all");
+  const [country, setCountry] = useState("all");
+  const biomes = Array.from(new Set(state.cities.map((city) => city.biome)));
+  const countries = Array.from(new Set(state.cities.map((city) => city.country))).sort((a, b) => a.localeCompare(b, "de"));
+  const cities = state.cities.filter((city) => (biome === "all" || city.biome === biome) && (country === "all" || city.country === country));
+
   return (
-    <Section title="Weltkarte">
-      <div className="mb-2 flex gap-2 overflow-x-auto pb-1"><button className={cls(!biome)} onClick={() => setBiome(null)}>Alle Biome</button>{biomes.map((b) => <button key={b} className={cls(biome === b)} onClick={() => setBiome(b)}>{BIOME[b]}</button>)}</div>
-      {CITIES.filter((c) => !biome || c.biome === biome).map((c) => (
-        <Panel key={c.id}>
-          <div className="flex items-start gap-3"><MapPin className="mt-0.5 h-6 w-6 text-primary" />
-            <div className="flex-1 text-sm">
-              <div className="font-semibold">{c.name} {state.city.id === c.id && <span className="ml-1 text-xs text-primary">· Heimatstadt</span>}</div>
-              <div className="text-xs text-muted-foreground">{BIOME[c.biome]} · Kaufkraft {c.purchasingPower.toFixed(1)}× · Kaffeekultur {c.coffeeCultureIndex}</div>
-              <ul className="mt-2 space-y-1 text-xs">{c.districts.map((d) => <li key={d.id} className="flex justify-between"><span>{d.name}</span><span className="text-muted-foreground">Laufkundschaft {d.footTraffic} · Miete {d.rentWeekly} €/Wo</span></li>)}</ul>
-            </div></div>
+    <Section title={`Weltkarte · ${cities.length} ${cities.length === 1 ? "Stadt" : "Städte"}`}>
+      <div className="mb-3 flex gap-2">
+        <select aria-label="Nach Biom filtern" className={selectClass} value={biome} onChange={(event) => setBiome(event.target.value)}>
+          <option value="all">Alle Biome</option>{biomes.map((value) => <option key={value} value={value}>{BIOME[value]}</option>)}
+        </select>
+        <select aria-label="Nach Land filtern" className={selectClass} value={country} onChange={(event) => setCountry(event.target.value)}>
+          <option value="all">Alle Länder</option>{countries.map((value) => <option key={value} value={value}>{value}</option>)}
+        </select>
+      </div>
+      {cities.map((city) => (
+        <Panel key={city.id}>
+          <button className="mb-2 flex w-full items-start gap-3 text-left" onClick={() => set((current) => ({ ...current, city }))}>
+            <MapPin className="mt-0.5 h-6 w-6 shrink-0 text-primary" />
+            <span className="flex-1 text-sm"><span className="block font-semibold">{city.name}, {city.country} {state.city.id === city.id && <span className="ml-1 text-xs text-primary">· ausgewählt</span>}</span>
+              <span className="block text-xs text-muted-foreground">{city.landmarkName} · {BIOME[city.biome]}</span>
+              <span className="block text-xs text-muted-foreground">Kaufkraft {city.purchasingPower.toFixed(2)}× · Kaffeekultur {city.coffeeCultureIndex}</span></span>
+          </button>
+          <ul className="space-y-2 border-t border-border pt-2">{city.districts.map((district) => {
+            const occupied = state.stores.some((store) => store.districtId === district.id);
+            return <li key={district.id} className="text-xs">
+              <div className="flex justify-between gap-2"><span className="font-medium">{district.name}</span><span className="text-muted-foreground">{eur(district.rentWeekly)}/Wo</span></div>
+              <div className="mt-1 flex items-center justify-between gap-2"><span className="text-muted-foreground">Laufkundschaft {district.footTraffic} · max. Stufe {district.maxStoreTier}</span>
+                <Button size="sm" variant="ghost" className="h-7 px-2" disabled={occupied} onClick={() => perform((current) => openStore(current, city.id, district.id, 1))}><Store /> {occupied ? "Belegt" : "Kiosk"}</Button></div>
+            </li>;
+          })}</ul>
         </Panel>
       ))}
     </Section>

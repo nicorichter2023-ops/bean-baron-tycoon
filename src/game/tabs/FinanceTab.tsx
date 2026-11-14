@@ -1,24 +1,54 @@
-import { Banknote, LineChart, Lock, RotateCcw } from "lucide-react";
+import { useState } from "react";
+import { Banknote, Building, LineChart, Lock, RotateCcw, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { resetGame } from "@/engine";
+import { acquireRival, acquireStartup, buyShares, investInStartup, repayLoan, resetGame, sellShares, takeLoan } from "@/engine";
 import { createInitialState } from "@/data";
 import { eur, useGame } from "../GameContext";
 import { Empty, Panel, Section } from "../ui";
 
+const inputClass = "h-9 w-full rounded-md border border-input bg-background px-3 font-mono text-sm text-foreground";
+const RISK = { low: "Niedrig", medium: "Mittel", high: "Hoch", moonshot: "Moonshot" } as const;
+
 export function FinanceTab() {
-  const { state, set } = useGame();
-  const cm = state.capitalMarkets;
+  const { state, set, perform } = useGame();
+  const [loanAmount, setLoanAmount] = useState("10000");
+  const marketsUnlocked = state.unlockedModules.includes("capital_markets");
+  const amount = Number(loanAmount);
+
   return (
     <>
-      <Section title="Kredite">
+      <Section title="Bankkredit">
         <Panel><div className="flex items-center gap-3 text-sm"><Banknote className="h-6 w-6 text-primary" />
-          <div className="flex-1"><div className="font-semibold">Schulden {eur(state.debt)}</div><div className="text-xs text-muted-foreground">Zins {(state.weeklyInterestRate * 100).toFixed(2)}% pro Woche</div></div></div></Panel>
+          <div className="flex-1"><div className="font-semibold">Schulden {eur(state.debt)}</div><div className="text-xs text-muted-foreground">Zins {(state.weeklyInterestRate * 100).toFixed(2)}% pro Woche · Rahmen bis {eur(Math.max(250000, state.companyValuation))}</div></div></div>
+          <label className="mt-3 block text-xs text-muted-foreground">Betrag in Euro<input aria-label="Kreditbetrag" type="number" min="1" step="1000" className={`${inputClass} mt-1`} value={loanAmount} onChange={(event) => setLoanAmount(event.target.value)} /></label>
+          <div className="mt-2 grid grid-cols-2 gap-2"><Button onClick={() => perform((current) => takeLoan(current, amount))}>Aufnehmen</Button><Button variant="outline" onClick={() => perform((current) => repayLoan(current, amount))}>Tilgen</Button></div>
+        </Panel>
       </Section>
-      <Section title="Aktienmarkt & VC">
-        {!state.unlockedModules.includes("capital_markets") ? <Empty><Lock className="mx-auto mb-1 h-4 w-4" />Kapitalmarkt wird später freigeschaltet.</Empty> : (
-          <Panel><div className="flex items-center gap-3 text-sm"><LineChart className="h-6 w-6 text-primary" /><span>{cm.isPublic ? `Aktie ${cm.sharePrice.toFixed(2)} € · Börsenwert ${eur(cm.marketCap)}` : "Noch nicht börsennotiert"} · {cm.startups.length} Startups</span></div></Panel>
-        )}
+
+      <Section title={`Aktienmarkt · ${state.capitalMarkets.rivals.length} Firmen`}>
+        {!marketsUnlocked && <Empty><Lock className="mx-auto mb-1 h-4 w-4" />Handel und Übernahmen ab Firmenwert {eur(15_000_000)}. Alle Kurse sind bereits sichtbar.</Empty>}
+        {state.capitalMarkets.rivals.map((company) => {
+          const holding = state.capitalMarkets.holdings.find((item) => item.companyId === company.id);
+          return <Panel key={company.id}>
+            <div className="flex items-start gap-3"><LineChart className="mt-0.5 h-5 w-5 shrink-0 text-primary" /><div className="min-w-0 flex-1 text-sm"><div className="font-semibold">{company.name}</div><div className="text-xs text-muted-foreground">{company.ticker} · {company.sharePrice.toFixed(2)} € · Dividende {(company.dividendYield * 100).toFixed(1)}% p.a.</div></div>{holding && <span className="text-xs font-mono">{holding.shares} Stk.</span>}</div>
+            <p className="mt-1 text-xs text-muted-foreground">{company.description}</p>
+            {company.acquired ? <p className="mt-2 text-xs font-semibold text-success">Zum Imperium gehörig</p> : <>
+              <div className="mt-2 grid grid-cols-2 gap-2"><Button size="sm" variant="outline" disabled={!marketsUnlocked} onClick={() => perform((current) => buyShares(current, company.id, 1))}>1 Aktie kaufen</Button><Button size="sm" variant="outline" disabled={!marketsUnlocked || !holding} onClick={() => perform((current) => sellShares(current, company.id, 1))}>1 Aktie verkaufen</Button></div>
+              <Button size="sm" variant="ghost" className="mt-1 w-full text-xs" disabled={!marketsUnlocked} onClick={() => perform((current) => acquireRival(current, company.id, Math.round(company.valuation * 1.45)))}><Building /> Übernehmen · {eur(company.valuation * 1.45)}</Button>
+            </>}
+          </Panel>;
+        })}
       </Section>
+
+      <Section title={`VC-Startups · ${state.capitalMarkets.startups.length}`}>
+        {state.capitalMarkets.startups.map((startup) => <Panel key={startup.id}>
+          <div className="flex items-start gap-3"><Rocket className="mt-0.5 h-5 w-5 shrink-0 text-primary" /><div className="min-w-0 flex-1 text-sm"><div className="font-semibold">{startup.name}</div><div className="text-xs text-muted-foreground">{startup.sector} · Risiko {RISK[startup.riskClass]} · Chance {startup.successChance}%</div></div></div>
+          <div className="mt-1 text-xs text-muted-foreground">Bewertung {eur(startup.valuation)} · Finanzierung {eur(startup.requiredFunding)} · Auszahlung ×{startup.payoutMultiple}</div>
+          {startup.investedAmount > 0 && <div className="mt-1 text-xs text-primary">Investiert: {eur(startup.investedAmount)} · {startup.status === "active" ? "aktiv" : startup.status === "succeeded" ? "erfolgreich" : "gescheitert"}</div>}
+          {startup.acquired ? <p className="mt-2 text-xs font-semibold text-success">Vollständig übernommen</p> : <div className="mt-2 grid grid-cols-2 gap-2"><Button size="sm" variant="outline" disabled={!marketsUnlocked || startup.status !== "active"} onClick={() => perform((current) => investInStartup(current, startup.id, startup.requiredFunding))}>Finanzieren</Button><Button size="sm" variant="outline" disabled={!marketsUnlocked} onClick={() => perform((current) => acquireStartup(current, startup.id))}>Übernehmen</Button></div>}
+        </Panel>)}
+      </Section>
+
       <Button variant="ghost" className="w-full text-muted-foreground" onClick={() => { if (confirm("Spielstand wirklich löschen?")) { resetGame(); set(() => createInitialState()); } }}><RotateCcw /> Neues Spiel</Button>
     </>
   );

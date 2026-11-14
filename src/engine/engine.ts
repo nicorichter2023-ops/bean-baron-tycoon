@@ -4,6 +4,7 @@
 // ============================================================
 
 import type {
+  ActionResult,
   B2BContract,
   B2BState,
   CapitalMarketsState,
@@ -28,8 +29,10 @@ import type {
 // -----------------------------------------------------------
 
 export const GAME_CONFIG = {
-  SCHEMA_VERSION: 1 as const,
+  SCHEMA_VERSION: 2 as const,
   START_CASH: 50_000,
+  STORE_OPENING_COST: { 1: 12_000, 2: 55_000, 3: 180_000 } as Record<StoreTier, number>,
+  STORE_UPGRADE_COST: { 2: 45_000, 3: 160_000 } as Record<2 | 3, number>,
   START_DATE: '2026-01-05',
   /** Sicherheitsgrenze für Spielwochen (~1.900 Jahre, Date bleibt gültig) */
   MAX_WEEK: 100_000,
@@ -338,14 +341,13 @@ function processRoastery(
   if (!roastery.owned) return { roastery, autoBuyCost: 0 };
 
   let rawBeanStockKg = Math.max(0, roastery.rawBeanStockKg);
+  let beanLots = roastery.beanLots.map((lot) => ({ ...lot }));
   const roastedStockKg = Math.max(0, roastery.roastedStockKg);
   const capacity = Math.max(0, roastery.capacityKgPerWeek);
   const yieldFactor = 1 - clamp(roastery.roastLossPercent, 0, 60) / 100;
 
   const roasterBoost = 1 + average(roastery.employees.map((e) => e.skill)) / 500;
   const maxInput = capacity * roasterBoost;
-
-  // Es wird nur so viel geröstet, wie das Lager (Deckel: Wochenkapazität × Faktor) aufnehmen kann.
   const stockCap = capacity * GAME_CONFIG.ROASTED_STOCK_CAP_WEEKS;
   const room = Math.max(0, stockCap - roastedStockKg);
   const targetInput = Math.min(maxInput, room / yieldFactor);
@@ -360,16 +362,36 @@ function processRoastery(
       if (affordableKg > 0) {
         rawBeanStockKg += affordableKg;
         autoBuyCost = round2(affordableKg * pricePerKg);
+        const beanId = beanLots[0]?.beanId ?? 'house_blend';
+        const existing = beanLots.find((lot) => lot.beanId === beanId);
+        if (existing) {
+          const total = existing.quantityKg + affordableKg;
+          existing.averagePricePerKg = round2(
+            (existing.quantityKg * existing.averagePricePerKg + affordableKg * pricePerKg) / total,
+          );
+          existing.quantityKg = round2(total);
+        } else {
+          beanLots.push({ beanId, quantityKg: round2(affordableKg), averagePricePerKg: round2(pricePerKg) });
+        }
       }
     }
   }
 
   const roastInput = Math.max(0, Math.min(rawBeanStockKg, targetInput));
   const produced = roastInput * yieldFactor;
+  let consumptionLeft = roastInput;
+  beanLots = beanLots
+    .map((lot) => {
+      const consumed = Math.min(lot.quantityKg, consumptionLeft);
+      consumptionLeft -= consumed;
+      return { ...lot, quantityKg: round2(lot.quantityKg - consumed) };
+    })
+    .filter((lot) => lot.quantityKg > 0.001);
 
   return {
     roastery: {
       ...roastery,
+      beanLots,
       rawBeanStockKg: round2(rawBeanStockKg - roastInput),
       roastedStockKg: round2(roastedStockKg + produced),
     },
@@ -453,14 +475,30 @@ function processCapitalMarkets(
     return { ...s, status: 'failed' as const };
   });
 
-  // Rivalen wachsen langsam mit (verhindert triviale Übernahmen im Late-Game)
+  // Börsenwerte und Aktienkurse entwickeln sich gemeinsam, damit Kauf/Verkauf und M&A konsistent bleiben.
   const rivals: RivalCompany[] = cm.rivals.map((r) => {
     if (r.acquired) return r;
     const rng = mulberry32(hashSeed(week * 7907 + hashString(r.id)));
     const growth = GAME_CONFIG.RIVAL_WEEKLY_GROWTH + (rng() - 0.5) * 0.01;
     const valuation = Math.round(clamp(r.valuation * (1 + growth), 1, GAME_CONFIG.MONEY_CAP));
-    return { ...r, valuation };
+    const sharePrice = round2(
+      clamp(valuation / Math.max(1, r.sharesOutstanding), GAME_CONFIG.MIN_SHARE_PRICE, GAME_CONFIG.MAX_SHARE_PRICE),
+    );
+    return { ...r, valuation, sharePrice };
   });
+
+  const dividendCash = round2(
+    cm.holdings.reduce((sum, holding) => {
+      const company = rivals.find((r) => r.id === holding.companyId);
+      if (!company || company.acquired) return sum;
+      return sum + holding.shares * company.sharePrice * (company.dividendYield / 52);
+    }, 0),
+  );
+  if (dividendCash > 0) {
+    cashDelta += dividendCash;
+    taxableGain += dividendCash;
+    notes.push(`DIVIDENDS:${dividendCash}`);
+  }
 
   // Aktienkurs: Rückkehr zum fairen Wert (Asset-Bewertung / Aktien) + Performance + Rauschen
   let sharePrice = cm.sharePrice;
@@ -514,8 +552,18 @@ export function calculateAssetValuation(state: GameState): number {
     Math.max(0, state.roastery.rawBeanStockKg) * futures;
   const roasteryValue = state.roastery.owned ? GAME_CONFIG.ROASTERY_COST * 0.9 : 0;
   const startupBookValue = state.capitalMarkets.startups
-    .filter((s) => s.status === 'active')
-    .reduce((sum, s) => sum + Math.max(0, s.investedAmount), 0);
+    .filter((s) => s.status === 'active' || s.acquired)
+    .reduce(
+      (sum, s) => sum + (s.acquired ? Math.max(0, s.valuation) * 0.8 : Math.max(0, s.investedAmount)),
+      0,
+    );
+  const stockValue = state.capitalMarkets.holdings.reduce((sum, holding) => {
+    const company = state.capitalMarkets.rivals.find((r) => r.id === holding.companyId);
+    return sum + (company ? holding.shares * company.sharePrice : 0);
+  }, 0);
+  const acquiredRivalValue = state.capitalMarkets.rivals
+    .filter((r) => r.acquired)
+    .reduce((sum, r) => sum + r.valuation * 0.8, 0);
   const b2bValue = state.b2b.contracts.reduce(
     (sum, c) =>
       sum +
@@ -533,6 +581,8 @@ export function calculateAssetValuation(state: GameState): number {
       roasteryValue +
       inventoryValue +
       startupBookValue +
+      stockValue +
+      acquiredRivalValue +
       b2bValue +
       brandValue -
       state.debt,
@@ -585,13 +635,386 @@ export function purchaseRoastery(state: GameState): {
     return { state, ok: false, reason: 'INSUFFICIENT_CASH' };
   }
   return {
-    state: {
+    state: finalizeAction({
       ...state,
       cash: round2(state.cash - GAME_CONFIG.ROASTERY_COST),
       roastery: { ...state.roastery, owned: true },
-    },
+    }),
     ok: true,
     reason: 'PURCHASED',
+  };
+}
+
+// -----------------------------------------------------------
+// Weitere Spieler-Aktionen
+// -----------------------------------------------------------
+
+function rejected(state: GameState, reason: string): ActionResult {
+  return { state, ok: false, reason };
+}
+
+function finalizeAction(state: GameState): GameState {
+  const companyValuation = calculateCompanyValuation(state);
+  return {
+    ...state,
+    companyValuation,
+    era: resolveEra(companyValuation),
+    unlockedModules: resolveUnlocks(state, companyValuation),
+  };
+}
+
+export function storeOpeningCost(district: District, tier: StoreTier): number {
+  return Math.round(GAME_CONFIG.STORE_OPENING_COST[tier] + district.rentWeekly * GAME_CONFIG.TIER_RENT_FACTOR[tier] * 2);
+}
+
+export function openStore(
+  state: GameState,
+  cityId: string,
+  districtId: string,
+  tier: StoreTier,
+): ActionResult {
+  const city = state.cities.find((candidate) => candidate.id === cityId);
+  const district = city?.districts.find((candidate) => candidate.id === districtId);
+  if (!city || !district) return rejected(state, 'DISTRICT_NOT_FOUND');
+  if (state.stores.some((store) => store.districtId === districtId)) return rejected(state, 'DISTRICT_OCCUPIED');
+  if (tier > district.maxStoreTier) return rejected(state, 'TIER_NOT_ALLOWED');
+  const cost = storeOpeningCost(district, tier);
+  if (state.cash < cost) return rejected(state, 'INSUFFICIENT_CASH');
+  const store: Store = {
+    id: `store-${state.week}-${state.stores.length + 1}`,
+    cityId,
+    name: `${tier === 1 ? 'Kiosk' : tier === 2 ? 'Café' : 'Flagship'} ${district.name}`,
+    districtId,
+    tier,
+    employees: [],
+    qualityIndex: 45,
+    pricePerCup: 4.5,
+    weeklyRevenue: 0,
+    customersServedLastWeek: 0,
+    openedAtWeek: state.week,
+  };
+  return {
+    state: finalizeAction({ ...state, cash: round2(state.cash - cost), stores: [...state.stores, store] }),
+    ok: true,
+    reason: `STORE_OPENED:${store.name}`,
+  };
+}
+
+export function upgradeStore(state: GameState, storeId: string): ActionResult {
+  const store = state.stores.find((candidate) => candidate.id === storeId);
+  if (!store) return rejected(state, 'STORE_NOT_FOUND');
+  if (store.tier >= 3) return rejected(state, 'MAX_TIER_REACHED');
+  const district = state.cities.flatMap((city) => city.districts).find((candidate) => candidate.id === store.districtId);
+  if (!district) return rejected(state, 'DISTRICT_NOT_FOUND');
+  const nextTier = (store.tier + 1) as 2 | 3;
+  if (nextTier > district.maxStoreTier) return rejected(state, 'TIER_NOT_ALLOWED');
+  const cost = GAME_CONFIG.STORE_UPGRADE_COST[nextTier];
+  if (state.cash < cost) return rejected(state, 'INSUFFICIENT_CASH');
+  return {
+    state: finalizeAction({
+      ...state,
+      cash: round2(state.cash - cost),
+      stores: state.stores.map((candidate) => candidate.id === storeId ? { ...candidate, tier: nextTier } : candidate),
+    }),
+    ok: true,
+    reason: `STORE_UPGRADED:${store.name}`,
+  };
+}
+
+const BARISTA_NAMES = ['Mila', 'Jonas', 'Ayla', 'Noah', 'Emma', 'Levi', 'Nora', 'Sam'];
+const MANAGER_NAMES = ['Sophie', 'David', 'Mara', 'Felix', 'Clara', 'Ben', 'Ida', 'Luis'];
+
+export function hireEmployee(state: GameState, storeId: string, role: 'barista' | 'manager'): ActionResult {
+  const store = state.stores.find((candidate) => candidate.id === storeId);
+  if (!store) return rejected(state, 'STORE_NOT_FOUND');
+  const seed = hashSeed(state.week * 8191 + hashString(storeId) + store.employees.length * 131 + (role === 'manager' ? 17 : 0));
+  const skill = 35 + (seed % 56);
+  const salaryWeekly = role === 'manager' ? 900 + skill * 9 : 420 + skill * 6;
+  if (state.cash < salaryWeekly) return rejected(state, 'INSUFFICIENT_CASH');
+  const names = role === 'manager' ? MANAGER_NAMES : BARISTA_NAMES;
+  const employee: Employee = {
+    id: `emp-${state.week}-${storeId}-${store.employees.length + 1}-${role}`,
+    name: names[seed % names.length]!,
+    role,
+    skill,
+    salaryWeekly,
+    hiredAtWeek: state.week,
+  };
+  return {
+    state: finalizeAction({
+      ...state,
+      cash: round2(state.cash - salaryWeekly),
+      stores: state.stores.map((candidate) => candidate.id === storeId
+        ? { ...candidate, employees: [...candidate.employees, employee] }
+        : candidate),
+    }),
+    ok: true,
+    reason: `EMPLOYEE_HIRED:${employee.name}`,
+  };
+}
+
+export function fireEmployee(state: GameState, storeId: string, employeeId: string): ActionResult {
+  const store = state.stores.find((candidate) => candidate.id === storeId);
+  const employee = store?.employees.find((candidate) => candidate.id === employeeId);
+  if (!store || !employee) return rejected(state, 'EMPLOYEE_NOT_FOUND');
+  if (state.cash < employee.salaryWeekly) return rejected(state, 'INSUFFICIENT_CASH');
+  return {
+    state: finalizeAction({
+      ...state,
+      cash: round2(state.cash - employee.salaryWeekly),
+      stores: state.stores.map((candidate) => candidate.id === storeId
+        ? { ...candidate, employees: candidate.employees.filter((item) => item.id !== employeeId) }
+        : candidate),
+    }),
+    ok: true,
+    reason: `EMPLOYEE_RELEASED:${employee.name}`,
+  };
+}
+
+export function takeLoan(state: GameState, amount: number): ActionResult {
+  const value = Math.floor(amount);
+  if (!Number.isFinite(value) || value <= 0) return rejected(state, 'INVALID_AMOUNT');
+  if (value > 1_000_000 || state.debt + value > Math.max(250_000, state.companyValuation)) {
+    return rejected(state, 'LOAN_LIMIT_REACHED');
+  }
+  return {
+    state: finalizeAction({ ...state, cash: round2(state.cash + value), debt: round2(state.debt + value) }),
+    ok: true,
+    reason: `LOAN_TAKEN:${value}`,
+  };
+}
+
+export function repayLoan(state: GameState, amount: number): ActionResult {
+  const value = Math.floor(amount);
+  if (!Number.isFinite(value) || value <= 0) return rejected(state, 'INVALID_AMOUNT');
+  if (value > state.debt) return rejected(state, 'AMOUNT_EXCEEDS_DEBT');
+  if (value > state.cash) return rejected(state, 'INSUFFICIENT_CASH');
+  return {
+    state: finalizeAction({ ...state, cash: round2(state.cash - value), debt: round2(state.debt - value) }),
+    ok: true,
+    reason: `LOAN_REPAID:${value}`,
+  };
+}
+
+function requireCapitalMarkets(state: GameState): boolean {
+  return state.unlockedModules.includes('capital_markets');
+}
+
+export function buyShares(state: GameState, companyId: string, shares: number): ActionResult {
+  if (!requireCapitalMarkets(state)) return rejected(state, 'MODULE_LOCKED');
+  const company = state.capitalMarkets.rivals.find((candidate) => candidate.id === companyId);
+  const count = Math.floor(shares);
+  if (!company || company.acquired) return rejected(state, 'COMPANY_NOT_AVAILABLE');
+  if (!Number.isFinite(count) || count <= 0) return rejected(state, 'INVALID_AMOUNT');
+  const cost = round2(count * company.sharePrice);
+  if (cost > state.cash) return rejected(state, 'INSUFFICIENT_CASH');
+  const existing = state.capitalMarkets.holdings.find((holding) => holding.companyId === companyId);
+  const holdings = existing
+    ? state.capitalMarkets.holdings.map((holding) => holding.companyId === companyId ? {
+        ...holding,
+        shares: holding.shares + count,
+        averagePrice: round2((holding.shares * holding.averagePrice + cost) / (holding.shares + count)),
+      } : holding)
+    : [...state.capitalMarkets.holdings, { companyId, shares: count, averagePrice: company.sharePrice }];
+  return {
+    state: finalizeAction({
+      ...state,
+      cash: round2(state.cash - cost),
+      capitalMarkets: { ...state.capitalMarkets, holdings },
+    }),
+    ok: true,
+    reason: `SHARES_BOUGHT:${count}:${company.ticker}`,
+  };
+}
+
+export function sellShares(state: GameState, companyId: string, shares: number): ActionResult {
+  if (!requireCapitalMarkets(state)) return rejected(state, 'MODULE_LOCKED');
+  const company = state.capitalMarkets.rivals.find((candidate) => candidate.id === companyId);
+  const holding = state.capitalMarkets.holdings.find((candidate) => candidate.companyId === companyId);
+  const count = Math.floor(shares);
+  if (!company || !holding) return rejected(state, 'NO_SHARES_OWNED');
+  if (!Number.isFinite(count) || count <= 0) return rejected(state, 'INVALID_AMOUNT');
+  if (count > holding.shares) return rejected(state, 'NOT_ENOUGH_SHARES');
+  const proceeds = round2(count * company.sharePrice);
+  const holdings = state.capitalMarkets.holdings
+    .map((item) => item.companyId === companyId ? { ...item, shares: item.shares - count } : item)
+    .filter((item) => item.shares > 0);
+  return {
+    state: finalizeAction({
+      ...state,
+      cash: round2(state.cash + proceeds),
+      capitalMarkets: { ...state.capitalMarkets, holdings },
+    }),
+    ok: true,
+    reason: `SHARES_SOLD:${count}:${company.ticker}`,
+  };
+}
+
+export function acquireRival(state: GameState, companyId: string, offeredPrice: number): ActionResult {
+  if (!requireCapitalMarkets(state)) return rejected(state, 'MODULE_LOCKED');
+  const company = state.capitalMarkets.rivals.find((candidate) => candidate.id === companyId);
+  if (!company) return rejected(state, 'COMPANY_NOT_AVAILABLE');
+  const evaluation = evaluateMergerAndAcquisition(company, offeredPrice);
+  if (!evaluation.success) return rejected(state, evaluation.reason);
+  if (offeredPrice > state.cash) return rejected(state, 'INSUFFICIENT_CASH');
+  return {
+    state: finalizeAction({
+      ...state,
+      cash: round2(state.cash - offeredPrice),
+      brandReputation: clamp(state.brandReputation + 5, 0, 100),
+      capitalMarkets: {
+        ...state.capitalMarkets,
+        holdings: state.capitalMarkets.holdings.filter((holding) => holding.companyId !== companyId),
+        rivals: state.capitalMarkets.rivals.map((rival) => rival.id === companyId
+          ? { ...rival, acquired: true, acquiredAtWeek: state.week }
+          : rival),
+      },
+    }),
+    ok: true,
+    reason: `COMPANY_ACQUIRED:${company.name}`,
+  };
+}
+
+export function investInStartup(state: GameState, startupId: string, amount: number): ActionResult {
+  if (!requireCapitalMarkets(state)) return rejected(state, 'MODULE_LOCKED');
+  const startup = state.capitalMarkets.startups.find((candidate) => candidate.id === startupId);
+  if (!startup || startup.acquired || startup.status !== 'active') return rejected(state, 'STARTUP_NOT_AVAILABLE');
+  if (!Number.isFinite(amount) || amount <= 0) return rejected(state, 'INVALID_AMOUNT');
+  if (amount > state.cash) return rejected(state, 'INSUFFICIENT_CASH');
+  return {
+    state: finalizeAction({
+      ...state,
+      cash: round2(state.cash - amount),
+      capitalMarkets: {
+        ...state.capitalMarkets,
+        startups: state.capitalMarkets.startups.map((item) => item.id === startupId ? {
+          ...item,
+          investedAmount: round2(item.investedAmount + amount),
+          investedAtWeek: item.investedAmount > 0 ? item.investedAtWeek : state.week,
+        } : item),
+      },
+    }),
+    ok: true,
+    reason: `STARTUP_FUNDED:${startup.name}`,
+  };
+}
+
+export function acquireStartup(state: GameState, startupId: string): ActionResult {
+  if (!requireCapitalMarkets(state)) return rejected(state, 'MODULE_LOCKED');
+  const startup = state.capitalMarkets.startups.find((candidate) => candidate.id === startupId);
+  if (!startup || startup.acquired) return rejected(state, 'STARTUP_NOT_AVAILABLE');
+  if (startup.valuation > state.cash) return rejected(state, 'INSUFFICIENT_CASH');
+  return {
+    state: finalizeAction({
+      ...state,
+      cash: round2(state.cash - startup.valuation),
+      brandReputation: clamp(state.brandReputation + 3, 0, 100),
+      capitalMarkets: {
+        ...state.capitalMarkets,
+        startups: state.capitalMarkets.startups.map((item) => item.id === startupId
+          ? { ...item, acquired: true, acquiredAtWeek: state.week }
+          : item),
+      },
+    }),
+    ok: true,
+    reason: `STARTUP_ACQUIRED:${startup.name}`,
+  };
+}
+
+export function beanPricePerKg(state: GameState, beanId: string): number {
+  const bean = state.market.beanVarieties.find((candidate) => candidate.id === beanId);
+  if (!bean) return 0;
+  return round2(bean.basePricePerKg * (state.market.futuresPricePerKg / GAME_CONFIG.FUTURES_ANCHOR_PRICE) * GAME_CONFIG.GREEN_BEAN_MARKUP);
+}
+
+export function buyBeans(state: GameState, beanId: string, quantityKg: number): ActionResult {
+  if (!state.roastery.owned) return rejected(state, 'ROASTERY_REQUIRED');
+  const bean = state.market.beanVarieties.find((candidate) => candidate.id === beanId);
+  const quantity = round2(quantityKg);
+  if (!bean) return rejected(state, 'BEAN_NOT_FOUND');
+  if (!Number.isFinite(quantity) || quantity <= 0 || quantity > 10_000) return rejected(state, 'INVALID_AMOUNT');
+  const pricePerKg = beanPricePerKg(state, beanId);
+  const cost = round2(quantity * pricePerKg);
+  if (cost > state.cash) return rejected(state, 'INSUFFICIENT_CASH');
+  const existing = state.roastery.beanLots.find((lot) => lot.beanId === beanId);
+  const beanLots = existing
+    ? state.roastery.beanLots.map((lot) => lot.beanId === beanId ? {
+        ...lot,
+        quantityKg: round2(lot.quantityKg + quantity),
+        averagePricePerKg: round2((lot.quantityKg * lot.averagePricePerKg + cost) / (lot.quantityKg + quantity)),
+      } : lot)
+    : [...state.roastery.beanLots, { beanId, quantityKg: quantity, averagePricePerKg: pricePerKg }];
+  return {
+    state: finalizeAction({
+      ...state,
+      cash: round2(state.cash - cost),
+      roastery: {
+        ...state.roastery,
+        beanLots,
+        rawBeanStockKg: round2(state.roastery.rawBeanStockKg + quantity),
+      },
+    }),
+    ok: true,
+    reason: `BEANS_BOUGHT:${quantity}:${bean.name}`,
+  };
+}
+
+export function signB2BContract(
+  state: GameState,
+  partnerName: string,
+  volumeKgPerWeek: number,
+  weeks: number,
+  pricePerKg: number,
+): ActionResult {
+  if (!state.unlockedModules.includes('b2b_trade')) return rejected(state, 'MODULE_LOCKED');
+  if (!state.roastery.owned) return rejected(state, 'ROASTERY_REQUIRED');
+  if (!partnerName.trim() || !Number.isFinite(volumeKgPerWeek) || volumeKgPerWeek <= 0 || volumeKgPerWeek > 1000) {
+    return rejected(state, 'INVALID_CONTRACT');
+  }
+  if (!Number.isInteger(weeks) || weeks < 4 || weeks > 52 || !Number.isFinite(pricePerKg) || pricePerKg <= 0) {
+    return rejected(state, 'INVALID_CONTRACT');
+  }
+  const contract: B2BContract = {
+    id: `contract-${state.week}-${state.b2b.contracts.length + 1}`,
+    partnerName: partnerName.trim(),
+    volumeKgPerWeek: round2(volumeKgPerWeek),
+    pricePerKg: round2(pricePerKg),
+    weeksRemaining: weeks,
+    reliability: 55 + (hashString(partnerName) % 41),
+  };
+  return {
+    state: finalizeAction({ ...state, b2b: { ...state.b2b, contracts: [...state.b2b.contracts, contract] } }),
+    ok: true,
+    reason: `CONTRACT_SIGNED:${partnerName}`,
+  };
+}
+
+export function applyEventChoice(state: GameState, choiceIndex: number): ActionResult {
+  const event = state.pendingEvent;
+  const choice = event?.choices[choiceIndex];
+  if (!event || !choice) return rejected(state, 'NO_PENDING_EVENT');
+  const futuresPricePerKg = round2(clamp(
+    state.market.futuresPricePerKg * choice.beanPriceMultiplier,
+    GAME_CONFIG.FUTURES_MIN_PRICE,
+    GAME_CONFIG.FUTURES_MAX_PRICE,
+  ));
+  const priceHistory = [...state.market.priceHistory];
+  if (priceHistory.length) priceHistory[priceHistory.length - 1] = futuresPricePerKg;
+  const lastReport = state.lastReport
+    ? { ...state.lastReport, notes: [...state.lastReport.notes, `EVENT_APPLIED:${event.title}`] }
+    : null;
+  return {
+    state: finalizeAction({
+      ...state,
+      cash: capMoney(round2(state.cash + choice.cashImpact)),
+      brandReputation: round2(clamp(state.brandReputation + choice.reputationImpact, 0, 100)),
+      market: { ...state.market, futuresPricePerKg, priceHistory },
+      pendingEvent: null,
+      resolvedEventIds: [...state.resolvedEventIds, event.id].slice(-30),
+      lastReport,
+    }),
+    ok: true,
+    reason: `EVENT_RESOLVED:${event.title}`,
   };
 }
 
@@ -600,7 +1023,7 @@ export function purchaseRoastery(state: GameState): {
 // -----------------------------------------------------------
 
 export function processTurn(state: GameState): GameState {
-  if (state.week >= GAME_CONFIG.MAX_WEEK) return state;
+  if (state.week >= GAME_CONFIG.MAX_WEEK || state.pendingEvent) return state;
 
   const week = state.week + 1;
   const dateIso = dateForWeek(week);
@@ -637,10 +1060,11 @@ export function processTurn(state: GameState): GameState {
   let costRent = 0;
   let roastedPool = roastery.roastedStockKg;
   const externalPrice = externalRoastedPricePerKg(futuresPricePerKg);
-  const districtById = new Map(state.city.districts.map((d) => [d.id, d]));
+  const districtById = new Map(state.cities.flatMap((city) => city.districts.map((d) => [d.id, d] as const)));
   const stores = state.stores.map((store) => {
     const district = districtById.get(store.districtId);
-    if (!district) {
+    const storeCity = state.cities.find((city) => city.id === store.cityId);
+    if (!district || !storeCity) {
       notes.push(`ORPHAN_STORE:${store.name}`);
       costSalaries += store.employees.reduce((sum, e) => sum + Math.max(0, e.salaryWeekly), 0);
       return store;
@@ -648,7 +1072,7 @@ export function processTurn(state: GameState): GameState {
     const { store: updated, result } = processStore(
       store,
       district,
-      state.city,
+      storeCity,
       ownRoasteryActive ? roastedPool : null,
     );
     if (ownRoasteryActive) {
@@ -785,6 +1209,16 @@ export function processTurn(state: GameState): GameState {
     notes,
   };
 
+  const eraLevel = { street_vendor: 1, local_chain: 2, national_brand: 3, global_empire: 4 }[era];
+  const recentEvents = state.resolvedEventIds.slice(-15);
+  const eraEvents = state.eventDeck.filter((event) => event.eraRequirement <= eraLevel);
+  const freshEvents = eraEvents.filter((event) => !recentEvents.includes(event.id));
+  const availableEvents = freshEvents.length > 0 ? freshEvents : eraEvents;
+  const eventRng = mulberry32(hashSeed(week * 1741 + 97));
+  const pendingEvent = availableEvents.length
+    ? availableEvents[Math.floor(eventRng() * availableEvents.length)]!
+    : null;
+
   return {
     schemaVersion: GAME_CONFIG.SCHEMA_VERSION,
     week,
@@ -797,11 +1231,15 @@ export function processTurn(state: GameState): GameState {
     era,
     unlockedModules,
     city: state.city,
+    cities: state.cities,
     stores,
     roastery,
     market,
     b2b,
     capitalMarkets,
+    eventDeck: state.eventDeck,
+    pendingEvent,
+    resolvedEventIds: state.resolvedEventIds,
     lastReport,
   };
 }
