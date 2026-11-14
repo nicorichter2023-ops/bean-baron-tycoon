@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ArrowUpCircle, Coffee, Factory, Landmark, MapPin, UserMinus, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { GAME_CONFIG, GAME_EVENTS, purchaseRoastery } from "@/engine";
+import { GAME_CONFIG, purchaseRoastery } from "@/engine";
 import { fireEmployee, hireEmployee, openStore, storeOpeningCost, upgradeStore } from "@/engine/engine";
 import { eur, useGame } from "../GameContext";
 import { translateEngineNote } from "../logMessages";
