@@ -3,6 +3,8 @@
 // Pure Game Loop, deterministisch, ohne externe Bibliotheken
 // ============================================================
 
+import { createEquipment, equipmentEffects, equipmentOf } from './equipment';
+
 import type {
   ActionResult,
   B2BContract,
@@ -29,7 +31,7 @@ import type {
 // -----------------------------------------------------------
 
 export const GAME_CONFIG = {
-  SCHEMA_VERSION: 3 as const,
+  SCHEMA_VERSION: 4 as const,
   START_CASH: 50_000,
   STORE_OPENING_COST: { 1: 12_000, 2: 55_000, 3: 180_000 } as Record<StoreTier, number>,
   STORE_UPGRADE_COST: { 2: 45_000, 3: 160_000 } as Record<2 | 3, number>,
@@ -282,9 +284,10 @@ function processStore(
   const staffingRatio = staff.length === 0 ? 0 : clamp(staff.length / requiredStaff, 0.25, 1.25);
   const avgSkill = average(staff.map((e) => e.skill));
   const managers = staff.filter((e) => e.role === 'manager').length;
+  const equipment = equipmentEffects(store);
 
   // Qualitätsdrift Richtung Zielniveau (Personal, Management, Tier)
-  const targetQuality = clamp(35 + avgSkill * 0.5 + managers * 4 + tier * 4, 0, 100);
+  const targetQuality = equipment.maxQuality ? 100 : clamp(35 + avgSkill * 0.5 + managers * 4 + tier * 4 + equipment.quality + equipment.satisfaction, 0, 100);
   const qualityIndex = round2(
     clamp(store.qualityIndex + (targetQuality - store.qualityIndex) * 0.12, 0, 100),
   );
@@ -298,13 +301,13 @@ function processStore(
   );
   const cultureBoost = 1 + clamp(city.coffeeCultureIndex, 0, 100) / 400;
   const capacity =
-    (GAME_CONFIG.TIER_CAPACITY[tier] ?? 0) * staffingRatio * (1 + avgSkill / 600) * cultureBoost;
+    (GAME_CONFIG.TIER_CAPACITY[tier] ?? 0) * staffingRatio * (1 + avgSkill / 600) * cultureBoost * equipment.capacity;
 
-  let served = Math.max(0, Math.min(rawDemand, Math.floor(capacity)));
+  let served = Math.max(0, Math.min(Math.round(rawDemand * equipment.demand), Math.floor(capacity)));
   let stockLimited = false;
   if (availableRoastedKg !== null) {
     // Bohnen-Limit: 18 g Röstkaffee pro Tasse
-    const beanLimited = Math.floor(Math.max(0, availableRoastedKg) / GAME_CONFIG.KG_PER_CUP);
+    const beanLimited = Math.floor(Math.max(0, availableRoastedKg) / (GAME_CONFIG.KG_PER_CUP * equipment.beanFactor));
     if (beanLimited < served) stockLimited = true;
     served = Math.max(0, Math.min(served, beanLimited));
   }
@@ -327,7 +330,7 @@ function processStore(
       salaries,
       rent,
       servedCustomers: served,
-      beansConsumedKg: round2(served * GAME_CONFIG.KG_PER_CUP),
+      beansConsumedKg: round2(served * GAME_CONFIG.KG_PER_CUP * equipment.beanFactor),
       stockLimited,
     },
   };
@@ -543,7 +546,7 @@ export function calculateAssetValuation(state: GameState): number {
   const storeValue = state.stores.reduce(
     (sum, s) =>
       sum +
-      (GAME_CONFIG.TIER_BASE_VALUE[s.tier] ?? 0) * (0.5 + clamp(s.qualityIndex, 0, 100) / 100),
+      (GAME_CONFIG.TIER_BASE_VALUE[s.tier] ?? 0) * (0.5 + clamp(s.qualityIndex, 0, 100) / 100) + equipmentOf(s).bookValue,
     0,
   );
   const futures = Math.max(0, finiteOr(state.market.futuresPricePerKg, 0));
@@ -681,6 +684,7 @@ export function openStore(
   const cost = storeOpeningCost(district, tier);
   if (state.cash < cost) return rejected(state, 'INSUFFICIENT_CASH');
   const store: Store = {
+    equipment: createEquipment(),
     id: `store-${state.week}-${state.stores.length + 1}`,
     cityId,
     name: `${tier === 1 ? 'Kiosk' : tier === 2 ? 'Café' : 'Flagship'} ${district.name}`,
@@ -1164,7 +1168,7 @@ export function processTurn(state: GameState): GameState {
   const avgQuality = average(stores.map((s) => s.qualityIndex));
   const prestige = capitalMarkets.luxuryGoods
     .filter((l) => l.owned)
-    .reduce((sum, l) => sum + l.prestigeBonus, 0);
+    .reduce((sum, l) => sum + l.prestigeBonus, 0) + average(stores.map(s => equipmentEffects(s).prestige));
   const targetReputation = clamp(avgQuality * 0.8 + Math.min(20, prestige * 0.5), 0, 100);
   const brandReputation = round2(
     clamp(state.brandReputation + (targetReputation - state.brandReputation) * 0.05, 0, 100),

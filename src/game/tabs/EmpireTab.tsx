@@ -9,6 +9,9 @@ import { Empty, Panel, Section, StoreFilter } from "../ui";
 import { staffArt } from '../sheetArt';
 import { COMPANY_ARTWORK, getStoreArtwork } from "../artwork";
 import type { StoreTier } from "@/engine/types";
+import { StoreEquipmentPanel } from '../StoreEquipmentPanel';
+import { retrofitStandardEquipment, standardRetrofitCost } from '@/engine/equipment';
+import { hasExecutive } from '@/engine/management';
 
 const ERA: Record<string, string> = { street_vendor: "Straßenverkäufer", local_chain: "Lokale Kette", national_brand: "Nationale Marke", global_empire: "Globales Imperium" };
 const TIER_NAME = { 1: "Kiosk", 2: "Café", 3: "Flagship" } as const;
@@ -71,6 +74,10 @@ export function EmpireTab() {
       </Section>
 
       <Section title="Filialen">
+        {hasExecutive(state, 'coo') && <div className="mb-4 border-b border-border pb-4">
+          <Button variant="secondary" className="h-auto min-h-11 w-full whitespace-normal py-2" disabled={!standardRetrofitCost(state) || state.cash < standardRetrofitCost(state)} onClick={() => perform(retrofitStandardEquipment)}>Auf Standard-Ausstattung nachrüsten · {eur(standardRetrofitCost(state))}</Button>
+          <p className="mt-2 text-xs text-muted-foreground">COO-Konzernstandard: Multi-Boiler, Präzisionsmühle und Bistro in allen Filialen. Höhere Stufen bleiben erhalten; Basisausstattung ist bereits inklusive.</p>
+        </div>}
         {state.stores.filter((store) => !selectedStore || store.id === selectedStore).map((store) => {
           const city = state.cities.find((item) => item.id === store.cityId);
           const storeDistrict = city?.districts.find((item) => item.id === store.districtId);
@@ -94,6 +101,7 @@ export function EmpireTab() {
             <Button className="mt-2 w-full" size="sm" variant="secondary" disabled={store.tier >= 3 || !storeDistrict || store.tier + 1 > storeDistrict.maxStoreTier} onClick={() => perform((current) => upgradeStore(current, store.id))}>
               <ArrowUpCircle /> {store.tier >= 3 ? "Maximale Ausbaustufe" : storeDistrict && store.tier + 1 > storeDistrict.maxStoreTier ? "Höhere Stufe hier nicht erlaubt" : `Ausbauen · ${eur(GAME_CONFIG.STORE_UPGRADE_COST[(store.tier + 1) as 2 | 3])}`}
             </Button>
+            <StoreEquipmentPanel store={store} />
           </Panel>;
         })}
       </Section>

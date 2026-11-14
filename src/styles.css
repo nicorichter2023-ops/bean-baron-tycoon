@@ -339,6 +339,9 @@ select, input { min-height:44px; }
 .store-tile img { width:var(--sprite-lg); height:var(--sprite-lg); object-fit:contain; border-radius:8px; mix-blend-mode:multiply; background:transparent; }
 .store-tile { height:auto; min-height:76px; padding:6px 10px; }
 .loadout-grid button { min-height:76px; justify-content:center; }
+.cafe-loadout .loadout-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.cafe-loadout .loadout-grid button { border-radius:8px; }
+.cafe-loadout .loadout-grid span { font-size:11px; line-height:1.35; overflow-wrap:anywhere; }
 .city-marker img { width:36px; height:36px; }
 .scene-heading img, .scene-heading [class*="sprite"] { width:var(--sprite-md); height:var(--sprite-md); }
 .store-tile img { mix-blend-mode:normal; background:var(--artwork, #f4ead8); padding:3px; }

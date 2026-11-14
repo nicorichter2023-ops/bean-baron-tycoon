@@ -2,6 +2,7 @@ import type { GameState } from "./types";
 import { GAME_CONFIG, calculateCompanyValuation } from "./engine";
 import { createInitialState } from "@/data/initialState";
 import { balanceSheet, createManagement } from './management';
+import { createEquipment } from './equipment';
 
 const KEY = "coffee-empire-save";
 
@@ -11,8 +12,8 @@ function migrateV1ToV2(old: any): GameState {
   const stores = Array.isArray(old.stores)
     ? old.stores.map((store: any) => {
         const oldDistrict = old.city?.districts?.find((district: any) => district.id === store.districtId);
-        const district = city.districts.find((candidate) => candidate.name === oldDistrict?.name) ?? city.districts[0]!;
-        return { ...store, cityId: city.id, districtId: district.id };
+        const district = city.districts.find((candidate) => candidate.name === oldDistrict?.name) ?? city.districts[0];
+        return { ...store, cityId: city.id, districtId: district?.id ?? store.districtId };
       })
     : fresh.stores;
   const migrated: GameState = {
@@ -42,7 +43,10 @@ export function migrateV2ToV3(state: Omit<GameState, 'management'> & { managemen
   const migrated = { ...state, schemaVersion: 3 as const, management: createManagement(state.cash) };
   return { ...migrated, management: state.management ?? createManagement(state.cash, balanceSheet(migrated).inventory) };
 }
-const migrations: Record<number, (state: any) => GameState> = { 1: migrateV1ToV2, 2: migrateV2ToV3 };
+export function migrateV3ToV4(state: GameState): GameState {
+  return { ...state, schemaVersion: 4, stores: state.stores.map(s => ({ ...s, equipment: { ...createEquipment(), ...s.equipment } })) };
+}
+const migrations: Record<number, (state: any) => GameState> = { 1: migrateV1ToV2, 2: migrateV2ToV3, 3: migrateV3ToV4 };
 
 export function loadGame(): GameState {
   try {

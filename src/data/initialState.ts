@@ -2,6 +2,7 @@ import type { GameState } from "@/engine/types";
 import { GAME_CONFIG, calculateCompanyValuation, dateForWeek } from "@/engine/engine";
 import { BEAN_VARIETIES, CITIES, GAME_EVENTS, PUBLIC_COMPANIES, STARTUPS } from "./cities";
 import { createManagement } from '@/engine/management';
+import { createEquipment } from '@/engine/equipment';
 
 export function createInitialState(): GameState {
   const city = CITIES.find((candidate) => candidate.id === "berlin") ?? CITIES[0]!;
@@ -23,6 +24,7 @@ export function createInitialState(): GameState {
     stores: [
       {
         id: "store-1",
+        equipment: createEquipment(),
         cityId: city.id,
         name: `Kiosk ${district.name}`,
         districtId: district.id,

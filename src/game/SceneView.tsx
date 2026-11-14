@@ -5,7 +5,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { eur, useGame } from './GameContext';
 import { SCENES } from './sceneAssets';
 import { Sprite } from './Sprite';
-import { CAFE_LOADOUT, CAFE_MENU, ROAST_LEVELS, cafeLoadoutArt } from './sheetArt';
+import { CAFE_MENU, ROAST_LEVELS, equipmentArt } from './sheetArt';
+import { EQUIPMENT, equipmentOf } from '@/engine/equipment';
 import { SectionFilter, StoreFilter } from './ui';
 import { EmpireTab } from './tabs/EmpireTab';
 import { FinanceTab } from './tabs/FinanceTab';
@@ -73,7 +74,7 @@ export function SceneView({ place, onPlace, destinations }: { place: Place; onPl
       <div className="scene-badge"><span className="live-dot" />{isCafe ? `${store?.employees.length ?? 0} im Team` : place === 'roastery' ? state.roastery.owned ? 'In Betrieb' : 'Noch nicht erworben' : 'Coffee Empire'}</div>
     </div>
     <div className="scene-metrics">{isCafe ? <><Metric label="Umsatz / Woche" value={eur(store?.weeklyRevenue ?? 0)} /><Metric label="Gäste" value={String(store?.customersServedLastWeek ?? 0)} /><Metric label="Qualität" value={`${Math.round(store?.qualityIndex ?? 0)} / 100`} /></> : place === 'roastery' ? <><Metric label="Rohbohnen" value={`${Math.round(state.roastery.rawBeanStockKg)} kg`} /><Metric label="Geröstet" value={`${Math.round(state.roastery.roastedStockKg)} kg`} /><Metric label="Kapazität / Wo" value={`${state.roastery.capacityKgPerWeek} kg`} /></> : <><Metric label="Filialen" value={String(state.stores.length)} /><Metric label="Reputation" value={String(Math.round(state.brandReputation))} /><Metric label="Ergebnis / Wo" value={eur(state.lastReport?.netIncome ?? 0)} /></>}</div>
-    {isCafe && store && <div className="cafe-loadout" aria-label="Einrichtung"><div className="flex items-center justify-between mb-2"><h2>Einrichtung</h2><span className="text-xs text-muted-foreground">{CAFE_LOADOUT.filter((p) => p.tier <= store.tier).length} / {CAFE_LOADOUT.length} freigeschaltet</span></div><div className="loadout-grid">{CAFE_LOADOUT.map((p) => { const locked = p.tier > store.tier; return <button type="button" key={p.index} className={locked ? 'locked' : ''} title={locked ? `Ab ${['', 'Kiosk', 'Café', 'Flagship'][p.tier]}` : p.label} onClick={() => open('Café & Ausbau', 'empire', ['Filialen'])}><img src={cafeLoadoutArt(p.index)} alt="" /><span>{locked ? `🔒 ${['', 'Kiosk', 'Café', 'Flagship'][p.tier]}` : p.label}</span></button>; })}</div></div>}
+    {isCafe && store && <div className="cafe-loadout" aria-label="Einrichtung"><div className="mb-2 flex items-center justify-between"><h2>Ausstattung</h2><span className="text-xs text-muted-foreground">{eur(equipmentOf(store).bookValue)}</span></div><div className="loadout-grid">{(['espresso', 'grinder', 'interior'] as const).map(category => { const level = equipmentOf(store)[category]; return <Button variant="ghost" key={category} className="h-auto min-h-11 whitespace-normal" onClick={() => open('Café & Ausstattung', 'empire', ['Filialen'])}><img src={equipmentArt(category, level)} alt="" /><span>{EQUIPMENT[category][level]?.label}</span></Button>; })}</div></div>}
     {(isCafe || place === 'roastery') && <div className="art-strip" aria-label={isCafe ? 'Speisekarte' : 'Röstgrade'}>{(isCafe ? CAFE_MENU : ROAST_LEVELS).map((src) => <img key={src} src={src} alt="" />)}</div>}
     {place === 'lab' && <LabPanel />}
     {place !== 'lab' && <div className="scene-actions">
