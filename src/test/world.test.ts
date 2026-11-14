@@ -58,7 +58,8 @@ describe('Masterdaten und internationale Standorte', () => {
     const next=applyWorldSupply(processTurn(r.state)); expect(next.world.assets[0]?.remainingKg).toBeLessThan(20000); expect(next.lastReport?.costBeans).toBeLessThan(processTurn(r.state).lastReport?.costBeans ?? 0);
   });
   it('Konkurrenz expandiert über echte Wochen und lässt eigene Standorte unangetastet', () => {
-    const g=createInitialState(), next=advanceWorld({...g,week:2});
+    const g=createInitialState(); let next=g;
+    for(let week=2;week<=20;week++) next=advanceWorld({...next,week});
     expect(Object.keys(next.world.occupants).length).toBeGreaterThan(Object.keys(g.world.occupants).length);
     expect(next.world.occupants['berlin-09']).toBeUndefined(); expect(g.world.news).toEqual([]);
   });
