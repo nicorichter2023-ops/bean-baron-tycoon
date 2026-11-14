@@ -1,0 +1,2362 @@
+{
+  "cities": [
+    {
+      "id": "paris",
+      "name": "Paris",
+      "country": "Frankreich",
+      "biome": "european_classic",
+      "landmarkName": "Eiffelturm",
+      "baseRent": 5400,
+      "purchasingPower": 1.45,
+      "coffeeCulture": 1.7,
+      "districts": [
+        {
+          "name": "Le Marais",
+          "rentMultiplier": 1.35,
+          "footTraffic": 1.6
+        },
+        {
+          "name": "Montmartre",
+          "rentMultiplier": 1.15,
+          "footTraffic": 1.4
+        },
+        {
+          "name": "Saint-Germain-des-Prés",
+          "rentMultiplier": 1.5,
+          "footTraffic": 1.8
+        },
+        {
+          "name": "Quartier Latin",
+          "rentMultiplier": 1.05,
+          "footTraffic": 1.5
+        }
+      ]
+    },
+    {
+      "id": "wien",
+      "name": "Wien",
+      "country": "Österreich",
+      "biome": "european_classic",
+      "landmarkName": "Stephansdom",
+      "baseRent": 4200,
+      "purchasingPower": 1.4,
+      "coffeeCulture": 1.95,
+      "districts": [
+        {
+          "name": "Innere Stadt",
+          "rentMultiplier": 1.6,
+          "footTraffic": 1.7
+        },
+        {
+          "name": "Neubau",
+          "rentMultiplier": 1.2,
+          "footTraffic": 1.5
+        },
+        {
+          "name": "Leopoldstadt",
+          "rentMultiplier": 1.0,
+          "footTraffic": 1.3
+        },
+        {
+          "name": "Josefstadt",
+          "rentMultiplier": 1.1,
+          "footTraffic": 1.2
+        }
+      ]
+    },
+    {
+      "id": "mailand",
+      "name": "Mailand",
+      "country": "Italien",
+      "biome": "european_classic",
+      "landmarkName": "Mailänder Dom",
+      "baseRent": 4800,
+      "purchasingPower": 1.35,
+      "coffeeCulture": 2.0,
+      "districts": [
+        {
+          "name": "Brera",
+          "rentMultiplier": 1.45,
+          "footTraffic": 1.6
+        },
+        {
+          "name": "Navigli",
+          "rentMultiplier": 1.25,
+          "footTraffic": 1.75
+        },
+        {
+          "name": "Porta Nuova",
+          "rentMultiplier": 1.55,
+          "footTraffic": 1.5
+        },
+        {
+          "name": "Centro Storico",
+          "rentMultiplier": 1.7,
+          "footTraffic": 1.9
+        }
+      ]
+    },
+    {
+      "id": "berlin",
+      "name": "Berlin",
+      "country": "Deutschland",
+      "biome": "european_classic",
+      "landmarkName": "Brandenburger Tor",
+      "baseRent": 3900,
+      "purchasingPower": 1.3,
+      "coffeeCulture": 1.6,
+      "districts": [
+        {
+          "name": "Mitte",
+          "rentMultiplier": 1.5,
+          "footTraffic": 1.8
+        },
+        {
+          "name": "Kreuzberg",
+          "rentMultiplier": 1.15,
+          "footTraffic": 1.6
+        },
+        {
+          "name": "Prenzlauer Berg",
+          "rentMultiplier": 1.25,
+          "footTraffic": 1.4
+        },
+        {
+          "name": "Friedrichshain",
+          "rentMultiplier": 1.1,
+          "footTraffic": 1.5
+        }
+      ]
+    },
+    {
+      "id": "london",
+      "name": "London",
+      "country": "Großbritannien",
+      "biome": "european_classic",
+      "landmarkName": "Big Ben",
+      "baseRent": 6800,
+      "purchasingPower": 1.65,
+      "coffeeCulture": 1.55,
+      "districts": [
+        {
+          "name": "Soho",
+          "rentMultiplier": 1.6,
+          "footTraffic": 1.9
+        },
+        {
+          "name": "Shoreditch",
+          "rentMultiplier": 1.3,
+          "footTraffic": 1.65
+        },
+        {
+          "name": "City of London",
+          "rentMultiplier": 1.75,
+          "footTraffic": 1.8
+        },
+        {
+          "name": "Covent Garden",
+          "rentMultiplier": 1.5,
+          "footTraffic": 1.85
+        }
+      ]
+    },
+    {
+      "id": "kopenhagen",
+      "name": "Kopenhagen",
+      "country": "Dänemark",
+      "biome": "european_classic",
+      "landmarkName": "Nyhavn",
+      "baseRent": 5100,
+      "purchasingPower": 1.7,
+      "coffeeCulture": 1.8,
+      "districts": [
+        {
+          "name": "Indre By",
+          "rentMultiplier": 1.55,
+          "footTraffic": 1.7
+        },
+        {
+          "name": "Vesterbro",
+          "rentMultiplier": 1.25,
+          "footTraffic": 1.5
+        },
+        {
+          "name": "Nørrebro",
+          "rentMultiplier": 1.15,
+          "footTraffic": 1.6
+        },
+        {
+          "name": "Christianshavn",
+          "rentMultiplier": 1.35,
+          "footTraffic": 1.4
+        }
+      ]
+    },
+    {
+      "id": "seattle",
+      "name": "Seattle",
+      "country": "USA",
+      "biome": "modern_industrial",
+      "landmarkName": "Space Needle",
+      "baseRent": 5200,
+      "purchasingPower": 1.6,
+      "coffeeCulture": 1.9,
+      "districts": [
+        {
+          "name": "Pike Place Market",
+          "rentMultiplier": 1.65,
+          "footTraffic": 1.95
+        },
+        {
+          "name": "Capitol Hill",
+          "rentMultiplier": 1.3,
+          "footTraffic": 1.6
+        },
+        {
+          "name": "Pioneer Square",
+          "rentMultiplier": 1.15,
+          "footTraffic": 1.35
+        },
+        {
+          "name": "South Lake Union",
+          "rentMultiplier": 1.5,
+          "footTraffic": 1.7
+        }
+      ]
+    },
+    {
+      "id": "new_york",
+      "name": "New York",
+      "country": "USA",
+      "biome": "modern_industrial",
+      "landmarkName": "Empire State Building",
+      "baseRent": 7600,
+      "purchasingPower": 1.8,
+      "coffeeCulture": 1.75,
+      "districts": [
+        {
+          "name": "Manhattan Midtown",
+          "rentMultiplier": 1.8,
+          "footTraffic": 2.0
+        },
+        {
+          "name": "Williamsburg",
+          "rentMultiplier": 1.4,
+          "footTraffic": 1.65
+        },
+        {
+          "name": "Greenwich Village",
+          "rentMultiplier": 1.55,
+          "footTraffic": 1.7
+        },
+        {
+          "name": "Financial District",
+          "rentMultiplier": 1.65,
+          "footTraffic": 1.8
+        }
+      ]
+    },
+    {
+      "id": "toronto",
+      "name": "Toronto",
+      "country": "Kanada",
+      "biome": "modern_industrial",
+      "landmarkName": "CN Tower",
+      "baseRent": 4700,
+      "purchasingPower": 1.45,
+      "coffeeCulture": 1.5,
+      "districts": [
+        {
+          "name": "Downtown Core",
+          "rentMultiplier": 1.5,
+          "footTraffic": 1.75
+        },
+        {
+          "name": "Queen West",
+          "rentMultiplier": 1.25,
+          "footTraffic": 1.55
+        },
+        {
+          "name": "Yorkville",
+          "rentMultiplier": 1.6,
+          "footTraffic": 1.4
+        },
+        {
+          "name": "Kensington Market",
+          "rentMultiplier": 1.1,
+          "footTraffic": 1.6
+        }
+      ]
+    },
+    {
+      "id": "melbourne",
+      "name": "Melbourne",
+      "country": "Australien",
+      "biome": "modern_industrial",
+      "landmarkName": "Flinders Street Station",
+      "baseRent": 4900,
+      "purchasingPower": 1.55,
+      "coffeeCulture": 2.0,
+      "districts": [
+        {
+          "name": "CBD Laneways",
+          "rentMultiplier": 1.6,
+          "footTraffic": 1.9
+        },
+        {
+          "name": "Fitzroy",
+          "rentMultiplier": 1.3,
+          "footTraffic": 1.6
+        },
+        {
+          "name": "South Yarra",
+          "rentMultiplier": 1.4,
+          "footTraffic": 1.45
+        },
+        {
+          "name": "Carlton",
+          "rentMultiplier": 1.2,
+          "footTraffic": 1.5
+        }
+      ]
+    },
+    {
+      "id": "sydney",
+      "name": "Sydney",
+      "country": "Australien",
+      "biome": "modern_industrial",
+      "landmarkName": "Sydney Opera House",
+      "baseRent": 5500,
+      "purchasingPower": 1.6,
+      "coffeeCulture": 1.85,
+      "districts": [
+        {
+          "name": "Circular Quay",
+          "rentMultiplier": 1.7,
+          "footTraffic": 1.95
+        },
+        {
+          "name": "Surry Hills",
+          "rentMultiplier": 1.35,
+          "footTraffic": 1.6
+        },
+        {
+          "name": "Newtown",
+          "rentMultiplier": 1.15,
+          "footTraffic": 1.5
+        },
+        {
+          "name": "Barangaroo",
+          "rentMultiplier": 1.65,
+          "footTraffic": 1.7
+        }
+      ]
+    },
+    {
+      "id": "tokio",
+      "name": "Tokio",
+      "country": "Japan",
+      "biome": "asian_zen",
+      "landmarkName": "Shibuya Crossing",
+      "baseRent": 6200,
+      "purchasingPower": 1.5,
+      "coffeeCulture": 1.8,
+      "districts": [
+        {
+          "name": "Shibuya",
+          "rentMultiplier": 1.75,
+          "footTraffic": 2.0
+        },
+        {
+          "name": "Ginza",
+          "rentMultiplier": 1.8,
+          "footTraffic": 1.7
+        },
+        {
+          "name": "Shimokitazawa",
+          "rentMultiplier": 1.2,
+          "footTraffic": 1.5
+        },
+        {
+          "name": "Kiyosumi Shirakawa",
+          "rentMultiplier": 1.1,
+          "footTraffic": 1.35
+        }
+      ]
+    },
+    {
+      "id": "seoul",
+      "name": "Seoul",
+      "country": "Südkorea",
+      "biome": "asian_zen",
+      "landmarkName": "Gyeongbokgung-Palast",
+      "baseRent": 4600,
+      "purchasingPower": 1.4,
+      "coffeeCulture": 1.9,
+      "districts": [
+        {
+          "name": "Gangnam",
+          "rentMultiplier": 1.7,
+          "footTraffic": 1.85
+        },
+        {
+          "name": "Hongdae",
+          "rentMultiplier": 1.35,
+          "footTraffic": 1.9
+        },
+        {
+          "name": "Seongsu-dong",
+          "rentMultiplier": 1.4,
+          "footTraffic": 1.6
+        },
+        {
+          "name": "Myeongdong",
+          "rentMultiplier": 1.6,
+          "footTraffic": 1.8
+        }
+      ]
+    },
+    {
+      "id": "singapur",
+      "name": "Singapur",
+      "country": "Singapur",
+      "biome": "asian_zen",
+      "landmarkName": "Marina Bay Sands",
+      "baseRent": 6500,
+      "purchasingPower": 1.75,
+      "coffeeCulture": 1.65,
+      "districts": [
+        {
+          "name": "Marina Bay",
+          "rentMultiplier": 1.7,
+          "footTraffic": 1.8
+        },
+        {
+          "name": "Tanjong Pagar",
+          "rentMultiplier": 1.4,
+          "footTraffic": 1.65
+        },
+        {
+          "name": "Tiong Bahru",
+          "rentMultiplier": 1.25,
+          "footTraffic": 1.4
+        },
+        {
+          "name": "Orchard Road",
+          "rentMultiplier": 1.65,
+          "footTraffic": 1.9
+        }
+      ]
+    },
+    {
+      "id": "ho_chi_minh_stadt",
+      "name": "Ho-Chi-Minh-Stadt",
+      "country": "Vietnam",
+      "biome": "asian_zen",
+      "landmarkName": "Ben-Thanh-Markt",
+      "baseRent": 2100,
+      "purchasingPower": 0.85,
+      "coffeeCulture": 1.95,
+      "districts": [
+        {
+          "name": "Distrikt 1 Downtown",
+          "rentMultiplier": 1.6,
+          "footTraffic": 1.9
+        },
+        {
+          "name": "Thao Dien",
+          "rentMultiplier": 1.35,
+          "footTraffic": 1.4
+        },
+        {
+          "name": "Distrikt 3 Kolonialviertel",
+          "rentMultiplier": 1.2,
+          "footTraffic": 1.6
+        },
+        {
+          "name": "Phu My Hung",
+          "rentMultiplier": 1.25,
+          "footTraffic": 1.3
+        }
+      ]
+    },
+    {
+      "id": "bogota",
+      "name": "Bogotá",
+      "country": "Kolumbien",
+      "biome": "tropical_colonial",
+      "landmarkName": "Monserrate-Heiligtum",
+      "baseRent": 1800,
+      "purchasingPower": 0.75,
+      "coffeeCulture": 1.85,
+      "districts": [
+        {
+          "name": "Zona Rosa",
+          "rentMultiplier": 1.5,
+          "footTraffic": 1.7
+        },
+        {
+          "name": "La Candelaria",
+          "rentMultiplier": 1.1,
+          "footTraffic": 1.6
+        },
+        {
+          "name": "Chapinero Alto",
+          "rentMultiplier": 1.25,
+          "footTraffic": 1.45
+        },
+        {
+          "name": "Usaquén",
+          "rentMultiplier": 1.35,
+          "footTraffic": 1.5
+        }
+      ]
+    },
+    {
+      "id": "sao_paulo",
+      "name": "São Paulo",
+      "country": "Brasilien",
+      "biome": "tropical_colonial",
+      "landmarkName": "Avenida Paulista",
+      "baseRent": 2600,
+      "purchasingPower": 0.9,
+      "coffeeCulture": 1.8,
+      "districts": [
+        {
+          "name": "Jardins",
+          "rentMultiplier": 1.6,
+          "footTraffic": 1.6
+        },
+        {
+          "name": "Vila Madalena",
+          "rentMultiplier": 1.3,
+          "footTraffic": 1.55
+        },
+        {
+          "name": "Avenida Paulista",
+          "rentMultiplier": 1.5,
+          "footTraffic": 1.85
+        },
+        {
+          "name": "Pinheiros",
+          "rentMultiplier": 1.35,
+          "footTraffic": 1.6
+        }
+      ]
+    },
+    {
+      "id": "addis_abeba",
+      "name": "Addis Abeba",
+      "country": "Äthiopien",
+      "biome": "tropical_colonial",
+      "landmarkName": "Meskel-Platz",
+      "baseRent": 1200,
+      "purchasingPower": 0.6,
+      "coffeeCulture": 2.0,
+      "districts": [
+        {
+          "name": "Bole",
+          "rentMultiplier": 1.5,
+          "footTraffic": 1.7
+        },
+        {
+          "name": "Kazanchis",
+          "rentMultiplier": 1.3,
+          "footTraffic": 1.5
+        },
+        {
+          "name": "Piassa",
+          "rentMultiplier": 1.1,
+          "footTraffic": 1.65
+        },
+        {
+          "name": "Sarbet",
+          "rentMultiplier": 1.2,
+          "footTraffic": 1.35
+        }
+      ]
+    },
+    {
+      "id": "kapstadt",
+      "name": "Kapstadt",
+      "country": "Südafrika",
+      "biome": "tropical_colonial",
+      "landmarkName": "Tafelberg",
+      "baseRent": 2400,
+      "purchasingPower": 0.95,
+      "coffeeCulture": 1.6,
+      "districts": [
+        {
+          "name": "Bree Street",
+          "rentMultiplier": 1.55,
+          "footTraffic": 1.75
+        },
+        {
+          "name": "Woodstock",
+          "rentMultiplier": 1.15,
+          "footTraffic": 1.4
+        },
+        {
+          "name": "Camps Bay",
+          "rentMultiplier": 1.65,
+          "footTraffic": 1.5
+        },
+        {
+          "name": "Kloof Street",
+          "rentMultiplier": 1.3,
+          "footTraffic": 1.6
+        }
+      ]
+    },
+    {
+      "id": "havanna",
+      "name": "Havanna",
+      "country": "Kuba",
+      "biome": "tropical_colonial",
+      "landmarkName": "El Capitolio",
+      "baseRent": 1100,
+      "purchasingPower": 0.65,
+      "coffeeCulture": 1.7,
+      "districts": [
+        {
+          "name": "Habana Vieja",
+          "rentMultiplier": 1.5,
+          "footTraffic": 1.85
+        },
+        {
+          "name": "Vedado",
+          "rentMultiplier": 1.2,
+          "footTraffic": 1.5
+        },
+        {
+          "name": "Miramar",
+          "rentMultiplier": 1.35,
+          "footTraffic": 1.25
+        },
+        {
+          "name": "Centro Habana",
+          "rentMultiplier": 1.1,
+          "footTraffic": 1.7
+        }
+      ]
+    }
+  ],
+  "beanVarieties": [
+    {
+      "id": "ethiopia_yirgacheffe",
+      "name": "Äthiopien Yirgacheffe",
+      "originCountry": "Äthiopien",
+      "flavorProfile": "Florale Noten, Jasminblüte, Bergamotte, saftige Zitrusfrische und feiner Earl-Grey-Abgang",
+      "basePricePerKg": 24.5,
+      "marketVolatility": 0.35,
+      "qualityScore": 92
+    },
+    {
+      "id": "colombia_supremo",
+      "name": "Kolumbien Supremo",
+      "originCountry": "Kolumbien",
+      "flavorProfile": "Vollmundige Milchschokolade, brauner Kandiszucker, rote Kirschen und milde Walnuss",
+      "basePricePerKg": 16.8,
+      "marketVolatility": 0.25,
+      "qualityScore": 86
+    },
+    {
+      "id": "panama_geisha",
+      "name": "Panama Geisha",
+      "originCountry": "Panama",
+      "flavorProfile": "Hochexklusiv: Weißer Pfirsich, Papaya, Jasminblüten-Essenz, Mandarine und seidiger Champagner-Körper",
+      "basePricePerKg": 145.0,
+      "marketVolatility": 0.7,
+      "qualityScore": 98
+    },
+    {
+      "id": "jamaica_blue_mountain",
+      "name": "Jamaika Blue Mountain",
+      "originCountry": "Jamaika",
+      "flavorProfile": "Samtig, nahezu keine Bitterkeit, süße Kakaobohne, Zedernholz und delikates Haselnussöl",
+      "basePricePerKg": 125.0,
+      "marketVolatility": 0.45,
+      "qualityScore": 95
+    },
+    {
+      "id": "kenya_aa",
+      "name": "Kenia AA",
+      "originCountry": "Kenia",
+      "flavorProfile": "Komplexe Säurestruktur, reife schwarze Johannisbeere, Pink Grapefruit und feine Weinnoten",
+      "basePricePerKg": 28.0,
+      "marketVolatility": 0.4,
+      "qualityScore": 93
+    },
+    {
+      "id": "costa_rica_tarrazu",
+      "name": "Costa Rica Tarrazú",
+      "originCountry": "Costa Rica",
+      "flavorProfile": "Lebendige Apfel-Malic-Säure, Rohrzucker, Akazienhonig und geröstete Cashewkerne",
+      "basePricePerKg": 21.5,
+      "marketVolatility": 0.3,
+      "qualityScore": 89
+    },
+    {
+      "id": "guatemala_antigua",
+      "name": "Guatemala Antigua",
+      "originCountry": "Guatemala",
+      "flavorProfile": "Vulkanischer Bodencharakter: Dunkle Zartbitterschokolade, sanfter Rauch, Muskatnuss und Orange",
+      "basePricePerKg": 19.5,
+      "marketVolatility": 0.28,
+      "qualityScore": 88
+    },
+    {
+      "id": "sumatra_mandheling",
+      "name": "Sumatra Mandheling",
+      "originCountry": "Indonesien",
+      "flavorProfile": "Nassgeschält (Giling Basah): Schwerer sirupartiger Körper, Waldboden, dunkle Kräuter und Süßholzwurzel",
+      "basePricePerKg": 18.2,
+      "marketVolatility": 0.32,
+      "qualityScore": 85
+    },
+    {
+      "id": "hawaii_kona",
+      "name": "Hawaii Kona",
+      "originCountry": "USA (Hawaii)",
+      "flavorProfile": "Pazifische Eleganz: Buttrige Macadamianuss, brauner Zucker, florale Tropenblüte und butterweicher Nachhall",
+      "basePricePerKg": 110.0,
+      "marketVolatility": 0.5,
+      "qualityScore": 94
+    },
+    {
+      "id": "brazil_santos",
+      "name": "Brasilien Santos",
+      "originCountry": "Brasilien",
+      "flavorProfile": "Klassiker: Süße Haselnusscreme, Malz, sanfte Kakaonote, extrem säurearm und dichter Crema-Träger",
+      "basePricePerKg": 12.5,
+      "marketVolatility": 0.2,
+      "qualityScore": 80
+    },
+    {
+      "id": "yemen_mocca_matari",
+      "name": "Jemen Mocca Matari",
+      "originCountry": "Jemen",
+      "flavorProfile": "Uralte Bergterrassen: Trockene Datteln, Feigenmarmelade, Kardamom, edler Zimt und schwerer Weinkörper",
+      "basePricePerKg": 85.0,
+      "marketVolatility": 0.65,
+      "qualityScore": 91
+    },
+    {
+      "id": "rwanda_bourbon",
+      "name": "Ruanda Bourbon",
+      "originCountry": "Ruanda",
+      "flavorProfile": "Knackiger roter Apfel, Nelkenpfeffer, Waldhonig, rote Pflaumen und klarer, brillanter Nachklang",
+      "basePricePerKg": 22.0,
+      "marketVolatility": 0.38,
+      "qualityScore": 88
+    },
+    {
+      "id": "el_salvador_pacamara",
+      "name": "El Salvador Pacamara",
+      "originCountry": "El Salvador",
+      "flavorProfile": "Riesige Bohnen: Maracuja, getrocknete Aprikosen, Kakao-Pekannuss und sirupartige Fruchtsüße",
+      "basePricePerKg": 32.0,
+      "marketVolatility": 0.42,
+      "qualityScore": 90
+    },
+    {
+      "id": "tanzania_peaberry",
+      "name": "Tansania Peaberry",
+      "originCountry": "Tansania",
+      "flavorProfile": "Perlbohnen vom Kilimandscharo: Zitronengras, reife Williamsbirne, rote Johannisbeere und spritzige Säure",
+      "basePricePerKg": 23.5,
+      "marketVolatility": 0.34,
+      "qualityScore": 87
+    },
+    {
+      "id": "burundi_ngozi",
+      "name": "Burundi Ngozi",
+      "originCountry": "Burundi",
+      "flavorProfile": "Wilder Rhabarber, getrocknete Feige, Hibiskusblüte, Schwarztee-Aromatik und vibrierende Frische",
+      "basePricePerKg": 20.5,
+      "marketVolatility": 0.36,
+      "qualityScore": 86
+    },
+    {
+      "id": "mexico_chiapas",
+      "name": "Mexiko Chiapas",
+      "originCountry": "Mexiko",
+      "flavorProfile": "Schattenanbau im Nebelwald: Feine Milchschokolade, geröstete Mandeln, milde Limette und Toffee",
+      "basePricePerKg": 15.5,
+      "marketVolatility": 0.22,
+      "qualityScore": 83
+    },
+    {
+      "id": "india_monsooned_malabar",
+      "name": "Indien Monsooned Malabar",
+      "originCountry": "Indien",
+      "flavorProfile": "Monsungewitter-Reifung: Erdige Gewürznoten, Muskat, geräuchertes Holz, extrem säurearm mit wuchtiger Crema",
+      "basePricePerKg": 17.0,
+      "marketVolatility": 0.26,
+      "qualityScore": 82
+    },
+    {
+      "id": "vietnam_robusta_dak_lak",
+      "name": "Vietnam Robusta Dak Lak",
+      "originCountry": "Vietnam",
+      "flavorProfile": "Hochextraktiver Fine-Robusta: Bitterschokolade, geröstetes Getreide, Haselnussschale und doppelter Koffeingehalt",
+      "basePricePerKg": 7.8,
+      "marketVolatility": 0.18,
+      "qualityScore": 74
+    },
+    {
+      "id": "honduras_marcala",
+      "name": "Honduras Marcala",
+      "originCountry": "Honduras",
+      "flavorProfile": "Bio-Hochland: Gekochter roter Apfel, Vanilleschote, weicher Karamell und cremiger Nachgeschmack",
+      "basePricePerKg": 14.8,
+      "marketVolatility": 0.24,
+      "qualityScore": 82
+    },
+    {
+      "id": "peru_chanchamayo",
+      "name": "Peru Chanchamayo",
+      "originCountry": "Peru",
+      "flavorProfile": "Anden-Ursprung: Süßes Toffee, reife Pflaume, dezente Zitrusfrische und delikater Nougat-Körper",
+      "basePricePerKg": 16.2,
+      "marketVolatility": 0.25,
+      "qualityScore": 84
+    }
+  ],
+  "events": [
+    {
+      "id": "ev_01",
+      "title": "Erste Trommelröster-Kalibrierung",
+      "description": "Dein alter Trommelröster qualmt stark. Ein erfahrener Röstmeister bietet an, die Temperaturkurve neu zu justieren.",
+      "eraRequirement": 1,
+      "choices": [
+        {
+          "text": "Professionelle Justierung bezahlen (-450 €)",
+          "cashImpact": -450,
+          "reputationImpact": 12,
+          "beanPriceMultiplier": 0.95
+        },
+        {
+          "text": "Selbst mit Zange und Thermometer reparieren",
+          "cashImpact": 0,
+          "reputationImpact": -5,
+          "beanPriceMultiplier": 1.05
+        }
+      ]
+    },
+    {
+      "id": "ev_02",
+      "title": "Lokale Zeitung lobt deinen Flat White",
+      "description": "Der Gourmet-Kritiker des Stadtmagazins schwärmt von deiner samtigen Mikroschaum-Technik.",
+      "eraRequirement": 1,
+      "choices": [
+        {
+          "text": "Kostenlose Verkostung für Leser ausrichten (-300 €)",
+          "cashImpact": -300,
+          "reputationImpact": 20,
+          "beanPriceMultiplier": 1.0
+        },
+        {
+          "text": "Artikel unaufgeregt im Fenster aushängen",
+          "cashImpact": 150,
+          "reputationImpact": 8,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_03",
+      "title": "Regenwoche im Studentenviertel",
+      "description": "Dauerregen peitscht gegen die Fensterscheiben. Die Studenten strömen hinein, um stundenlang zu lernen.",
+      "eraRequirement": 1,
+      "choices": [
+        {
+          "text": "Freies WLAN & Refill-Rabatt anbieten",
+          "cashImpact": 400,
+          "reputationImpact": 10,
+          "beanPriceMultiplier": 1.0
+        },
+        {
+          "text": "Laptop-Verbot zur Rushhour durchsetzen",
+          "cashImpact": -200,
+          "reputationImpact": -15,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_04",
+      "title": "Kleine Kaffeerost-Spende an Nachbarschaft",
+      "description": "Ein gemeinnütziges Stadtteilfest fragt nach 20 kg frisch geröstetem Kaffee für eine Tombola.",
+      "eraRequirement": 1,
+      "choices": [
+        {
+          "text": "Premium-Sorten großzügig spenden (-500 €)",
+          "cashImpact": -500,
+          "reputationImpact": 25,
+          "beanPriceMultiplier": 1.0
+        },
+        {
+          "text": "Nur Restposten vergünstigt abgeben",
+          "cashImpact": -100,
+          "reputationImpact": 5,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_05",
+      "title": "Espressomaschinen-Druckabfall",
+      "description": "Mitten im morgendlichen Berufsverkehr bricht der Kesseldruck der Zweigruppen-Maschine zusammen.",
+      "eraRequirement": 1,
+      "choices": [
+        {
+          "text": "Notdienst-Techniker sofort rufen (-650 €)",
+          "cashImpact": -650,
+          "reputationImpact": 5,
+          "beanPriceMultiplier": 1.0
+        },
+        {
+          "text": "Auf manuelle Handfilter umsteigen und lächeln",
+          "cashImpact": -100,
+          "reputationImpact": 15,
+          "beanPriceMultiplier": 0.98
+        }
+      ]
+    },
+    {
+      "id": "ev_06",
+      "title": "Direkthändler klopft an die Hintertür",
+      "description": "Ein kolumbianischer Kleinbauer auf Europareise bietet 5 Säcke handverlesenen Micro-Lot an.",
+      "eraRequirement": 1,
+      "choices": [
+        {
+          "text": "Die gesamte Charge bar aufkaufen (-1.200 €)",
+          "cashImpact": -1200,
+          "reputationImpact": 18,
+          "beanPriceMultiplier": 0.88
+        },
+        {
+          "text": "Vorsichtig ablehnen und bei Standardhändlern bleiben",
+          "cashImpact": 0,
+          "reputationImpact": 0,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_07",
+      "title": "Milchschaum-Wettbewerb im Szeneviertel",
+      "description": "Deine Nachwuchs-Barista möchte an den regionalen Latte-Art-Meisterschaften teilnehmen.",
+      "eraRequirement": 1,
+      "choices": [
+        {
+          "text": "Training und Startgebühr sponsern (-400 €)",
+          "cashImpact": -400,
+          "reputationImpact": 22,
+          "beanPriceMultiplier": 1.0
+        },
+        {
+          "text": "Keine Freistellung während der Arbeitszeit",
+          "cashImpact": 0,
+          "reputationImpact": -12,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_08",
+      "title": "Hafermilch-Lieferengpass",
+      "description": "Die lokale Bio-Molkerei hat Produktionsstopp. Gäste fordern lautstark ihren Barista-Haferdrink.",
+      "eraRequirement": 1,
+      "choices": [
+        {
+          "text": "Teure Premium-Marke im Großmarkt aufkaufen (-350 €)",
+          "cashImpact": -350,
+          "reputationImpact": 8,
+          "beanPriceMultiplier": 1.0
+        },
+        {
+          "text": "Temporär nur Kuhmilch und Soja anbieten",
+          "cashImpact": 0,
+          "reputationImpact": -14,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_09",
+      "title": "Straßenbau vor dem Haupteingang",
+      "description": "Ein Wasserrohrbruch zwingt die Stadtverwaltung, den Gehweg vor deinem Café für zwei Wochen aufzureißen.",
+      "eraRequirement": 1,
+      "choices": [
+        {
+          "text": "Straßen-Baustellen-Kaffee an Arbeiter verkaufen",
+          "cashImpact": 350,
+          "reputationImpact": 5,
+          "beanPriceMultiplier": 1.0
+        },
+        {
+          "text": "Schadensersatz von Stadt fordern & Café drosseln",
+          "cashImpact": -600,
+          "reputationImpact": -8,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_10",
+      "title": "Sackkäfer im Rohkaffee-Lager",
+      "description": "Bei der Routinekontrolle werden Anzeichen von Kaffeekirschenkäfern in einer Lieferung entdeckt.",
+      "eraRequirement": 1,
+      "choices": [
+        {
+          "text": "Befallene Säcke vernichten & Lager desinfizieren (-850 €)",
+          "cashImpact": -850,
+          "reputationImpact": 10,
+          "beanPriceMultiplier": 1.08
+        },
+        {
+          "text": "Aussortieren und hoffen, dass der Röster den Rest sterilisiert",
+          "cashImpact": -150,
+          "reputationImpact": -25,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_11",
+      "title": "Geheimtipp im Reiseführer Lonely Planet",
+      "description": "Ein Blogger hat dein Café als 'Bester Cortado der Stadt' gelistet. Internationale Touristen stehen Schlange.",
+      "eraRequirement": 1,
+      "choices": [
+        {
+          "text": "Englischsprachige Menükarten drucken & Preise leicht anheben",
+          "cashImpact": 850,
+          "reputationImpact": 12,
+          "beanPriceMultiplier": 1.0
+        },
+        {
+          "text": "Treue Stammgäste mit Reservierungen schützen",
+          "cashImpact": 200,
+          "reputationImpact": 22,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_12",
+      "title": "Alte Espressotassen zerschlagen",
+      "description": "Ein ungeschickter Praktikant stolpert über die Spülküchen-Kiste – das halbe Keramiksortiment ist Schrott.",
+      "eraRequirement": 1,
+      "choices": [
+        {
+          "text": "Design-Handkeramik aus lokaler Manufaktur kaufen (-600 €)",
+          "cashImpact": -600,
+          "reputationImpact": 16,
+          "beanPriceMultiplier": 1.0
+        },
+        {
+          "text": "Günstige Industrieware im Großhandel besorgen (-180 €)",
+          "cashImpact": -180,
+          "reputationImpact": -2,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_13",
+      "title": "Frostnacht in Minas Gerais (Brasilien)",
+      "description": "Schwerer Bodenfrost im brasilianischen Hochland vernichtet Millionen Kaffeeblüten. Rohstoffbörsen spielen verrückt.",
+      "eraRequirement": 2,
+      "choices": [
+        {
+          "text": "Große Rohkaffee-Kontrakte sofort absichern (-3.500 €)",
+          "cashImpact": -3500,
+          "reputationImpact": 5,
+          "beanPriceMultiplier": 1.28
+        },
+        {
+          "text": "Abwarten und Preissteigerungen an Kunden weitergeben",
+          "cashImpact": 500,
+          "reputationImpact": -15,
+          "beanPriceMultiplier": 1.45
+        }
+      ]
+    },
+    {
+      "id": "ev_14",
+      "title": "Franchisenehmer verfehlt Qualitätsstandard",
+      "description": "Ein neuer Franchisepartner in einer Nachbarstadt serviert verbrannte Röstungen und schadet der Marke.",
+      "eraRequirement": 2,
+      "choices": [
+        {
+          "text": "Auditteam entsenden & Baristas nachschulen (-1.800 €)",
+          "cashImpact": -1800,
+          "reputationImpact": 15,
+          "beanPriceMultiplier": 1.0
+        },
+        {
+          "text": "Franchisevertrag sofort kündigen (-4.000 € Vertragsstrafe)",
+          "cashImpact": -4000,
+          "reputationImpact": 25,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_15",
+      "title": "Viraler TikTok-Trend: Whipped Cloud Coffee",
+      "description": "Ein neuer Trend flutet die Feeds. Millionen Jugendliche wollen das fotogene Schaumgetränk bestellen.",
+      "eraRequirement": 2,
+      "choices": [
+        {
+          "text": "Sofort ins Menü aufnehmen und Social-Kampagne fahren",
+          "cashImpact": 3200,
+          "reputationImpact": -5,
+          "beanPriceMultiplier": 1.0
+        },
+        {
+          "text": "Puristisch bleiben: 'Wir servieren nur echten Espresso'",
+          "cashImpact": -500,
+          "reputationImpact": 20,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_16",
+      "title": "Mietpreisexplosion im Szene-Distrikt",
+      "description": "Der Vermieter deines Flagship-Stores verlangt bei der Vertragsverlängerung 40 % mehr Kaltmiete.",
+      "eraRequirement": 2,
+      "choices": [
+        {
+          "text": "Zähneknirschend 5-Jahres-Vertrag akzeptieren (-2.500 € Kaution)",
+          "cashImpact": -2500,
+          "reputationImpact": 5,
+          "beanPriceMultiplier": 1.0
+        },
+        {
+          "text": "Zwei Straßen weiter in eine Seitenstraße umziehen (-5.000 € Umzug)",
+          "cashImpact": -5000,
+          "reputationImpact": -10,
+          "beanPriceMultiplier": 0.95
+        }
+      ]
+    },
+    {
+      "id": "ev_17",
+      "title": "Streik im Frachthafen Rotterdam",
+      "description": "Die Hafenarbeiter streiken für bessere Löhne. Drei Container deiner Kaffeebohnen sitzen auf dem Frachtschiff fest.",
+      "eraRequirement": 2,
+      "choices": [
+        {
+          "text": "Luftfracht-Notfallkontingent aus Kenia einfliegen (-4.200 €)",
+          "cashImpact": -4200,
+          "reputationImpact": 14,
+          "beanPriceMultiplier": 1.2
+        },
+        {
+          "text": "Bohnenmischungen vorübergehend mit lokalem Vorrat strecken",
+          "cashImpact": -800,
+          "reputationImpact": -20,
+          "beanPriceMultiplier": 1.05
+        }
+      ]
+    },
+    {
+      "id": "ev_18",
+      "title": "Röstmaschinen-Großbrand verhindert",
+      "description": "Die automatische Löschanlage deines neuen 60-kg-Rösters löste rechtzeitig aus. Es entstand Rußschaden.",
+      "eraRequirement": 2,
+      "choices": [
+        {
+          "text": "Spezialreinigung & Sensoren-Upgrade (-2.800 €)",
+          "cashImpact": -2800,
+          "reputationImpact": 10,
+          "beanPriceMultiplier": 1.0
+        },
+        {
+          "text": "Versicherungssumme kassieren und Produktion zwei Wochen stoppen",
+          "cashImpact": 1500,
+          "reputationImpact": -18,
+          "beanPriceMultiplier": 1.08
+        }
+      ]
+    },
+    {
+      "id": "ev_19",
+      "title": "Kooperation mit renommierter Bäckereikette",
+      "description": "Eine traditionsreiche Handwerksbäckerei mit 25 Filialen will deinen Bohnenkaffee exklusiv ausschenken.",
+      "eraRequirement": 2,
+      "choices": [
+        {
+          "text": "B2B-Großliefervertrag unterzeichnen (+6.500 € Vorauszahlung)",
+          "cashImpact": 6500,
+          "reputationImpact": 15,
+          "beanPriceMultiplier": 0.94
+        },
+        {
+          "text": "Exklusivität ablehnen, um Boutique-Image zu bewahren",
+          "cashImpact": 0,
+          "reputationImpact": 20,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_20",
+      "title": "Plagiatsvorwurf gegen dein Logo",
+      "description": "Ein Anwalt einer globalen Kaffeemarke schickt eine Abmahnung wegen angeblicher Ähnlichkeit eurer Bildmarke.",
+      "eraRequirement": 2,
+      "choices": [
+        {
+          "text": "Markenstreit vor Gericht ausfechten (-4.500 € Anwaltskosten)",
+          "cashImpact": -4500,
+          "reputationImpact": 22,
+          "beanPriceMultiplier": 1.0
+        },
+        {
+          "text": "Einigung erzielen & Logo diskret modernisieren (-1.800 €)",
+          "cashImpact": -1800,
+          "reputationImpact": -5,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_21",
+      "title": "Mitarbeiter gründen Betriebsrat",
+      "description": "Deine Belegschaft organisiert sich gewerkschaftlich und fordert gerechtere Schichtpläne und Klimaanlagen.",
+      "eraRequirement": 2,
+      "choices": [
+        {
+          "text": "Konstruktiven Tarifvertrag abschließen & Löhne anheben (-2.200 €)",
+          "cashImpact": -2200,
+          "reputationImpact": 28,
+          "beanPriceMultiplier": 1.0
+        },
+        {
+          "text": "Verhandlungen verzögern und striktere Quoten einführen",
+          "cashImpact": 800,
+          "reputationImpact": -30,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_22",
+      "title": "Cold-Brew-Boom im Hochsommer",
+      "description": "Eine Hitzewelle treibt die Nachfrage nach kalt extrahiertem Nitro-Coffee in schwindelerregende Höhen.",
+      "eraRequirement": 2,
+      "choices": [
+        {
+          "text": "Industrielle Nitro-Zapfanlagen leasen (-3.000 €)",
+          "cashImpact": 4800,
+          "reputationImpact": 18,
+          "beanPriceMultiplier": 1.0
+        },
+        {
+          "text": "Mit begrenztem Batch-Vorrat täglich ausverkauft sein",
+          "cashImpact": 1200,
+          "reputationImpact": 12,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_23",
+      "title": "Öko-Test zeichnet Bohnenmischung aus",
+      "description": "Dein 'Signature Dark Roast' erhält das Testurteil 'Sehr Gut' für Schadstofffreiheit und Fairtrade.",
+      "eraRequirement": 2,
+      "choices": [
+        {
+          "text": "Große regionale Werbekampagne starten (-2.400 €)",
+          "cashImpact": 5200,
+          "reputationImpact": 25,
+          "beanPriceMultiplier": 0.96
+        },
+        {
+          "text": "Siegel stillschweigend auf die Verpackungen drucken",
+          "cashImpact": 1800,
+          "reputationImpact": 14,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_24",
+      "title": "Strompreisschock für Röstereien",
+      "description": "Energiekrisen verdoppeln die Betriebskosten der gas- und strombetriebenen Röstöfen.",
+      "eraRequirement": 2,
+      "choices": [
+        {
+          "text": "Solarpaneele und Wärmerückgewinnung installieren (-6.000 €)",
+          "cashImpact": -6000,
+          "reputationImpact": 24,
+          "beanPriceMultiplier": 0.92
+        },
+        {
+          "text": "Erhöhung direkt auf den Kilo-Endpreis umlegen",
+          "cashImpact": -800,
+          "reputationImpact": -16,
+          "beanPriceMultiplier": 1.12
+        }
+      ]
+    },
+    {
+      "id": "ev_25",
+      "title": "Dürrekatastrophe am Horn von Afrika",
+      "description": "Äthiopiens Ernten brechen um 40 % ein. Seltene Yirgacheffe- und Sidamo-Bohnen werden zu Goldstaub.",
+      "eraRequirement": 3,
+      "choices": [
+        {
+          "text": "Direkthilfe-Fonds für Kooperativen stiften (-12.000 €)",
+          "cashImpact": -12000,
+          "reputationImpact": 35,
+          "beanPriceMultiplier": 1.35
+        },
+        {
+          "text": "Spekulative Vorräte an der Kaffeebörse London aufkaufen (-25.000 €)",
+          "cashImpact": -25000,
+          "reputationImpact": -10,
+          "beanPriceMultiplier": 1.6
+        }
+      ]
+    },
+    {
+      "id": "ev_26",
+      "title": "Fair-Trade-Zertifizierungs-Skandal",
+      "description": "Eine investigative Doku deckt auf, dass ein Großlieferant Arbeiter unter Mindestlohn beschäftigt hat.",
+      "eraRequirement": 3,
+      "choices": [
+        {
+          "text": "Lieferanten fristlos kündigen & DNA-Rückverfolgbarkeit einführen (-15.000 €)",
+          "cashImpact": -15000,
+          "reputationImpact": 30,
+          "beanPriceMultiplier": 1.1
+        },
+        {
+          "text": "PR-Kampagne schalten und den Fall als Einzelfall herunterspielen (-5.000 €)",
+          "cashImpact": -5000,
+          "reputationImpact": -35,
+          "beanPriceMultiplier": 0.98
+        }
+      ]
+    },
+    {
+      "id": "ev_27",
+      "title": "Suezkanal-Havarie blockiert Frachter",
+      "description": "Ein gigantischer Containerfrachter blockiert die Wasserstraße. Kaffeefrachten aus Asien und Afrika verspäten sich.",
+      "eraRequirement": 3,
+      "choices": [
+        {
+          "text": "Umfahrung über das Kap der Guten Hoffnung finanzieren (-18.000 €)",
+          "cashImpact": -18000,
+          "reputationImpact": 15,
+          "beanPriceMultiplier": 1.25
+        },
+        {
+          "text": "Röstpläne einfrieren und Lieferverzug an Kunden melden",
+          "cashImpact": -8000,
+          "reputationImpact": -22,
+          "beanPriceMultiplier": 1.15
+        }
+      ]
+    },
+    {
+      "id": "ev_28",
+      "title": "Hedging-Erfolg am New Yorker Kaffeemarkt",
+      "description": "Deine Finanzabteilung hat mit Kaffeeterminkontrakten (Coffee 'C' Futures) auf fallende Preise gesetzt.",
+      "eraRequirement": 3,
+      "choices": [
+        {
+          "text": "Gewinne realisieren und Liquiditätspolster stärken (+22.000 €)",
+          "cashImpact": 22000,
+          "reputationImpact": 0,
+          "beanPriceMultiplier": 0.9
+        },
+        {
+          "text": "Gewinn direkt in Fair-Trade-Boni für Erzeuger reinvestieren (+8.000 €)",
+          "cashImpact": 8000,
+          "reputationImpact": 32,
+          "beanPriceMultiplier": 0.95
+        }
+      ]
+    },
+    {
+      "id": "ev_29",
+      "title": "Kaffeerost-Pilz (La Roya) in Zentralamerika",
+      "description": "Der Pilzbefall vernichtet anfällige Arabica-Pflanzen in Guatemala und Kolumbien rasant.",
+      "eraRequirement": 3,
+      "choices": [
+        {
+          "text": "Forschung an pilzresistenten F1-Hybriden fördern (-14.000 €)",
+          "cashImpact": -14000,
+          "reputationImpact": 28,
+          "beanPriceMultiplier": 1.18
+        },
+        {
+          "text": "Sortiment schnell auf Robusta und afrikanische Varietäten umstellen",
+          "cashImpact": -4000,
+          "reputationImpact": -15,
+          "beanPriceMultiplier": 1.3
+        }
+      ]
+    },
+    {
+      "id": "ev_30",
+      "title": "Kaffee-Auktion: Weltrekord für Panama Geisha",
+      "description": "Bei der 'Best of Panama'-Auktion bricht ein Lot den Weltrekord mit 2.500 $ pro Pfund.",
+      "eraRequirement": 3,
+      "choices": [
+        {
+          "text": "Ein exklusives Lot für Prestige-Zwecke ersteigern (-30.000 €)",
+          "cashImpact": -30000,
+          "reputationImpact": 40,
+          "beanPriceMultiplier": 1.05
+        },
+        {
+          "text": "Kopfschüttelnd abwinken und bodenständige Spezialitäten bewerben",
+          "cashImpact": 0,
+          "reputationImpact": 10,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_31",
+      "title": "Zollstreit zwischen EU und Kaffeeproduzenten",
+      "description": "Neue bürokratische Entwaldungsrichtlinien (EUDR) verzögern Importe ohne Satelliten-Geodaten.",
+      "eraRequirement": 3,
+      "choices": [
+        {
+          "text": "Satelliten-Tracking-Software für alle Farmer bereitstellen (-16.000 €)",
+          "cashImpact": -16000,
+          "reputationImpact": 26,
+          "beanPriceMultiplier": 0.96
+        },
+        {
+          "text": "Ware in Zwischenlagern außerhalb der EU parken (-7.000 €)",
+          "cashImpact": -7000,
+          "reputationImpact": -12,
+          "beanPriceMultiplier": 1.15
+        }
+      ]
+    },
+    {
+      "id": "ev_32",
+      "title": "Automatisierte Hochleistungs-Röstanlage",
+      "description": "Ein Schweizer Maschinenbauer bietet ein patentiertes Röstsystem mit 500 kg/h und KI-Infrarotsensorik.",
+      "eraRequirement": 3,
+      "choices": [
+        {
+          "text": "Großinvestition tätigen (-35.000 €)",
+          "cashImpact": -35000,
+          "reputationImpact": 20,
+          "beanPriceMultiplier": 0.85
+        },
+        {
+          "text": "Auf traditionelle Handwerksröster schwören",
+          "cashImpact": 0,
+          "reputationImpact": 15,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_33",
+      "title": "Währungsabwertung des brasilianischen Real",
+      "description": "Der Real stürzt gegenüber US-Dollar und Euro ab. Brasilianischer Rohkaffee wird schlagartig spottbillig.",
+      "eraRequirement": 3,
+      "choices": [
+        {
+          "text": "Großvolumige Lagerbestände in Santos aufkaufen (+18.000 € Ersparnis)",
+          "cashImpact": 18000,
+          "reputationImpact": -8,
+          "beanPriceMultiplier": 0.82
+        },
+        {
+          "text": "Feste Mindestpreise beibehalten, um Kleinbauern nicht auszubeuten",
+          "cashImpact": -5000,
+          "reputationImpact": 30,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_34",
+      "title": "Kaffee-Pod-Boom vs. Aluminium-Müll-Kritik",
+      "description": "Der Markt für kompostierbare Kapseln explodiert, aber Umweltschützer rufen zum Boykott auf.",
+      "eraRequirement": 3,
+      "choices": [
+        {
+          "text": "100 % bio-zertifizierte Holzfaser-Kapseln lancieren (-20.000 €)",
+          "cashImpact": -20000,
+          "reputationImpact": 35,
+          "beanPriceMultiplier": 1.0
+        },
+        {
+          "text": "Konventionelle Alukapseln mit maximaler Marge vertreiben (+15.000 €)",
+          "cashImpact": 15000,
+          "reputationImpact": -28,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_35",
+      "title": "Hackerangriff auf die Logistik-Plattform",
+      "description": "Ransomware verschlüsselt die Container-Dispositionen in deinem zentralen Warenwirtschaftssystem.",
+      "eraRequirement": 3,
+      "choices": [
+        {
+          "text": "IT-Forensiker anheuern & Backups sicher wiederherstellen (-12.000 €)",
+          "cashImpact": -12000,
+          "reputationImpact": 8,
+          "beanPriceMultiplier": 1.0
+        },
+        {
+          "text": "Lösegeld in Bitcoin zahlen, um Lieferungen sofort freizugeben (-22.000 €)",
+          "cashImpact": -22000,
+          "reputationImpact": -20,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_36",
+      "title": "Globale Auszeichnung: Röstbetrieb des Jahres",
+      "description": "Die Specialty Coffee Association (SCA) kürt dein Unternehmen zum besten nachhaltigen Großröster.",
+      "eraRequirement": 3,
+      "choices": [
+        {
+          "text": "Prunkvolle Branchen-Gala veranstalten & B2B-Preise erhöhen (+28.000 €)",
+          "cashImpact": 28000,
+          "reputationImpact": 30,
+          "beanPriceMultiplier": 0.95
+        },
+        {
+          "text": "Dankbarkeit an Mitarbeiter als Sonderbonus ausschütten (-10.000 €)",
+          "cashImpact": -10000,
+          "reputationImpact": 45,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_37",
+      "title": "Bundesweite Supermarkt-Listung",
+      "description": "Der größte europäische Discounter-Konzern bietet eine Voll-Listung in 3.500 Filialen an, verlangt aber knallharte Rabatte.",
+      "eraRequirement": 4,
+      "choices": [
+        {
+          "text": "Vertrag mit hohem Volumen und Niedrigmarge unterschreiben (+65.000 €)",
+          "cashImpact": 65000,
+          "reputationImpact": -15,
+          "beanPriceMultiplier": 0.9
+        },
+        {
+          "text": "Ablehnen und Premium-Platzierung im Feinkosthandel verteidigen",
+          "cashImpact": 0,
+          "reputationImpact": 25,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_38",
+      "title": "Ready-to-Drink (RTD) Kaltgetränk-Hype",
+      "description": "Dosenkaffee mit Hafermilch und Vanille erobert Tankstellen und Convenience-Stores weltweit.",
+      "eraRequirement": 4,
+      "choices": [
+        {
+          "text": "Eigene High-Speed-Abfüllanlage errichten (-80.000 €)",
+          "cashImpact": 95000,
+          "reputationImpact": 20,
+          "beanPriceMultiplier": 0.95
+        },
+        {
+          "text": "Produktion an Lohnabfüller lizenzieren (+30.000 € Lizenz)",
+          "cashImpact": 30000,
+          "reputationImpact": 10,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_39",
+      "title": "Zinswende der Zentralbanken",
+      "description": "Leitzinsen steigen sprunghaft. Kredite für Fabrikerweiterungen und Lagervorräte verteuern sich drastisch.",
+      "eraRequirement": 4,
+      "choices": [
+        {
+          "text": "Schulden sofort durch Barreserven tilgen (-50.000 €)",
+          "cashImpact": -50000,
+          "reputationImpact": 10,
+          "beanPriceMultiplier": 1.0
+        },
+        {
+          "text": "Investitionsprogramme stoppen & Dividenden einfrieren",
+          "cashImpact": 15000,
+          "reputationImpact": -18,
+          "beanPriceMultiplier": 1.05
+        }
+      ]
+    },
+    {
+      "id": "ev_40",
+      "title": "Kartellamtsuntersuchung wegen Preisabsprachen",
+      "description": "Behörden vermuten illegale Absprachen zwischen den fünf führenden Industrie-Kaffeeröstern des Kontinents.",
+      "eraRequirement": 4,
+      "choices": [
+        {
+          "text": "Kronzeugenregelung nutzen & voll kooperieren (-25.000 € Strafe)",
+          "cashImpact": -25000,
+          "reputationImpact": -10,
+          "beanPriceMultiplier": 0.92
+        },
+        {
+          "text": "Spitzenjuristen engagieren und Vorwürfe vehement leugnen (-60.000 €)",
+          "cashImpact": -60000,
+          "reputationImpact": -30,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_41",
+      "title": "Bruch der Panamakanal-Schleusen",
+      "description": "Klimabedingter Wassermangel im Gatún-See drosselt Schiffspassagen um 60 %. Schiffe warten Wochen auf Durchfahrt.",
+      "eraRequirement": 4,
+      "choices": [
+        {
+          "text": "Eisenbahnbrücke über den Isthmus für Container buchen (-45.000 €)",
+          "cashImpact": -45000,
+          "reputationImpact": 18,
+          "beanPriceMultiplier": 1.22
+        },
+        {
+          "text": "Bestellungen stornieren und Notkäufe an europäischen Spotmärkten tätigen",
+          "cashImpact": -20000,
+          "reputationImpact": -15,
+          "beanPriceMultiplier": 1.35
+        }
+      ]
+    },
+    {
+      "id": "ev_42",
+      "title": "Patentstreit um Kaltvakuum-Extraktion",
+      "description": "Ein Konkurrent behauptet, euer neues Verfahren zur Kaltkaffee-Konzentrierung verletze sein geistiges Eigentum.",
+      "eraRequirement": 4,
+      "choices": [
+        {
+          "text": "Patentlizenz teuer abkaufen (-40.000 €)",
+          "cashImpact": -40000,
+          "reputationImpact": 0,
+          "beanPriceMultiplier": 1.0
+        },
+        {
+          "text": "Konkurrenten durch eine feindliche Übernahme schlucken (-120.000 €)",
+          "cashImpact": -120000,
+          "reputationImpact": 30,
+          "beanPriceMultiplier": 0.88
+        }
+      ]
+    },
+    {
+      "id": "ev_43",
+      "title": "Nachhaltigkeitsbericht entlarvt Greenwashing",
+      "description": "Eine renommierte Umweltstiftung bewertet deine Öko-Kompensationen als unzureichend.",
+      "eraRequirement": 4,
+      "choices": [
+        {
+          "text": "500 Hektar echten Primär-Regenwald dauerhaft ankaufen & schützen (-75.000 €)",
+          "cashImpact": -75000,
+          "reputationImpact": 45,
+          "beanPriceMultiplier": 1.0
+        },
+        {
+          "text": "Marketingagentur für Krisen-Kommunikation beauftragen (-15.000 €)",
+          "cashImpact": -15000,
+          "reputationImpact": -25,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_44",
+      "title": "Übernahmeangebot von NestBrew International",
+      "description": "Der weltgrößte Nahrungsmittel-Multi will 25 % deiner stimmberechtigten Aktien zu einem Rekordpreis erwerben.",
+      "eraRequirement": 4,
+      "choices": [
+        {
+          "text": "Kapitalspritze annehmen & globales Vertriebsnetz nutzen (+150.000 €)",
+          "cashImpact": 150000,
+          "reputationImpact": -30,
+          "beanPriceMultiplier": 0.85
+        },
+        {
+          "text": "Abwehrmaßnahmen einleiten ('Poison Pill') und unabhängig bleiben (-30.000 €)",
+          "cashImpact": -30000,
+          "reputationImpact": 40,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_45",
+      "title": "Extreme Monsunfluten in Vietnam",
+      "description": "Die Robusta-Provinzen Dak Lak und Lam Dong stehen unter Wasser. Weltweite Kaffeepreise ziehen rasant an.",
+      "eraRequirement": 4,
+      "choices": [
+        {
+          "text": "Notfall-Robusta-Vorräte in Indonesien sichern (-55.000 €)",
+          "cashImpact": -55000,
+          "reputationImpact": 10,
+          "beanPriceMultiplier": 1.3
+        },
+        {
+          "text": "Rezepturen auf hochwertige Arabica-Blends umschreiben",
+          "cashImpact": -25000,
+          "reputationImpact": 25,
+          "beanPriceMultiplier": 1.15
+        }
+      ]
+    },
+    {
+      "id": "ev_46",
+      "title": "Milliardenschwere Influencer-Kampagne",
+      "description": "Ein Weltklasse-Fußballstar postet ein Foto mit deiner Kaffeetasse und lobt den Fokus vor dem Spiel.",
+      "eraRequirement": 4,
+      "choices": [
+        {
+          "text": "Langfristigen Testimonial-Vertrag abschließen (-70.000 €)",
+          "cashImpact": 110000,
+          "reputationImpact": 35,
+          "beanPriceMultiplier": 1.0
+        },
+        {
+          "text": "Den organischen Hype ohne zusätzliche Kosten mitnehmen (+35.000 €)",
+          "cashImpact": 35000,
+          "reputationImpact": 18,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_47",
+      "title": "Automatisierungsstreik im Haupt-Logistikzentrum",
+      "description": "Fahrerlose Gabelstapler und KI-Packroboter führen zu Protesten der Stammbelegschaft.",
+      "eraRequirement": 4,
+      "choices": [
+        {
+          "text": "Umschulungsgarantie & Innovationsbonus zahlen (-35.000 €)",
+          "cashImpact": -35000,
+          "reputationImpact": 32,
+          "beanPriceMultiplier": 0.94
+        },
+        {
+          "text": "Leiharbeiter anheuern und Aussperrung anordnen (-10.000 €)",
+          "cashImpact": -10000,
+          "reputationImpact": -40,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_48",
+      "title": "Börsengang (IPO) an der Frankfurter Börse",
+      "description": "Das 'Gong-Schlagen' steht an: Dein Unternehmen geht an das öffentliche Parkett.",
+      "eraRequirement": 4,
+      "choices": [
+        {
+          "text": "Konservative Bewertung mit verlässlichen Ankern (+250.000 €)",
+          "cashImpact": 250000,
+          "reputationImpact": 25,
+          "beanPriceMultiplier": 0.95
+        },
+        {
+          "text": "Aggressive Tech-Multiples ansetzen für maximales Kapital (+420.000 €)",
+          "cashImpact": 420000,
+          "reputationImpact": -10,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_49",
+      "title": "Zellulärer Laborkaffee erreicht Kostenparität",
+      "description": "Bioreaktoren erzeugen Arabica-Zellen ohne Baum und ohne Wasser. Die traditionelle Agrarwelt zittert.",
+      "eraRequirement": 5,
+      "choices": [
+        {
+          "text": "Das führende Cellular-Coffee-Patentkonsortium aufkaufen (-250.000 €)",
+          "cashImpact": -250000,
+          "reputationImpact": 40,
+          "beanPriceMultiplier": 0.7
+        },
+        {
+          "text": "Traditionelle Hochlandbauern mit 'Real-Tree'-Siegel schützen (-80.000 €)",
+          "cashImpact": -80000,
+          "reputationImpact": 50,
+          "beanPriceMultiplier": 1.2
+        }
+      ]
+    },
+    {
+      "id": "ev_50",
+      "title": "Quanten-Sensorik optimiert jede Molekül-Röstung",
+      "description": "Ein Spin-off des MIT installiert Spektrometer, die jeden Maillard-Reaktionsschritt in Echtzeit steuern.",
+      "eraRequirement": 5,
+      "choices": [
+        {
+          "text": "Technologie global in allen 18 Fabriken ausrollen (-180.000 €)",
+          "cashImpact": -180000,
+          "reputationImpact": 35,
+          "beanPriceMultiplier": 0.75
+        },
+        {
+          "text": "Nur im Ultra-Luxury Segment für Sonderchargen nutzen (-40.000 €)",
+          "cashImpact": 60000,
+          "reputationImpact": 20,
+          "beanPriceMultiplier": 0.9
+        }
+      ]
+    },
+    {
+      "id": "ev_51",
+      "title": "Geopolitische Blockbildung & Exportembargos",
+      "description": "Ein Handelskrieg zwischen Rohstoffnationen und Konsumgüterblöcken blockiert weltweite Verschiffungen.",
+      "eraRequirement": 5,
+      "choices": [
+        {
+          "text": "Diplomatische Sonderkorridore mit Regierungsbonds sichern (-300.000 €)",
+          "cashImpact": -300000,
+          "reputationImpact": 25,
+          "beanPriceMultiplier": 1.4
+        },
+        {
+          "text": "Autarke hydroponische Megafarmen auf eigenem Kontinent errichten (-500.000 €)",
+          "cashImpact": -500000,
+          "reputationImpact": 45,
+          "beanPriceMultiplier": 0.8
+        }
+      ]
+    },
+    {
+      "id": "ev_52",
+      "title": "Übernahme des größten Rohstoffhändlers der Welt",
+      "description": "Die Möglichkeit entsteht, 51 % der Anteile an einem Schweizer Kaffee-Trading-Giganten zu schlucken.",
+      "eraRequirement": 5,
+      "choices": [
+        {
+          "text": "Milliardenschwere Mega-Fusion stemmen (-450.000 € Eigenkapital)",
+          "cashImpact": -450000,
+          "reputationImpact": 30,
+          "beanPriceMultiplier": 0.65
+        },
+        {
+          "text": "Zu riskant: Angebot verstreichen lassen",
+          "cashImpact": 50000,
+          "reputationImpact": 0,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_53",
+      "title": "KI-Barista-Roboter dominieren Flughäfen",
+      "description": "Vollautonome Bionic-Kioske brühen 120 perfekte Tassen pro Stunde ohne Pausen und Personalkosten.",
+      "eraRequirement": 5,
+      "choices": [
+        {
+          "text": "500 Standorte an internationalen Drehkreuzen eröffnen (-320.000 €)",
+          "cashImpact": 520000,
+          "reputationImpact": 15,
+          "beanPriceMultiplier": 0.9
+        },
+        {
+          "text": "Fokus auf menschliche Barista-Meister als Luxusgut bewahren",
+          "cashImpact": -50000,
+          "reputationImpact": 45,
+          "beanPriceMultiplier": 1.1
+        }
+      ]
+    },
+    {
+      "id": "ev_54",
+      "title": "Klimawandel verschiebt Kaffeegürtel nach Norden",
+      "description": "Süditalien und Andalusien beginnen mit dem ersten kommerziellen Kaffeeanbau Europas.",
+      "eraRequirement": 5,
+      "choices": [
+        {
+          "text": "10.000 Hektar Land in Sizilien und Spanien aufkaufen (-280.000 €)",
+          "cashImpact": -280000,
+          "reputationImpact": 35,
+          "beanPriceMultiplier": 0.85
+        },
+        {
+          "text": "Althergebrachte Anbaugebiete in den Tropen mit Schattenbäumen retten (-150.000 €)",
+          "cashImpact": -150000,
+          "reputationImpact": 55,
+          "beanPriceMultiplier": 1.05
+        }
+      ]
+    },
+    {
+      "id": "ev_55",
+      "title": "Entwicklung von koffeinfreier Natur-Arabica",
+      "description": "Gentechnisch präzise editiertes Saatgut (CRISPR) wächst komplett ohne Koffein, aber mit 100 % Aroma.",
+      "eraRequirement": 5,
+      "choices": [
+        {
+          "text": "Exklusive weltweite Vermarktungsrechte sichern (-220.000 €)",
+          "cashImpact": 380000,
+          "reputationImpact": 25,
+          "beanPriceMultiplier": 0.92
+        },
+        {
+          "text": "Öffentliches Patent für alle Bauern spenden (-100.000 €)",
+          "cashImpact": -100000,
+          "reputationImpact": 60,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_56",
+      "title": "Spekulationsblase an der Terminbörse platzt",
+      "description": "Hedgefonds liquidieren panikartig Agrar-Positionen. Der Kaffeepreis stürzt ins Bodenlose.",
+      "eraRequirement": 5,
+      "choices": [
+        {
+          "text": "Globale physische Rohkaffee-Reserven leer kaufen (+350.000 € Buchwert)",
+          "cashImpact": 350000,
+          "reputationImpact": -20,
+          "beanPriceMultiplier": 0.6
+        },
+        {
+          "text": "Mindestabnahmegarantien einhalten, um Erzeuger vor Ruin zu bewahren (-120.000 €)",
+          "cashImpact": -120000,
+          "reputationImpact": 50,
+          "beanPriceMultiplier": 0.85
+        }
+      ]
+    },
+    {
+      "id": "ev_57",
+      "title": "Weltraum-Röstung im Erdorbit",
+      "description": "Ein Experiment auf der privaten Raumstation zeigt: Mikrogravitations-Röstung erzeugt perfekte Sphären-Konvektion.",
+      "eraRequirement": 5,
+      "choices": [
+        {
+          "text": "Orbitalen Röst-Satelliten ins All schießen (-600.000 €)",
+          "cashImpact": -600000,
+          "reputationImpact": 60,
+          "beanPriceMultiplier": 0.9
+        },
+        {
+          "text": "Als exzentrische PR-Spinnerei abtun",
+          "cashImpact": 0,
+          "reputationImpact": -10,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_58",
+      "title": "Anti-Trust-Klage: Weltmonopol droht Zerschlagung",
+      "description": "Die Wettbewerbskommissionen der USA und EU werfen deinem Imperium Marktbeherrschung von 48 % vor.",
+      "eraRequirement": 5,
+      "choices": [
+        {
+          "text": "Konzern in 3 eigenständige Sparten aufspalten (-200.000 € Restrukturierung)",
+          "cashImpact": 180000,
+          "reputationImpact": 30,
+          "beanPriceMultiplier": 0.95
+        },
+        {
+          "text": "Heerscharen von Lobbyisten und Starjuristen mobilisieren (-400.000 €)",
+          "cashImpact": -400000,
+          "reputationImpact": -40,
+          "beanPriceMultiplier": 0.88
+        }
+      ]
+    },
+    {
+      "id": "ev_59",
+      "title": "Billion-Dollar-Klimaresilienz-Stiftung",
+      "description": "Du gründest die größte ökologische Stiftung der Menschheitsgeschichte zur Rettung des Kaffee-Genoms.",
+      "eraRequirement": 5,
+      "choices": [
+        {
+          "text": "Historische Spende von 750.000 € übergeben",
+          "cashImpact": -750000,
+          "reputationImpact": 100,
+          "beanPriceMultiplier": 0.9
+        },
+        {
+          "text": "Stiftungsgründung auf spätere Geschäftsjahre verschieben",
+          "cashImpact": 100000,
+          "reputationImpact": -30,
+          "beanPriceMultiplier": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ev_60",
+      "title": "Das Ultimative Kaffee-Monopol erreicht",
+      "description": "Vom Sämling im äthiopischen Hochwald bis zur Tasse auf dem Mars-Shuttle: Dein Imperium kontrolliert jeden Schluck.",
+      "eraRequirement": 5,
+      "choices": [
+        {
+          "text": "Den finalen Triumph erklären & Weltherrschaft feiern (+1.000.000 €)",
+          "cashImpact": 1000000,
+          "reputationImpact": 50,
+          "beanPriceMultiplier": 0.7
+        },
+        {
+          "text": "Konzern in eine gemeinwohlorientierte Stiftung umwandeln",
+          "cashImpact": -200000,
+          "reputationImpact": 150,
+          "beanPriceMultiplier": 0.8
+        }
+      ]
+    }
+  ],
+  "startups": [
+    {
+      "id": "su_01",
+      "name": "NanoOat Tech Corp",
+      "sector": "Pflanzliche Milchalternativen",
+      "valuation": 38000000,
+      "riskLevel": "medium",
+      "requiredFunding": 6500000,
+      "annualGrowthRate": 0.58
+    },
+    {
+      "id": "su_02",
+      "name": "BaristaBotics AI",
+      "sector": "Humanoide Barista-Robotik",
+      "valuation": 65000000,
+      "riskLevel": "high",
+      "requiredFunding": 14000000,
+      "annualGrowthRate": 0.85
+    },
+    {
+      "id": "su_03",
+      "name": "HydroBean Vertical Farming",
+      "sector": "Indoor-Hydroponik Agritech",
+      "valuation": 92000000,
+      "riskLevel": "high",
+      "requiredFunding": 22000000,
+      "annualGrowthRate": 0.72
+    },
+    {
+      "id": "su_04",
+      "name": "BioPod Compostable Plastics",
+      "sector": "Kreislaufwirtschaft & Biopolymere",
+      "valuation": 28000000,
+      "riskLevel": "low",
+      "requiredFunding": 4500000,
+      "annualGrowthRate": 0.35
+    },
+    {
+      "id": "su_05",
+      "name": "CelluCoffee Laboratories",
+      "sector": "Zelluläre Landwirtschaft & Bio-Reaktoren",
+      "valuation": 140000000,
+      "riskLevel": "unicorn_shot",
+      "requiredFunding": 45000000,
+      "annualGrowthRate": 1.65
+    },
+    {
+      "id": "su_06",
+      "name": "MycoFerment Aromatics",
+      "sector": "Myzel-Fermentation & Geschmackssynthese",
+      "valuation": 42000000,
+      "riskLevel": "medium",
+      "requiredFunding": 8000000,
+      "annualGrowthRate": 0.62
+    },
+    {
+      "id": "su_07",
+      "name": "SonicCold Ultrasound Systems",
+      "sector": "Ultraschall-Hochgeschwindigkeitsextraktion",
+      "valuation": 31000000,
+      "riskLevel": "low",
+      "requiredFunding": 5000000,
+      "annualGrowthRate": 0.4
+    },
+    {
+      "id": "su_08",
+      "name": "AeroDrop Drone Logistics",
+      "sector": "Autonome Heißgetränke-Lieferung",
+      "valuation": 54000000,
+      "riskLevel": "medium",
+      "requiredFunding": 11000000,
+      "annualGrowthRate": 0.68
+    },
+    {
+      "id": "su_09",
+      "name": "OrbitRoast Space Technologies",
+      "sector": "Schwerelosigkeits-Röstverfahren",
+      "valuation": 180000000,
+      "riskLevel": "unicorn_shot",
+      "requiredFunding": 60000000,
+      "annualGrowthRate": 2.1
+    },
+    {
+      "id": "su_10",
+      "name": "GenomeBrew Gene Editing",
+      "sector": "CRISPR-Klimaresistenz Saatgut",
+      "valuation": 115000000,
+      "riskLevel": "unicorn_shot",
+      "requiredFunding": 32000000,
+      "annualGrowthRate": 1.45
+    },
+    {
+      "id": "su_11",
+      "name": "SatTrack Supply Chain AI",
+      "sector": "Satellitenüberwachung & EUDR-Compliance",
+      "valuation": 24000000,
+      "riskLevel": "low",
+      "requiredFunding": 3800000,
+      "annualGrowthRate": 0.32
+    },
+    {
+      "id": "su_12",
+      "name": "PureWater Desalination Micro",
+      "sector": "Kaffee-Wasserchemie & Nanofiltration",
+      "valuation": 35000000,
+      "riskLevel": "low",
+      "requiredFunding": 5500000,
+      "annualGrowthRate": 0.38
+    },
+    {
+      "id": "su_13",
+      "name": "RoastSense Quantum IoT",
+      "sector": "Industrielle Infrarot-Sensorik",
+      "valuation": 48000000,
+      "riskLevel": "medium",
+      "requiredFunding": 9000000,
+      "annualGrowthRate": 0.55
+    },
+    {
+      "id": "su_14",
+      "name": "SolarRoast Concentrator",
+      "sector": "Erneuerbare Thermo-Solarröstung",
+      "valuation": 22000000,
+      "riskLevel": "medium",
+      "requiredFunding": 4000000,
+      "annualGrowthRate": 0.44
+    },
+    {
+      "id": "su_15",
+      "name": "ChaffCycle Carbon Concrete",
+      "sector": "Kaffeesilberhäutchen-Baustoffrecycling",
+      "valuation": 19000000,
+      "riskLevel": "low",
+      "requiredFunding": 3200000,
+      "annualGrowthRate": 0.28
+    },
+    {
+      "id": "su_16",
+      "name": "BrainWave Focus NeuroDrink",
+      "sector": "Nootropika & Funktionelle Kaffees",
+      "valuation": 72000000,
+      "riskLevel": "high",
+      "requiredFunding": 16000000,
+      "annualGrowthRate": 0.95
+    },
+    {
+      "id": "su_17",
+      "name": "BlockBean Origin Ledger",
+      "sector": "Dezentrale Erzeuger-Mikrofinanzierung",
+      "valuation": 26000000,
+      "riskLevel": "medium",
+      "requiredFunding": 4800000,
+      "annualGrowthRate": 0.48
+    },
+    {
+      "id": "su_18",
+      "name": "DecafEnzyme BioCatalysis",
+      "sector": "Chemiefreie Enzym-Entkoffeinierung",
+      "valuation": 58000000,
+      "riskLevel": "high",
+      "requiredFunding": 12500000,
+      "annualGrowthRate": 0.78
+    },
+    {
+      "id": "su_19",
+      "name": "ColdCan TurboFreeze Packaging",
+      "sector": "Selbstkühlende Dosenverpackungen",
+      "valuation": 84000000,
+      "riskLevel": "high",
+      "requiredFunding": 19000000,
+      "annualGrowthRate": 0.88
+    },
+    {
+      "id": "su_20",
+      "name": "ApexSynthetics Molecular Bean",
+      "sector": "Synthetische Bohnenarchitektur ohne Pflanze",
+      "valuation": 210000000,
+      "riskLevel": "unicorn_shot",
+      "requiredFunding": 75000000,
+      "annualGrowthRate": 2.45
+    }
+  ],
+  "publicCompanies": [
+    {
+      "id": "pc_01",
+      "name": "AeroRoast Global Group SE",
+      "ticker": "ARRO",
+      "sharePrice": 142.5,
+      "marketCap": 48500000000,
+      "sharesOutstanding": 340350877,
+      "dividendYield": 0.024,
+      "description": "Europäischer Marktführer für industrielle Röstungen und Systemgastronomie-Lieferverträge."
+    },
+    {
+      "id": "pc_02",
+      "name": "SwissBean Holdings AG",
+      "ticker": "SWBN",
+      "sharePrice": 285.0,
+      "marketCap": 94000000000,
+      "sharesOutstanding": 329824561,
+      "dividendYield": 0.031,
+      "description": "Multinationaler Lebensmittelgigant mit dominierendem Kapsel- und Instantkaffee-Portfolio."
+    },
+    {
+      "id": "pc_03",
+      "name": "Equatorial Commodities NV",
+      "ticker": "EQCO",
+      "sharePrice": 68.2,
+      "marketCap": 22400000000,
+      "sharesOutstanding": 328445747,
+      "dividendYield": 0.045,
+      "description": "Einer der weltgrößten Rohkaffee-Händler mit Seehafen-Terminals in Santos, Antwerpen und Da Nang."
+    },
+    {
+      "id": "pc_04",
+      "name": "Pacific Rim Roasters Ltd",
+      "ticker": "PRIM",
+      "sharePrice": 54.8,
+      "marketCap": 16800000000,
+      "sharesOutstanding": 306569343,
+      "dividendYield": 0.028,
+      "description": "Führende Kaffeekette im asiatisch-pazifischen Raum mit rasantem Filialwachstum in China und Japan."
+    },
+    {
+      "id": "pc_05",
+      "name": "Nordic Roast Group AB",
+      "ticker": "NRDC",
+      "sharePrice": 96.4,
+      "marketCap": 12200000000,
+      "sharesOutstanding": 126556016,
+      "dividendYield": 0.035,
+      "description": "Skandinavischer Spezialist für helle Röstungen (Nordic Light Roast) und Bio-Zertifizierungen."
+    },
+    {
+      "id": "pc_06",
+      "name": "Trans-Atlantic Coffee Logistics Inc",
+      "ticker": "TACL",
+      "sharePrice": 42.1,
+      "marketCap": 8900000000,
+      "sharesOutstanding": 211401425,
+      "dividendYield": 0.052,
+      "description": "Spezialisierter Logistiker für klimatisierte Container-Schifffahrt und Kaffeesilo-Lagerhäuser."
+    },
+    {
+      "id": "pc_07",
+      "name": "Tokyo Kissaten Corp",
+      "ticker": "TKIS",
+      "sharePrice": 1840.0,
+      "marketCap": 15300000000,
+      "sharesOutstanding": 8315217,
+      "dividendYield": 0.018,
+      "description": "Traditionsreiche japanische Premium-Kette für Siphon-Kaffee, Holzkohleröstung und Luxuscafés."
+    },
+    {
+      "id": "pc_08",
+      "name": "BioCafe Biotech Industries Inc",
+      "ticker": "BCBI",
+      "sharePrice": 78.9,
+      "marketCap": 19800000000,
+      "sharesOutstanding": 250950570,
+      "dividendYield": 0.012,
+      "description": "Agrar-Biotech-Konzern mit Patenten auf hitzeresistente Kaffeepflanzen und sterile Mikroklone."
+    },
+    {
+      "id": "pc_09",
+      "name": "Antillean Bean Exchange Corp",
+      "ticker": "ABEX",
+      "sharePrice": 34.6,
+      "marketCap": 6400000000,
+      "sharesOutstanding": 184971098,
+      "dividendYield": 0.048,
+      "description": "Terminbörsenmakler und Verwalter von Kaffeedepots in der Karibik und Mittelamerika."
+    },
+    {
+      "id": "pc_10",
+      "name": "Barista Robotics International AG",
+      "ticker": "BROB",
+      "sharePrice": 112.0,
+      "marketCap": 26500000000,
+      "sharesOutstanding": 236607142,
+      "dividendYield": 0.015,
+      "description": "Hersteller von High-Speed Espresso-Robotern für Bahnhöfe, Einkaufszentren und Flughäfen."
+    },
+    {
+      "id": "pc_11",
+      "name": "TerraVerde AgroTech Ltd",
+      "ticker": "TVRD",
+      "sharePrice": 51.3,
+      "marketCap": 14200000000,
+      "sharesOutstanding": 276803118,
+      "dividendYield": 0.038,
+      "description": "Verwaltung von über 120.000 Hektar regenerativer Kaffee-Mischwaldplantagen in Südamerika."
+    },
+    {
+      "id": "pc_12",
+      "name": "Caffè Reale Milano SpA",
+      "ticker": "CRMI",
+      "sharePrice": 88.5,
+      "marketCap": 11700000000,
+      "sharesOutstanding": 132203389,
+      "dividendYield": 0.04,
+      "description": "Italienisches Traditionshaus mit weltweit geschätzten Espresso-Blends für die Gastronomie."
+    },
+    {
+      "id": "pc_13",
+      "name": "Seattle Supreme Coffee Inc",
+      "ticker": "SSCP",
+      "sharePrice": 165.2,
+      "marketCap": 115000000000,
+      "sharesOutstanding": 696125908,
+      "dividendYield": 0.022,
+      "description": "Der weltweite Gigant des Systemkaffees mit über 35.000 Filialen auf allen Kontinenten."
+    },
+    {
+      "id": "pc_14",
+      "name": "Highland Harvest Trading NV",
+      "ticker": "HHLD",
+      "sharePrice": 61.4,
+      "marketCap": 9800000000,
+      "sharesOutstanding": 159609120,
+      "dividendYield": 0.042,
+      "description": "Direktimporteur für Single-Origin Spezialitätenkaffees aus Afrika und Ozeanien."
+    },
+    {
+      "id": "pc_15",
+      "name": "Global Cup Franchise Corp",
+      "ticker": "GCUP",
+      "sharePrice": 38.8,
+      "marketCap": 7900000000,
+      "sharesOutstanding": 203608247,
+      "dividendYield": 0.036,
+      "description": "Franchise-Betreibergesellschaft mit schnelldrehenden Drive-Through Kaffeekiosken in Vorstädten."
+    }
+  ]
+}
