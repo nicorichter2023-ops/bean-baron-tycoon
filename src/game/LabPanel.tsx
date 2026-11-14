@@ -38,7 +38,7 @@ export function LabPanel() {
           <div className="lab-stat"><span>Qualität</span><strong>{recipeQuality(draft)} / 23</strong></div>
           <div className="lab-stat"><span>≈ Tassen/Wo</span><strong>{est}</strong></div>
         </div>
-        <Button className="h-11" onClick={() => setBoth((g, e) => { const r = addRecipe(e, { name, base, milk, extra, price, createdWeek: g.week }); return typeof r === 'string' ? r : { game: g, exp: r }; })}>Signature Drink einführen</Button>
+        <Button className="h-11" onClick={() => setBoth((g, e) => { const r = addRecipe(e, { name, base, milk, extra, price, createdWeek: g.week }); if (typeof r === 'string') return r; window.__lovableEvents?.track?.('project.recipe_created', { base, milk, extra, price, unit_cost: cost, week: g.week, recipe_count: r.recipes.length }); return { game: g, exp: r }; })}>Signature Drink einführen</Button>
       </div>
       <p className="mt-2 text-[11px] text-muted-foreground">Tipp: Jede Stadtart hat Vorlieben – {Object.entries(BIOME_TASTE).map(([b, t]) => `${BIOME_LABEL[b]}: ${MILKS[t.milk].label}, ${BASES[t.base].label}`).join(' · ')}.</p>
     </section>
@@ -47,7 +47,7 @@ export function LabPanel() {
       <h2 className="flex items-center gap-2"><Megaphone className="h-4 w-4 text-primary" /> Marketing-Kampagnen</h2>
       {cities.length === 0 ? <p className="text-xs text-muted-foreground">Eröffne zuerst eine Filiale.</p> : <>
         <select className={`${sel} mt-2`} aria-label="Stadt für Kampagne" value={cityId} onChange={(e) => setCityId(e.target.value)}>{cities.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</select>
-        <div className="mt-2 grid gap-2">{(Object.keys(CAMPAIGNS) as CampaignKind[]).map((k) => { const c = CAMPAIGNS[k]; return <Button key={k} variant="outline" className="h-auto min-h-11 justify-between py-2" onClick={() => setBoth((g, e) => startCampaign(g, e, k, cityId))}><span className="text-left">{c.label}<small className="block text-[11px] text-muted-foreground">+{Math.round(c.boost * 100)} % Kundschaft · {c.weeks} Wo · +{String(c.reputation).replace(".", ",")} Ruf/Wo</small></span><strong>{eur(c.cost)}</strong></Button>; })}</div>
+        <div className="mt-2 grid gap-2">{(Object.keys(CAMPAIGNS) as CampaignKind[]).map((k) => { const c = CAMPAIGNS[k]; return <Button key={k} variant="outline" className="h-auto min-h-11 justify-between py-2" onClick={() => setBoth((g, e) => { const r = startCampaign(g, e, k, cityId); if (typeof r !== 'string') window.__lovableEvents?.track?.('project.campaign_started', { kind: k, city_id: cityId, cost: c.cost, week: g.week, store_count: g.stores.length }); return r; })}><span className="text-left">{c.label}<small className="block text-[11px] text-muted-foreground">+{Math.round(c.boost * 100)} % Kundschaft · {c.weeks} Wo · +{String(c.reputation).replace(".", ",")} Ruf/Wo</small></span><strong>{eur(c.cost)}</strong></Button>; })}</div>
       </>}
       {exp.campaigns.length > 0 && <ul className="mt-3 space-y-1 text-xs">{exp.campaigns.map((c) => <li key={c.id}>📣 {CAMPAIGNS[c.kind].label} in {state.cities.find((x) => x.id === c.cityId)?.name} – noch {c.weeksLeft} Wo</li>)}</ul>}
       {exp.lastBonus > 0 && <p className="mt-2 text-xs text-muted-foreground">Letzte Woche: +{eur(exp.lastBonus)} durch Labor & Marketing</p>}
