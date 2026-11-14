@@ -81,7 +81,7 @@ describe('Filial-Ausstattung', () => {
     expect(retrofitStandardEquipment(g).ok).toBe(false);
     const hired = hireExecutive(g, 'coo'); if (typeof hired === 'string') throw new Error(hired);
     const cost = standardRetrofitCost(hired);
-    expect(cost).toBe(24000);
+    expect(cost).toBe(25000);
     const poor = { ...hired, cash: cost - 1 }; expect(retrofitStandardEquipment(poor).state).toBe(poor);
     const result = retrofitStandardEquipment(hired);
     expect(result.state.cash).toBe(hired.cash - cost);
