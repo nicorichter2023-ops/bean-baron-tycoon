@@ -8,7 +8,7 @@
 - [x] Alle Engine-Kürzel auf Deutsch übersetzen.
 - [x] Zufällige Ereignisse mit Auswahloptionen und Auswirkungen als Dialog beim Rundenwechsel umsetzen.
 - [x] Zentrale Spielabläufe und Handy-Darstellung testen.
-- [ ] Isometrische Grafiken als einzelne Sprites unter `public/assets/` bereitstellen.
-- [ ] Filialen nach Biom und Ausbaustufe sowie Städte mit regionalen Miniaturen darstellen.
-- [ ] Rösterei, Börse, Hafen und Holding-Tower in den passenden Tabs einbinden.
-- [ ] Installierbare Vollbild-App für Galaxy S21 FE konfigurieren und mobil prüfen.
+- [x] Isometrische Grafiken als einzelne Sprites unter `public/assets/` bereitstellen.
+- [x] Filialen nach Biom und Ausbaustufe sowie Städte mit regionalen Miniaturen darstellen.
+- [x] Rösterei, Börse, Hafen und Holding-Tower in den passenden Tabs einbinden.
+- [x] Installierbare Vollbild-App für Galaxy S21 FE konfigurieren und mobil prüfen.
