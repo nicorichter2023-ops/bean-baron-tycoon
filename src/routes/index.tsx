@@ -37,7 +37,7 @@ function GameWorld() {
   const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("empire");
   const [place, setPlace] = useState<Place>('cafe');
   useEffect(() => { if ('serviceWorker' in navigator && import.meta.env.PROD) navigator.serviceWorker.register('/sw.js').catch(() => undefined); }, []);
-  const destinations: Place[] = tab === 'empire' ? ['cafe', 'terrace', 'holding'] : tab === 'market' ? ['roastery', 'port', 'exchange', 'farm'] : ['office', 'holding', 'negotiation'];
+  const destinations: Place[] = tab === 'empire' ? ['cafe', 'terrace', 'lab', 'holding'] : tab === 'market' ? ['roastery', 'port', 'exchange', 'farm'] : ['office', 'holding', 'negotiation'];
   return (
       <div className="game-world mx-auto min-h-dvh max-w-5xl bg-background">
         <TopBar />
