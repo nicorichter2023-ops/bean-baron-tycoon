@@ -28,3 +28,5 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+- Game logic lives in src/engine/ (pure state functions + localStorage save with schemaVersion migrations), content in src/data/; UI in src/game/ only calls engine actions — keeps engine/content swappable.
