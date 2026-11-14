@@ -136,12 +136,12 @@ describe("Coffee Empire Inhalte und Spieleraktionen", () => {
     expect(translateEngineNote("EXTERNAL_SUPPLY_ONLY")).toBe("Bohnen über Großhandel bezogen (Aufpreis).");
   });
 
-  it("speichert Woche und schemaVersion 3 und lädt beides wieder", () => {
+  it("speichert Woche und schemaVersion 4 und lädt beides wieder", () => {
     localStorage.clear();
     const turned = processTurn(createInitialState());
     saveGame(turned);
     const loaded = loadGame();
-    expect(loaded.schemaVersion).toBe(3);
+    expect(loaded.schemaVersion).toBe(4);
     expect(loaded.week).toBe(2);
     expect(loaded.pendingEvent?.id).toBe(turned.pendingEvent?.id);
   });
