@@ -28,9 +28,9 @@ export function LabPanel() {
       <p className="text-xs text-muted-foreground">Kreiere bis zu {MAX_RECIPES} Signature Drinks. Sie werden jede Woche in allen Filialen verkauft.</p>
       <div className="mt-3 grid gap-2">
         <input className={sel} placeholder="Name, z. B. Berliner Hafer-Flat" value={name} maxLength={32} onChange={(e) => setName(e.target.value)} />
-        <select className={sel} aria-label="Brühmethode" value={base} onChange={(e) => setBase(e.target.value as Base)}>{Object.entries(BASES).map(([k, v]) => <option key={k} value={k}>{v.label} · {eur(v.cost)}</option>)}</select>
-        <select className={sel} aria-label="Milch" value={milk} onChange={(e) => setMilk(e.target.value as Milk)}>{Object.entries(MILKS).map(([k, v]) => <option key={k} value={k}>{v.label} · {eur(v.cost)}</option>)}</select>
-        <select className={sel} aria-label="Extra" value={extra} onChange={(e) => setExtra(e.target.value as Extra)}>{Object.entries(EXTRAS).map(([k, v]) => <option key={k} value={k}>{v.label} · {eur(v.cost)}</option>)}</select>
+        <select className={sel} aria-label="Brühmethode" value={base} onChange={(e) => setBase(e.target.value as Base)}>{Object.entries(BASES).map(([k, v]) => <option key={k} value={k}>{v.label} · {v.cost.toFixed(2).replace(".", ",")} €</option>)}</select>
+        <select className={sel} aria-label="Milch" value={milk} onChange={(e) => setMilk(e.target.value as Milk)}>{Object.entries(MILKS).map(([k, v]) => <option key={k} value={k}>{v.label} · {v.cost.toFixed(2).replace(".", ",")} €</option>)}</select>
+        <select className={sel} aria-label="Extra" value={extra} onChange={(e) => setExtra(e.target.value as Extra)}>{Object.entries(EXTRAS).map(([k, v]) => <option key={k} value={k}>{v.label} · {v.cost.toFixed(2).replace(".", ",")} €</option>)}</select>
         <label className="text-xs text-muted-foreground">Verkaufspreis: <strong className="text-foreground">{price.toFixed(2).replace('.', ',')} €</strong> (fair: {fairPrice(draft).toFixed(2).replace('.', ',')} €)
           <input type="range" className="mt-1 h-11 w-full accent-primary" min={1} max={9} step={0.1} value={price} onChange={(e) => setPrice(+e.target.value)} /></label>
         <div className="grid grid-cols-3 gap-2 text-center text-xs">
@@ -47,7 +47,7 @@ export function LabPanel() {
       <h2 className="flex items-center gap-2"><Megaphone className="h-4 w-4 text-primary" /> Marketing-Kampagnen</h2>
       {cities.length === 0 ? <p className="text-xs text-muted-foreground">Eröffne zuerst eine Filiale.</p> : <>
         <select className={`${sel} mt-2`} aria-label="Stadt für Kampagne" value={cityId} onChange={(e) => setCityId(e.target.value)}>{cities.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</select>
-        <div className="mt-2 grid gap-2">{(Object.keys(CAMPAIGNS) as CampaignKind[]).map((k) => { const c = CAMPAIGNS[k]; return <Button key={k} variant="outline" className="h-auto min-h-11 justify-between py-2" onClick={() => setBoth((g, e) => startCampaign(g, e, k, cityId))}><span className="text-left">{c.label}<small className="block text-[11px] text-muted-foreground">+{Math.round(c.boost * 100)} % Kundschaft · {c.weeks} Wo · +{c.reputation} Ruf/Wo</small></span><strong>{eur(c.cost)}</strong></Button>; })}</div>
+        <div className="mt-2 grid gap-2">{(Object.keys(CAMPAIGNS) as CampaignKind[]).map((k) => { const c = CAMPAIGNS[k]; return <Button key={k} variant="outline" className="h-auto min-h-11 justify-between py-2" onClick={() => setBoth((g, e) => startCampaign(g, e, k, cityId))}><span className="text-left">{c.label}<small className="block text-[11px] text-muted-foreground">+{Math.round(c.boost * 100)} % Kundschaft · {c.weeks} Wo · +{String(c.reputation).replace(".", ",")} Ruf/Wo</small></span><strong>{eur(c.cost)}</strong></Button>; })}</div>
       </>}
       {exp.campaigns.length > 0 && <ul className="mt-3 space-y-1 text-xs">{exp.campaigns.map((c) => <li key={c.id}>📣 {CAMPAIGNS[c.kind].label} in {state.cities.find((x) => x.id === c.cityId)?.name} – noch {c.weeksLeft} Wo</li>)}</ul>}
       {exp.lastBonus > 0 && <p className="mt-2 text-xs text-muted-foreground">Letzte Woche: +{eur(exp.lastBonus)} durch Labor & Marketing</p>}
