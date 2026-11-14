@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Banknote, Building, LineChart, Lock, RotateCcw, Rocket } from "lucide-react";
+import { Banknote, Building, Lock, RotateCcw, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { acquireRival, acquireStartup, buyShares, investInStartup, repayLoan, resetGame, sellShares, takeLoan } from "@/engine";
 import { createInitialState } from "@/data";
