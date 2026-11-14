@@ -18,10 +18,12 @@ describe("Spielgrafiken", () => {
     }
   });
 
-  it("nutzt Berlins Wahrzeichen und für nicht gelieferte Motive die Biom-Miniatur", () => {
+  it("gibt allen 20 Metropolen eigene Wahrzeichen und Badges", () => {
     expect(getCityArtwork({ id: "berlin", name: "Berlin", biome: "european_classic", landmarkName: "Brandenburger Tor" }).src)
       .toBe("/assets/landmarks/berlin-brandenburger-tor.webp");
     expect(getCityArtwork({ id: "sao_paulo", name: "São Paulo", biome: "tropical_colonial", landmarkName: "Avenida Paulista" }).src)
-      .toBe("/assets/buildings/tropical-flagship.webp");
+      .toBe("/assets/landmarks/sao_paulo.webp");
+    expect(getCityArtwork({ id: "havanna", name: "Havanna", biome: "tropical_colonial", landmarkName: "x" }).badge)
+      .toBe("/assets/badges/havanna.webp");
   });
 });
