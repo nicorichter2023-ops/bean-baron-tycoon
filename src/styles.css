@@ -347,3 +347,4 @@ select, input { min-height:44px; }
 .loadout-grid button { min-height:76px; justify-content:center; }
 .city-marker img { width:36px; height:36px; }
 .scene-heading img, .scene-heading [class*="sprite"] { width:var(--sprite-md); height:var(--sprite-md); }
+.store-tile img { mix-blend-mode:normal; background:var(--artwork, #f4ead8); padding:3px; }
