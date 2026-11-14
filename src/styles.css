@@ -313,3 +313,24 @@ select, input { min-height:44px; }
 .district-tiles span { font-size:11px; }
 .district-tiles small { display:block; font-size:9px; color:var(--muted-foreground); }
 .district-tiles .live-dot { position:absolute; top:6px; right:6px; }
+
+/* Galaxy S21 FE (360×780 CSS px, dpr 3): unified sizing scale */
+@media (max-width:420px) {
+  .hud { padding-block:6px; }
+  .hud img { width:22px; height:22px; }
+  .scene-heading h1 { font-size:22px; line-height:1.15; }
+  .location-switch { display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; }
+  .location-switch button { flex-shrink:0; min-height:44px; font-size:12px; }
+  .scene-actions button, .store-selector select { min-height:48px; }
+  .scene-metrics strong { font-size:13px; }
+  .art-strip img, .loadout-grid img, .district-tiles img { width:48px; height:48px; }
+  .loadout-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  .loadout-grid button { min-height:72px; }
+  .loadout-grid span, .district-tiles small, .city-directory small { font-size:10px; }
+  .city-directory button { height:64px; min-height:44px; }
+  .city-directory img { width:40px; height:44px; }
+  .city-marker { width:44px; height:44px; }
+  .plot-marker { min-height:44px; }
+  .world-scroll { height:min(420px,52dvh); }
+  .action-sheet { max-height:88dvh; overflow-y:auto; padding-bottom:calc(16px + env(safe-area-inset-bottom)); }
+}
