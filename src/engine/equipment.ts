@@ -1,5 +1,6 @@
 import type { ActionResult, GameState, Store } from './types';
 import { calculateCompanyValuation } from './engine';
+import { hasExecutive } from './management';
 
 export type EquipmentLevel = 0 | 1 | 2;
 export type EquipmentCategory = 'espresso' | 'grinder' | 'interior';
@@ -54,7 +55,7 @@ export function standardRetrofitCost(g: GameState) {
   return g.stores.reduce((n, s) => n + (['espresso', 'grinder', 'interior'] as const).reduce((sum, c) => sum + equipmentUpgradeCost(s, c, 1), 0), 0);
 }
 export function retrofitStandardEquipment(g: GameState): ActionResult {
-  if (!g.management.executives.some(e => e.role === 'coo')) return { state: g, ok: false, reason: 'Für die gemeinsame Nachrüstung wird ein COO benötigt.' };
+  if (!hasExecutive(g, 'coo')) return { state: g, ok: false, reason: 'Für die gemeinsame Nachrüstung wird ein COO benötigt.' };
   const cost = standardRetrofitCost(g);
   if (!cost) return { state: g, ok: false, reason: 'Alle Filialen erfüllen bereits den Ausstattungsstandard.' };
   if (g.cash < cost) return { state: g, ok: false, reason: 'Nicht genug Barvermögen für die vollständige Nachrüstung.' };

@@ -55,6 +55,7 @@ const CITY_BUILDING_ART: Record<string, number[]> = {
   financial: [6, 7, 9, 12, 14, 16, 21, 28], residential: [0, 13, 17, 25, 31], student: [6, 14, 20, 21, 27],
 };
 export const cityBuildingArt = (zone: string, index: number) => {
-  const options = CITY_BUILDING_ART[zone] ?? [0]; return art('districts', options[index % options.length] ?? 0);
+  const options = CITY_BUILDING_ART[zone] ?? [0]; return art('districts', options[index % options.length] ?? 0).replace('.webp', '-map.webp');
 };
-export const airportArt = art('districts', 32);
+export const airportArt = art('districts', 32).replace('.webp', '-map.webp');
+export const MAP_PEOPLE = STREET_LIFE.map(src => src.replace('.webp', '-map.webp'));

@@ -25,7 +25,7 @@ export interface ManagementState {
 const money = (n: number) => Math.round(n * 100) / 100;
 export const createManagement = (cash: number, inventory = 0): ManagementState => ({ executives: [], delegation: false, openingCash: cash, openingInventory: inventory, journal: { operating: 0, investing: 0, financing: 0 }, oneOff: 0, beanPurchases: 0, history: [] });
 export const hasExecutive = (g: GameState, role: ExecutiveRole) => (g.management?.executives.some(e => e.role === role) ?? false) || (g.world?.candidates.some(id => MASTER.cSuiteCandidates.find(c => c.id === id)?.role.toLowerCase() === role) ?? false);
-export const effectiveInterestRate = (g: GameState) => Math.min(GAME_CONFIG.MAX_WEEKLY_INTEREST, Math.max(0, g.weeklyInterestRate)) * (hasExecutive(g, 'cfo') ? 0.8 : 1);
+export const effectiveInterestRate = (g: GameState) => Math.max(0, Math.min(GAME_CONFIG.MAX_WEEKLY_INTEREST, Math.max(0, g.weeklyInterestRate)) * (g.management.executives.some(e => e.role === 'cfo') ? 0.8 : 1) - g.world.candidates.reduce((n, id) => n + ((MASTER.cSuiteCandidates.find(c => c.id === id)?.perks as Record<string, number> | undefined)?.['loanInterestDiscount'] ?? 0) / 52, 0));
 export function hireExecutive(game: GameState, role: ExecutiveRole) {
   if (hasExecutive(game, role)) return 'Diese Position ist bereits besetzt.';
   const candidate = EXECUTIVES[role];
@@ -33,7 +33,7 @@ export function hireExecutive(game: GameState, role: ExecutiveRole) {
   return { ...game, cash: money(game.cash - candidate.fee), management: { ...(game.management ?? createManagement(game.cash)), executives: [...(game.management?.executives ?? []), { role, hiredWeek: game.week }] } };
 }
 export function releaseExecutive(game: GameState, role: ExecutiveRole): GameState {
-  return { ...game, management: { ...(game.management ?? createManagement(game.cash)), executives: (game.management?.executives ?? []).filter(e => e.role !== role), delegation: role === 'coo' ? false : game.management?.delegation ?? false } };
+  return { ...game, world: { ...game.world, candidates: game.world.candidates.filter(id => MASTER.cSuiteCandidates.find(c => c.id === id)?.role.toLowerCase() !== role) }, management: { ...(game.management ?? createManagement(game.cash)), executives: (game.management?.executives ?? []).filter(e => e.role !== role), delegation: role === 'coo' ? false : game.management?.delegation ?? false } };
 }
 export function balanceSheet(game: GameState) {
   const equipment = game.stores.reduce((n, s) => n + equipmentOf(s).bookValue, 0);
@@ -98,7 +98,8 @@ export function processManagementWeek(state: GameState, exp: ExpansionState) {
   const other = money(r.revenueCapital + expansion.exp.lastBonus + ingredients - recipeRevenue + flows.income);
   const taxableBonus = expansion.exp.lastBonus - salary + flows.income - flows.upkeep - flows.salaries;
   const basePreTax = r.costTax > 0 ? r.costTax / GAME_CONFIG.TAX_RATE : r.revenueCafes + r.revenueB2B - r.costSalaries - r.costRent - r.costBeans - r.costInterest - r.costLuxuryUpkeep;
-  const tax = money(Math.max(0, basePreTax + taxableBonus) * GAME_CONFIG.TAX_RATE);
+  const taxDiscount = state.world.candidates.reduce((n, id) => n + ((MASTER.cSuiteCandidates.find(c => c.id === id)?.perks as Record<string, number> | undefined)?.['taxRateDiscount'] ?? 0), 0);
+  const tax = money(Math.max(0, basePreTax + taxableBonus) * Math.max(0, GAME_CONFIG.TAX_RATE - taxDiscount));
   const gameCash = money(expansion.game.cash - salary + flows.income - flows.upkeep - flows.salaries - (tax - r.costTax));
   const inventoryChange = money(balanceSheet(turned).inventory - m.openingInventory);
   const cashOperating = money(m.journal.operating + gameCash - state.cash);

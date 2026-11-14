@@ -114,6 +114,7 @@ export function advanceWorld(g: GameState): GameState {
   const completed = world.research.filter(r => r.finishWeek <= g.week);
   world.technologies = [...world.technologies, ...completed.map(r => r.id)]; world.research = world.research.filter(r => r.finishWeek > g.week);
   let reputation = g.brandReputation;
+  for (const id of world.candidates) reputation += ((MASTER.cSuiteCandidates.find(c => c.id === id)?.perks as Record<string, number> | undefined)?.['brandAwarenessGrowthBonus'] ?? 0);
   for (const r of completed) { const t = MASTER.techTree.find(t => t.id === r.id); reputation += t?.effects.reputationBonus ?? 0; world.news.push(`${t?.name}: Forschung abgeschlossen.`); }
   for (const c of MASTER.cities) {
     const rival = MASTER.competitors[(g.week + stableHash(c.cityId)) % MASTER.competitors.length]; if (!rival || g.capitalMarkets.rivals.find(r => r.id === rival.id)?.acquired) continue;
@@ -135,4 +136,25 @@ export function worldWeeklyFlows(g: GameState) {
     if (a.kind === 'policy') income += (MASTER.cityPolitics.find(p => p.id === a.id) as { fixedB2BWeeklyRevenue?: number } | undefined)?.fixedB2BWeeklyRevenue ?? 0;
   }
   return { income, upkeep, salaries, harvest };
+}
+
+/** Consume protected quantities once, matching actual externally purchased roasted coffee. */
+export function applyWorldSupply(g: GameState): GameState {
+  const flows = worldWeeklyFlows(g);
+  const assets = g.world.assets.map(a => ({ ...a }));
+  let savings = 0;
+  if (!g.roastery.owned) {
+    let kg = g.stores.reduce((n, s) => n + s.customersServedLastWeek * .018 * (s.equipment.grinder ? .9 : 1) * worldEffects(g).beanFactor, 0);
+    for (const a of assets.filter(a => a.kind === 'future' && a.endWeek >= g.week && a.remainingKg > 0)) {
+      const p = MASTER.commodityFutures.find(p => p.id === a.id); if (!p) continue;
+      const used = Math.min(kg, a.remainingKg); kg -= used; a.remainingKg -= used;
+      savings += used * Math.max(0, g.market.futuresPricePerKg - p.lockPricePerKg) * 1.15 * 1.25 / .84;
+    }
+  }
+  // Harvest is valued at the current commodity price and retained in the ordinary bean inventory.
+  const r = g.lastReport;
+  const discount = Math.round(savings * 100) / 100;
+  const report = r ? { ...r, costBeans: r.costBeans - discount, costTotal: r.costTotal - discount, netIncome: r.netIncome + discount,
+    notes: [...r.notes, ...(discount ? [`Preisabsicherung: ${discount.toLocaleString('de-DE')} € Einkaufskosten gespart.`] : []), ...(flows.harvest ? [`Plantagen-Ernte: ${Math.round(flows.harvest)} kg.`] : [])] } : null;
+  return { ...g, cash: g.cash + discount, lastReport: report, world: { ...g.world, assets }, roastery: { ...g.roastery, rawBeanStockKg: g.roastery.rawBeanStockKg + flows.harvest } };
 }

@@ -6,7 +6,7 @@ import { MASTER, ZONES, type MasterBuilding } from '@/data/master';
 import type { City } from '@/engine/types';
 import { stableHash } from '@/engine/world';
 import { useGame } from './GameContext';
-import { cityBuildingArt, STREET_LIFE, airportArt } from './sheetArt';
+import { cityBuildingArt, MAP_PEOPLE, airportArt } from './sheetArt';
 import { getStoreArtwork, getCityArtwork } from './artwork';
 
 export function CityMap({ city, onBuilding, onAirport }: { city: City; onBuilding: (b: MasterBuilding) => void; onAirport: () => void }) {
@@ -37,7 +37,7 @@ export function CityMap({ city, onBuilding, onAirport }: { city: City; onBuildin
               </Button>;
             })}
             <Button variant="ghost" className="city-airport" onClick={onAirport} aria-label="Flughafen öffnen"><img src={airportArt} alt="" /><span>✈ {source.airportCode}</span></Button>
-            {people && Array.from({ length: 18 }, (_, i) => <img key={i} className={`city-pedestrian pedestrian-${i % 3}`} src={STREET_LIFE[i % STREET_LIFE.length]} alt="" style={{ left: `${80 + (i % 6) * 148}px`, top: `${214 + Math.floor(i / 6) * 244}px`, animationDelay: `${-i * 1.7}s`, animationDuration: `${12 + i % 7}s` }} />)}
+            {people && Array.from({ length: 18 }, (_, i) => <img key={i} className={`city-pedestrian pedestrian-${i % 3}`} src={MAP_PEOPLE[i % MAP_PEOPLE.length]} alt="" style={{ left: `${80 + (i % 6) * 148}px`, top: `${214 + Math.floor(i / 6) * 244}px`, animationDelay: `${-i * 1.7}s`, animationDuration: `${12 + i % 7}s` }} />)}
           </div>
         </TransformComponent>
       </>}
