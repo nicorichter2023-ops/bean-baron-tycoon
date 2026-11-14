@@ -7,6 +7,7 @@ import { eur, useGame } from "../GameContext";
 import { Empty, Panel, Section } from "../ui";
 import { COMPANY_ARTWORK } from "../artwork";
 import { rivalArt, startupArt } from '../sheetArt';
+import { effectiveInterestRate } from '@/engine/management';
 
 const inputClass = "h-9 w-full rounded-md border border-input bg-background px-3 font-mono text-sm text-foreground";
 const RISK = { low: "Niedrig", medium: "Mittel", high: "Hoch", moonshot: "Moonshot" } as const;
@@ -21,7 +22,7 @@ export function FinanceTab() {
     <>
       <Section title="Bankkredit">
         <Panel><div className="flex items-center gap-3 text-sm"><Banknote className="h-6 w-6 text-primary" />
-          <div className="flex-1"><div className="font-semibold">Schulden {eur(state.debt)}</div><div className="text-xs text-muted-foreground">Zins {(state.weeklyInterestRate * 100).toFixed(2)}% pro Woche · Rahmen bis {eur(Math.max(250000, state.companyValuation))}</div></div></div>
+          <div className="flex-1"><div className="font-semibold">Schulden {eur(state.debt)}</div><div className="text-xs text-muted-foreground">Zins {(effectiveInterestRate(state) * 100).toFixed(3)}% pro Woche · Rahmen bis {eur(Math.max(250000, state.companyValuation))}</div></div></div>
           <label className="mt-3 block text-xs text-muted-foreground">Betrag in Euro<input aria-label="Kreditbetrag" type="number" min="1" step="1000" className={`${inputClass} mt-1`} value={loanAmount} onChange={(event) => setLoanAmount(event.target.value)} /></label>
           <div className="mt-2 grid grid-cols-2 gap-2"><Button onClick={() => perform((current) => takeLoan(current, amount))}>Aufnehmen</Button><Button variant="outline" onClick={() => perform((current) => repayLoan(current, amount))}>Tilgen</Button></div>
         </Panel>

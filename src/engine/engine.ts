@@ -29,7 +29,7 @@ import type {
 // -----------------------------------------------------------
 
 export const GAME_CONFIG = {
-  SCHEMA_VERSION: 2 as const,
+  SCHEMA_VERSION: 3 as const,
   START_CASH: 50_000,
   STORE_OPENING_COST: { 1: 12_000, 2: 55_000, 3: 180_000 } as Record<StoreTier, number>,
   STORE_UPGRADE_COST: { 2: 45_000, 3: 160_000 } as Record<2 | 3, number>,
@@ -1216,11 +1216,12 @@ export function processTurn(state: GameState): GameState {
   const availableEvents = freshEvents.length > 0 ? freshEvents : eraEvents;
   const eventRng = mulberry32(hashSeed(week * 1741 + 97));
   const pendingEvent = availableEvents.length
-    ? availableEvents[Math.floor(eventRng() * availableEvents.length)]!
+    ? availableEvents[Math.floor(eventRng() * availableEvents.length)] ?? null
     : null;
 
   return {
     schemaVersion: GAME_CONFIG.SCHEMA_VERSION,
+    management: state.management,
     week,
     dateIso,
     cash,

@@ -14,6 +14,9 @@
 - [x] Installierbare Vollbild-App für Galaxy S21 FE konfigurieren und mobil prüfen.
 
 ## Visuelle Spielwelt
+- [x] Management-Navigation mit direkter Filialübersicht umsetzen.
+- [x] Wöchentliche GuV, Bilanz und abgestimmten Cashflow ergänzen.
+- [x] HQ mit COO/CFO, Delegation, Gehältern und Prognose ergänzen und testen.
 - [x] Masterprompt als kopierbare Datei erstellen.
 - [x] Hochgeladene Szenen und 24 reguläre Sprite-Sheets optimieren und einbinden, ohne neue Bildgenerierung; zusätzliche/irreguläre Sheets für später erhalten.
 - [x] Café, Terrasse, Holding, Büro, Rösterei, Hafen und Börse als interaktive Spielorte umsetzen.

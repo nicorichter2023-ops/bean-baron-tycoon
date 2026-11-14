@@ -2,7 +2,8 @@
 // Coffee Empire: Bean to Billion — zentrales, JSON-sicheres Datenmodell
 // ============================================================
 
-export type SchemaVersion = 1 | 2;
+import type { ManagementState } from './management';
+export type SchemaVersion = 1 | 2 | 3;
 
 export type ModuleId = 'core_cafe' | 'roastery' | 'b2b_trade' | 'capital_markets';
 export type Biome = 'european_classic' | 'modern_industrial' | 'asian_zen' | 'tropical_colonial';
@@ -205,6 +206,7 @@ export interface TurnReport {
 
 export interface GameState {
   schemaVersion: SchemaVersion;
+  management: ManagementState;
   week: number;
   dateIso: string;
   cash: number;

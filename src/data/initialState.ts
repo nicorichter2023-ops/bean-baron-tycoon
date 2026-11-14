@@ -1,12 +1,14 @@
 import type { GameState } from "@/engine/types";
 import { GAME_CONFIG, calculateCompanyValuation, dateForWeek } from "@/engine/engine";
 import { BEAN_VARIETIES, CITIES, GAME_EVENTS, PUBLIC_COMPANIES, STARTUPS } from "./cities";
+import { createManagement } from '@/engine/management';
 
 export function createInitialState(): GameState {
   const city = CITIES.find((candidate) => candidate.id === "berlin") ?? CITIES[0]!;
   const district = city.districts.find((candidate) => candidate.name === "Kreuzberg") ?? city.districts[0]!;
   const state: GameState = {
     schemaVersion: GAME_CONFIG.SCHEMA_VERSION,
+    management: createManagement(GAME_CONFIG.START_CASH),
     week: 1,
     dateIso: dateForWeek(1),
     cash: GAME_CONFIG.START_CASH,

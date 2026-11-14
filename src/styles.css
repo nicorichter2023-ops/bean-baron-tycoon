@@ -351,3 +351,12 @@ select, input { min-height:44px; }
 .zen-toggle svg { width:18px; height:18px; }
 .lab-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px; margin-top:16px; }
 .lab-stat { background:var(--muted); border-radius:6px; padding:6px; } .lab-stat span { display:block; color:var(--muted-foreground); font-size:10px; }
+.management-switch { display:flex; gap:4px; overflow-x:auto; border-bottom:1px solid var(--border); padding-bottom:8px; }
+.management-switch button { min-height:44px; flex-shrink:0; padding-inline:12px; font-size:12px; }
+.management-content { padding-top:12px; }
+.financial-ledger > div { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); font-size:13px; }
+.financial-ledger dt { color:var(--muted-foreground); overflow-wrap:anywhere; }
+.financial-ledger dd { font-family:var(--font-mono); text-align:right; font-variant-numeric:tabular-nums; }
+.financial-ledger .ledger-total { font-weight:700; border-top:1px solid var(--border); }
+.financial-ledger .ledger-total dt { color:var(--foreground); }
+.hq-scene { width:100%; aspect-ratio:16/9; object-fit:contain; background:var(--artwork); }
