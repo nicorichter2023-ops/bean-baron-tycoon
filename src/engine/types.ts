@@ -1,45 +1,17 @@
 // ============================================================
-// Coffee Empire: Bean to Billion — types.ts
-// Zentrales Datenmodell (schemaVersion: 1)
-// Der GameState muss reines JSON bleiben (siehe IsJson-Guard unten).
+// Coffee Empire: Bean to Billion — zentrales, JSON-sicheres Datenmodell
 // ============================================================
 
-export type SchemaVersion = 1;
+export type SchemaVersion = 1 | 2;
 
-export type ModuleId =
-  | 'core_cafe'
-  | 'roastery'
-  | 'b2b_trade'
-  | 'capital_markets';
-
-export type Biome =
-  | 'european_classic'
-  | 'modern_industrial'
-  | 'asian_zen'
-  | 'tropical_colonial';
-
+export type ModuleId = 'core_cafe' | 'roastery' | 'b2b_trade' | 'capital_markets';
+export type Biome = 'european_classic' | 'modern_industrial' | 'asian_zen' | 'tropical_colonial';
 /** 1 = Kiosk, 2 = Café, 3 = Flagship */
 export type StoreTier = 1 | 2 | 3;
-
 export type EmployeeRole = 'barista' | 'manager' | 'roaster' | 'trader';
-
 export type RiskClass = 'low' | 'medium' | 'high' | 'moonshot';
-
-export type Era =
-  | 'street_vendor'
-  | 'local_chain'
-  | 'national_brand'
-  | 'global_empire';
-
-export type LuxuryGoodId =
-  | 'penthouse'
-  | 'sports_car'
-  | 'yacht'
-  | 'private_jet';
-
-// -----------------------------------------------------------
-// Stadt & Distrikte
-// -----------------------------------------------------------
+export type Era = 'street_vendor' | 'local_chain' | 'national_brand' | 'global_empire';
+export type LuxuryGoodId = 'penthouse' | 'sports_car' | 'yacht' | 'private_jet';
 
 export interface District {
   id: string;
@@ -50,30 +22,24 @@ export interface District {
   rentWeekly: number;
   /** Konkurrenzdruck, 0–100 */
   competition: number;
-  /** Maximales erlaubtes Store-Tier in diesem Distrikt */
   maxStoreTier: StoreTier;
 }
 
 export interface City {
   id: string;
   name: string;
+  country: string;
+  landmarkName: string;
   biome: Biome;
-  /** Kaufkraft-Multiplikator, 0.5–2.0 */
   purchasingPower: number;
-  /** Kaffeekultur-Index, 0–100 (Nachfrage-Steigerung) */
   coffeeCultureIndex: number;
   districts: District[];
 }
-
-// -----------------------------------------------------------
-// Personal & Filialen
-// -----------------------------------------------------------
 
 export interface Employee {
   id: string;
   name: string;
   role: EmployeeRole;
-  /** Skill 0–100 */
   skill: number;
   salaryWeekly: number;
   hiredAtWeek: number;
@@ -81,106 +47,104 @@ export interface Employee {
 
 export interface Store {
   id: string;
+  cityId: string;
   name: string;
   districtId: string;
   tier: StoreTier;
   employees: Employee[];
-  /** Qualitätsindex 0–100 (driftet Richtung Personal-/Tier-Niveau) */
   qualityIndex: number;
-  /** Verkaufspreis pro Tasse in € */
   pricePerCup: number;
-  /** Umsatz der letzten abgerechneten Woche in € */
   weeklyRevenue: number;
-  /** Bediente Kunden der letzten Woche */
   customersServedLastWeek: number;
   openedAtWeek: number;
 }
 
-// -----------------------------------------------------------
-// Rösterei & Rohbohnen
-// -----------------------------------------------------------
+export interface BeanVariety {
+  id: string;
+  name: string;
+  originCountry: string;
+  flavorProfile: string;
+  basePricePerKg: number;
+  marketVolatility: number;
+  qualityScore: number;
+}
+
+export interface BeanLot {
+  beanId: string;
+  quantityKg: number;
+  averagePricePerKg: number;
+}
 
 export interface Roastery {
   owned: boolean;
-  /** Rohbohnenbestand in kg */
   rawBeanStockKg: number;
-  /** Fertig gerösteter Bestand in kg */
   roastedStockKg: number;
-  /** Röstverlust in Prozent (typisch 12–20) */
   roastLossPercent: number;
-  /** Max. Röstmenge pro Woche in kg */
   capacityKgPerWeek: number;
   employees: Employee[];
-  /** Kauft automatisch Rohbohnen nach, wenn Bestand unter dem Bedarf/safetyStockKg liegt */
   autoRestock: boolean;
   safetyStockKg: number;
+  beanLots: BeanLot[];
 }
-
-// -----------------------------------------------------------
-// Kaffeebörse (Futures)
-// -----------------------------------------------------------
 
 export interface CoffeeMarket {
-  /** Aktueller Futures-Preis in €/kg Rohbohne */
   futuresPricePerKg: number;
-  /** Volatilität in Prozent pro Woche */
   volatility: number;
-  /** Preisverlauf (älteste zuerst, max. 104 Einträge) */
   priceHistory: number[];
+  beanVarieties: BeanVariety[];
 }
-
-// -----------------------------------------------------------
-// B2B-Handel
-// -----------------------------------------------------------
 
 export interface B2BContract {
   id: string;
   partnerName: string;
-  /** Liefermenge pro Woche in kg Röstkaffee */
   volumeKgPerWeek: number;
-  /** Fixpreis in €/kg */
   pricePerKg: number;
   weeksRemaining: number;
-  /** Zahlungsmoral 0–100, beeinflusst Skonto/Ausfallrisiko */
   reliability: number;
 }
 
 export interface B2BState {
   contracts: B2BContract[];
-  /** Abgeschlossene Lifetime-Liefermenge in kg */
   lifetimeVolumeKg: number;
 }
-
-// -----------------------------------------------------------
-// Kapitalmarkt (Endgame)
-// -----------------------------------------------------------
 
 export interface RivalCompany {
   id: string;
   name: string;
-  /** Unternehmensbewertung in € */
+  ticker: string;
+  description: string;
+  sharePrice: number;
+  sharesOutstanding: number;
+  dividendYield: number;
   valuation: number;
-  /** Aggressivität 0–100 (höher = fordert höheren Übernahmeaufschlag) */
   aggression: number;
-  /** Marktanteil 0–100 */
   marketShare: number;
-  /** Synergiepotenzial 0–100 (senkt geforderte Prämie) */
   strategicSynergy: number;
   acquired: boolean;
   acquiredAtWeek: number | null;
 }
 
+export interface StockHolding {
+  companyId: string;
+  shares: number;
+  averagePrice: number;
+}
+
 export interface StartupInvestment {
   id: string;
   name: string;
+  sector: string;
+  valuation: number;
+  requiredFunding: number;
+  annualGrowthRate: number;
   riskClass: RiskClass;
   investedAmount: number;
-  /** Erfolgschance 0–100 (Gesamtwahrscheinlichkeit, dass das Investment am Ende erfolgreich ist) */
   successChance: number;
-  /** Auszahlungs-Multiple bei Erfolg */
   payoutMultiple: number;
   investedAtWeek: number;
   status: 'active' | 'succeeded' | 'failed';
+  acquired: boolean;
+  acquiredAtWeek: number | null;
 }
 
 export interface LuxuryGood {
@@ -188,7 +152,6 @@ export interface LuxuryGood {
   displayName: string;
   purchaseCost: number;
   upkeepWeekly: number;
-  /** Prestigepunkte, speisen langfristig die Markenreputation */
   prestigeBonus: number;
   owned: boolean;
   acquiredAtWeek: number | null;
@@ -201,21 +164,31 @@ export interface CapitalMarketsState {
   sharesOutstanding: number;
   marketCap: number;
   rivals: RivalCompany[];
+  holdings: StockHolding[];
   startups: StartupInvestment[];
   luxuryGoods: LuxuryGood[];
 }
 
-// -----------------------------------------------------------
-// Reporting
-// -----------------------------------------------------------
+export interface EventChoice {
+  text: string;
+  cashImpact: number;
+  reputationImpact: number;
+  beanPriceMultiplier: number;
+}
+
+export interface GameEvent {
+  id: string;
+  title: string;
+  description: string;
+  eraRequirement: number;
+  choices: EventChoice[];
+}
 
 export interface TurnReport {
   week: number;
   revenueCafes: number;
   revenueB2B: number;
-  /** Auszahlungen aus Startup-Exits */
   revenueCapital: number;
-  /** revenueCafes + revenueB2B + revenueCapital */
   revenueTotal: number;
   costSalaries: number;
   costRent: number;
@@ -230,39 +203,38 @@ export interface TurnReport {
   notes: string[];
 }
 
-// -----------------------------------------------------------
-// Root State
-// -----------------------------------------------------------
-
 export interface GameState {
   schemaVersion: SchemaVersion;
-  /** Turn-Zähler (startet bei 1) */
   week: number;
-  /** ISO-Datum YYYY-MM-DD des aktuellen Turns (abgeleitet aus week) */
   dateIso: string;
   cash: number;
   debt: number;
-  /** Wöchentlicher Zinssatz auf Schulden (z. B. 0.0012) */
   weeklyInterestRate: number;
   companyValuation: number;
-  /** Markenreputation 0–100 */
   brandReputation: number;
   era: Era;
   unlockedModules: ModuleId[];
+  /** Aktuell in der Weltkarte ausgewählte Stadt. */
   city: City;
+  cities: City[];
   stores: Store[];
   roastery: Roastery;
   market: CoffeeMarket;
   b2b: B2BState;
   capitalMarkets: CapitalMarketsState;
+  eventDeck: GameEvent[];
+  pendingEvent: GameEvent | null;
+  resolvedEventIds: string[];
   lastReport: TurnReport | null;
 }
 
-// -----------------------------------------------------------
-// Compile-Time-Garantie: GameState ist reines JSON
-// (kein Date, Map, Set, keine Funktionen, kein undefined)
-// -----------------------------------------------------------
+export interface ActionResult {
+  state: GameState;
+  ok: boolean;
+  reason: string;
+}
 
+// Compile-Time-Garantie: GameState bleibt reines JSON.
 type IsJson<T> = T extends string | number | boolean | null
   ? true
   : T extends (...args: never[]) => unknown
@@ -278,6 +250,4 @@ type IsJson<T> = T extends string | number | boolean | null
           : false;
 
 export type GameStateIsJsonSerializable = IsJson<GameState> extends true ? true : never;
-
-/** Build bricht, wenn GameState nicht mehr JSON-serialisierbar ist. */
 export const GAME_STATE_JSON_GUARD: GameStateIsJsonSerializable = true;
