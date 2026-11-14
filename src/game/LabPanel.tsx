@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { FlaskConical, Megaphone, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { eur, useGame } from './GameContext';
+import { CampaignDashboard } from './CampaignDashboard';
 import { BASES, BIOME_TASTE, CAMPAIGNS, EXTRAS, MAX_RECIPES, MILKS, addRecipe, cupsSold, fairPrice, recipeCost, recipeQuality, startCampaign, type Base, type CampaignKind, type Extra, type Milk } from '@/engine/expansion';
 
 const sel = 'h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground';
@@ -52,5 +53,6 @@ export function LabPanel() {
       {exp.campaigns.length > 0 && <ul className="mt-3 space-y-1 text-xs">{exp.campaigns.map((c) => <li key={c.id}>📣 {CAMPAIGNS[c.kind].label} in {state.cities.find((x) => x.id === c.cityId)?.name} – noch {c.weeksLeft} Wo</li>)}</ul>}
       {exp.lastBonus > 0 && <p className="mt-2 text-xs text-muted-foreground">Letzte Woche: +{eur(exp.lastBonus)} durch Labor & Marketing</p>}
     </section>
+    <CampaignDashboard />
   </div>;
 }
