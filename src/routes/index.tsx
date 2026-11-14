@@ -1,7 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Building2, Globe2, ArrowLeftRight, Landmark } from "lucide-react";
-import { GameProvider } from "@/game/GameContext";
+import { GameProvider, useGame } from "@/game/GameContext";
+import { Button } from "@/components/ui/button";
+import { SceneView, type Place } from "@/game/SceneView";
+import { useEffect } from "react";
 import { TopBar } from "@/game/TopBar";
 import { EmpireTab } from "@/game/tabs/EmpireTab";
 import { MapTab } from "@/game/tabs/MapTab";
@@ -31,24 +34,28 @@ const TABS = [
 ] as const;
 
 function Game() {
+  return <GameProvider><GameWorld /></GameProvider>;
+}
+function GameWorld() {
+  const { loaded } = useGame();
   const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("empire");
-  const Active = TABS.find((t) => t.id === tab)!.C;
+  const [place, setPlace] = useState<Place>('cafe');
+  useEffect(() => { if ('serviceWorker' in navigator && import.meta.env.PROD) navigator.serviceWorker.register('/sw.js').catch(() => undefined); }, []);
+  const destinations: Place[] = tab === 'empire' ? ['cafe', 'terrace', 'holding'] : tab === 'market' ? ['roastery', 'port', 'exchange', 'farm'] : ['office', 'holding', 'negotiation'];
   return (
-    <GameProvider>
-      <div className="mx-auto min-h-dvh max-w-md bg-background">
+      <div className="game-world mx-auto min-h-dvh max-w-5xl bg-background">
         <TopBar />
         <EventDialog />
-        <main className="px-3 pb-28 pt-[calc(5.5rem+env(safe-area-inset-top))]"><Active /></main>
+        <main className="game-main pb-28 pt-[calc(5.5rem+env(safe-area-inset-top))]">{loaded ? tab === 'map' ? <MapTab /> : <SceneView place={place} onPlace={setPlace} destinations={destinations} /> : <div className="loading-game">Coffee Empire …</div>}</main>
         <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card/95 backdrop-blur pb-[env(safe-area-inset-bottom)]">
-          <div className="mx-auto grid max-w-md grid-cols-4">
+          <div className="mx-auto grid max-w-3xl grid-cols-4">
             {TABS.map((t) => (
-              <button key={t.id} onClick={() => setTab(t.id)} className={`flex flex-col items-center gap-1 py-2.5 text-[11px] transition ${tab === t.id ? "text-primary" : "text-muted-foreground"}`}>
+              <Button variant="ghost" aria-label={t.label} aria-current={tab === t.id ? 'page' : undefined} key={t.id} onClick={() => { setTab(t.id); setPlace(t.id === 'market' ? 'roastery' : t.id === 'finance' ? 'office' : 'cafe'); window.scrollTo(0, 0); }} className={`nav-tab flex h-16 flex-col items-center gap-1 py-2.5 text-[11px] transition ${tab === t.id ? "text-primary" : "text-muted-foreground"}`}>
                 <t.icon className="h-5 w-5" />{t.label}
-              </button>
+              </Button>
             ))}
           </div>
         </nav>
       </div>
-    </GameProvider>
   );
 }
