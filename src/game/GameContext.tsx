@@ -13,4 +13,4 @@ export function GameProvider({ children }: { children: ReactNode }) {
 }
 export function useGame() { const c = useContext(GameCtx); if (!c) throw new Error("no GameProvider"); return c; }
 export const eur = (n: number) => n.toLocaleString("de-DE", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
-export const compact = (n: number) => n.toLocaleString("de-DE", { notation: "compact", maximumFractionDigits: 1 }) + " €";
+export const compact = (n: number) => { const a = Math.abs(n); const f = (v: number, u: string) => `${v.toLocaleString("de-DE", { maximumFractionDigits: 1 })} ${u}€`; return a >= 1e9 ? f(n / 1e9, "Mrd ") : a >= 1e6 ? f(n / 1e6, "Mio ") : a >= 1e3 ? f(n / 1e3, "Tsd ") : f(Math.round(n), ""); };
