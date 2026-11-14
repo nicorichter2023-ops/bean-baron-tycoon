@@ -206,7 +206,7 @@ export interface TurnReport {
 
 export interface GameState {
   schemaVersion: SchemaVersion;
-  management?: ManagementState;
+  management: ManagementState;
   week: number;
   dateIso: string;
   cash: number;

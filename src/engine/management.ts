@@ -16,11 +16,11 @@ export interface AccountingWeek {
   operating: number; investing: number; financing: number; cooHires: number; interestSaved: number;
 }
 export interface ManagementState {
-  executives: Executive[]; delegation: boolean; openingCash: number; journal: CashJournal;
+  executives: Executive[]; delegation: boolean; openingCash: number; openingInventory: number; journal: CashJournal;
   oneOff: number; history: AccountingWeek[];
 }
 const money = (n: number) => Math.round(n * 100) / 100;
-export const createManagement = (cash: number): ManagementState => ({ executives: [], delegation: false, openingCash: cash, journal: { operating: 0, investing: 0, financing: 0 }, oneOff: 0, history: [] });
+export const createManagement = (cash: number, inventory = 0): ManagementState => ({ executives: [], delegation: false, openingCash: cash, openingInventory: inventory, journal: { operating: 0, investing: 0, financing: 0 }, oneOff: 0, history: [] });
 export const hasExecutive = (g: GameState, role: ExecutiveRole) => g.management?.executives.some(e => e.role === role) ?? false;
 export const effectiveInterestRate = (g: GameState) => Math.min(GAME_CONFIG.MAX_WEEKLY_INTEREST, Math.max(0, g.weeklyInterestRate)) * (hasExecutive(g, 'cfo') ? 0.8 : 1);
 export function hireExecutive(game: GameState, role: ExecutiveRole) {
@@ -80,10 +80,9 @@ export function processManagementWeek(state: GameState, exp: ExpansionState) {
   if (!r) return { game: state, exp };
   const salary = m.executives.reduce((n, e) => n + EXECUTIVES[e.role].salary, 0);
   const expansion = applyExpansionWeek(turned, exp);
-  let recipeRevenue = 0, ingredients = 0, marketingRevenue = 0;
+  let recipeRevenue = 0, ingredients = 0;
   for (const store of turned.stores) {
     const boost = exp.campaigns.filter(c => c.cityId === store.cityId).reduce((n, c) => n + CAMPAIGNS[c.kind].boost, 0);
-    marketingRevenue += store.weeklyRevenue * boost * 0.5;
     for (const recipe of exp.recipes) {
       const cups = cupsSold(recipe, store, turned.cities.find(c => c.id === store.cityId)?.biome ?? '', boost);
       recipeRevenue += cups * recipe.price; ingredients += cups * recipeCost(recipe);
@@ -95,7 +94,7 @@ export function processManagementWeek(state: GameState, exp: ExpansionState) {
   const basePreTax = r.costTax > 0 ? r.costTax / GAME_CONFIG.TAX_RATE : r.revenueCafes + r.revenueB2B - r.costSalaries - r.costRent - r.costBeans - r.costInterest - r.costLuxuryUpkeep;
   const tax = money(Math.max(0, basePreTax + taxableBonus) * GAME_CONFIG.TAX_RATE);
   const gameCash = money(expansion.game.cash - salary - (tax - r.costTax));
-  const inventoryChange = money(balanceSheet(turned).inventory - balanceSheet(state).inventory);
+  const inventoryChange = money(balanceSheet(turned).inventory - m.openingInventory);
   const cashOperating = money(m.journal.operating + gameCash - state.cash);
   const row: AccountingWeek = {
     week: turned.week, cups: money(r.revenueCafes + recipeRevenue), b2b: r.revenueB2B, other,
@@ -109,7 +108,7 @@ export function processManagementWeek(state: GameState, exp: ExpansionState) {
     costBeans: money(row.beans + row.ingredients), costTax: tax, costTotal: money(r.costTotal + salary + ingredients + tax - r.costTax),
     netIncome: money(gameCash - prepared.cash), notes: [...r.notes, ...(cooHires ? [`COO: ${cooHires} Baristas eingestellt.`] : []), ...(salary ? [`HQ-Gehälter: ${salary} €.`] : [])] };
   const game: GameState = { ...expansion.game, cash: gameCash, weeklyInterestRate: baseRate, lastReport: report,
-    management: { ...m, openingCash: gameCash, journal: { operating: 0, investing: 0, financing: 0 }, oneOff: 0, history: [...m.history, row].slice(-104) } };
+    management: { ...m, openingCash: gameCash, openingInventory: balanceSheet(turned).inventory, journal: { operating: 0, investing: 0, financing: 0 }, oneOff: 0, history: [...m.history, row].slice(-104) } };
   game.companyValuation = calculateCompanyValuation(game);
   game.lastReport = { ...report, companyValuation: game.companyValuation };
   return { game, exp: expansion.exp };

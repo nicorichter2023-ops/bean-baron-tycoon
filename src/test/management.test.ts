@@ -61,7 +61,8 @@ describe('Management & Accounting', () => {
     expect(b.debt + b.equity).toBe(b.assets);
   });
   it('Migration erhält alten Spielstand und startet keine erfundenen Berichte', () => {
-    const g = { ...createInitialState(), schemaVersion: 2 as const, management: undefined, cash: 12345 };
+    const { management: _management, ...old } = createInitialState();
+    const g = { ...old, schemaVersion: 2 as const, cash: 12345 };
     const next = migrateV2ToV3(g);
     expect(next.cash).toBe(12345); expect(next.stores).toEqual(g.stores);
     expect(next.schemaVersion).toBe(3); expect(next.management?.history).toHaveLength(0);

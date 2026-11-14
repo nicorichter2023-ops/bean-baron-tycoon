@@ -38,7 +38,7 @@ function migrateV1ToV2(old: any): GameState {
   return { ...migrated, companyValuation: calculateCompanyValuation(migrated) };
 }
 
-export function migrateV2ToV3(state: GameState): GameState {
+export function migrateV2ToV3(state: Omit<GameState, 'management'> & { management?: GameState['management'] }): GameState {
   return { ...state, schemaVersion: 3, management: state.management ?? createManagement(state.cash) };
 }
 const migrations: Record<number, (state: any) => GameState> = { 1: migrateV1ToV2, 2: migrateV2ToV3 };
