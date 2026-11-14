@@ -4,7 +4,8 @@
 
 import type { ManagementState } from './management';
 import type { StoreEquipment } from './equipment';
-export type SchemaVersion = 1 | 2 | 3 | 4;
+import type { WorldState } from './world';
+export type SchemaVersion = 1 | 2 | 3 | 4 | 5;
 
 export type ModuleId = 'core_cafe' | 'roastery' | 'b2b_trade' | 'capital_markets';
 export type Biome = 'european_classic' | 'modern_industrial' | 'asian_zen' | 'tropical_colonial';
@@ -45,10 +46,12 @@ export interface Employee {
   skill: number;
   salaryWeekly: number;
   hiredAtWeek: number;
+  trainingTier?: number;
 }
 
 export interface Store {
   equipment: StoreEquipment;
+  propertyBookValue?: number;
   id: string;
   cityId: string;
   name: string;
