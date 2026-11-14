@@ -8,7 +8,7 @@ import { eur, useGame } from '../GameContext';
 import { BIOME_SCENE, CITY_POSITIONS, SCENES } from '../sceneAssets';
 import { getCityArtwork, getStoreArtwork } from '../artwork';
 import { EmpireTab } from './EmpireTab';
-import { SectionFilter } from '../ui';
+import { SectionFilter, StoreFilter } from '../ui';
 
 export function MapTab() {
   const { state, set, perform } = useGame();
@@ -31,7 +31,7 @@ export function MapTab() {
       <div className="district-scene"><img src={SCENES.district.url} alt={`Grundstücke in ${city.name}`} />{city.districts.map((d, i) => { const store = state.stores.find((s) => s.cityId === city.id && s.districtId === d.id); return <Button key={d.id} className={`plot-marker plot-${i % 4}`} variant={store ? 'secondary' : 'default'} onClick={() => { setTier(1); setDistrict(d); }} aria-label={`${d.name} Grundstück`}><Store /><span>{d.name}<small>{store ? store.name : 'Zu vermieten'}</small></span></Button>; })}</div>
     </>}
     <Sheet open={Boolean(district)} onOpenChange={(open) => { if (!open) { setDistrict(null); setManage(false); } }}><SheetContent side="bottom" className="action-sheet"><SheetHeader><SheetTitle>{district?.name}</SheetTitle><SheetDescription>{city?.name} · {occupied ? 'Deine Filiale' : 'Freies Grundstück'}</SheetDescription></SheetHeader>{district && city && <div className="mt-5">
-      {occupied ? <><img className="mx-auto h-36" src={getStoreArtwork(city.biome, occupied.tier)} alt={occupied.name} /><h2 className="text-center">{occupied.name}</h2><Button className="mt-4 w-full" onClick={() => setManage(true)}><Store /> Filiale verwalten</Button>{manage && <div className="mt-4"><SectionFilter.Provider value={['Filialen']}><EmpireTab /></SectionFilter.Provider></div>}</> : <>
+      {occupied ? <><img className="mx-auto h-36" src={getStoreArtwork(city.biome, occupied.tier)} alt={occupied.name} /><h2 className="text-center">{occupied.name}</h2><Button className="mt-4 w-full" onClick={() => setManage(true)}><Store /> Filiale verwalten</Button>{manage && <div className="mt-4"><SectionFilter.Provider value={['Filialen']}><StoreFilter.Provider value={occupied.id}><EmpireTab /></StoreFilter.Provider></SectionFilter.Provider></div>}</> : <>
         <div className="scene-metrics"><div><span>Miete / Woche</span><strong>{eur(district.rentWeekly)}</strong></div><div><span>Laufkundschaft</span><strong>{district.footTraffic} / 100</strong></div><div><span>Konkurrenz</span><strong>{district.competition} / 100</strong></div></div>
         <img className="mx-auto h-40" src={getStoreArtwork(city.biome, tier)} alt={['','Kiosk','Café','Flagship'][tier]} /><div className="grid grid-cols-3 gap-2">{([1,2,3] as StoreTier[]).map((t) => <Button key={t} variant={tier === t ? 'default' : 'outline'} disabled={t > district.maxStoreTier} onClick={() => setTier(t)}>{['','Kiosk','Café','Flagship'][t]}</Button>)}</div>
         <Button className="mt-4 w-full" onClick={() => perform((s) => openStore(s, city.id, district.id, tier))}><Store /> Eröffnen · {eur(storeOpeningCost(district, tier))}</Button>

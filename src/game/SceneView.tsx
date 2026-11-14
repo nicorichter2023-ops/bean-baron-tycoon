@@ -23,7 +23,7 @@ const PLACES: Record<Place, { title: string; image: string; subtitle: string }> 
   farm: { title: 'Kaffee-Ursprung', image: SCENES.farm.url, subtitle: 'Die Welt hinter jeder Tasse' },
   negotiation: { title: 'Verhandlungsraum', image: SCENES.negotiation.url, subtitle: 'Der nächste große Deal' },
 };
-type Menu = { title: string; group: 'empire' | 'market' | 'finance'; sections: string[]; storeId?: string };
+type Menu = { title: string; group: 'empire' | 'market' | 'finance'; sections: string[]; storeId?: string | undefined };
 export function ActionSheet({ menu, close }: { menu: Menu | null; close: () => void }) {
   return <Sheet open={Boolean(menu)} onOpenChange={(open) => { if (!open) close(); }}><SheetContent side="bottom" className="action-sheet">
     <SheetHeader><SheetTitle>{menu?.title}</SheetTitle><SheetDescription>Woche {useGame().state.week} · Coffee Empire</SheetDescription></SheetHeader>
