@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "events": {
+    "project.campaign_started": {
+      "event_schema_version": 1,
+      "description": "Player started a marketing campaign in a city.",
+      "privacy": {
+        "contains_pii": false,
+        "purpose": "product_analytics"
+      },
+      "properties_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "city_id",
+          "cost",
+          "week",
+          "store_count"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string"
+          },
+          "city_id": {
+            "type": "string"
+          },
+          "cost": {
+            "type": "number"
+          },
+          "week": {
+            "type": "number"
+          },
+          "store_count": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "project.recipe_created": {
+      "event_schema_version": 1,
+      "description": "Player introduced a new signature drink in the recipe lab.",
+      "privacy": {
+        "contains_pii": false,
+        "purpose": "product_analytics"
+      },
+      "properties_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "base",
+          "milk",
+          "extra",
+          "price",
+          "unit_cost",
+          "week",
+          "recipe_count"
+        ],
+        "properties": {
+          "base": {
+            "type": "string"
+          },
+          "milk": {
+            "type": "string"
+          },
+          "extra": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "unit_cost": {
+            "type": "number"
+          },
+          "week": {
+            "type": "number"
+          },
+          "recipe_count": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "project.week_completed": {
+      "event_schema_version": 1,
+      "description": "A game week advanced; carries guests, revenue and active recipes/campaigns to measure their impact.",
+      "privacy": {
+        "contains_pii": false,
+        "purpose": "product_analytics"
+      },
+      "properties_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "week",
+          "guests",
+          "weekly_revenue",
+          "expansion_bonus",
+          "active_campaigns",
+          "recipe_count",
+          "store_count"
+        ],
+        "properties": {
+          "week": {
+            "type": "number"
+          },
+          "guests": {
+            "type": "number"
+          },
+          "weekly_revenue": {
+            "type": "number"
+          },
+          "expansion_bonus": {
+            "type": "number"
+          },
+          "active_campaigns": {
+            "type": "number"
+          },
+          "recipe_count": {
+            "type": "number"
+          },
+          "store_count": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}
