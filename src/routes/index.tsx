@@ -1,15 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Building2, Globe2, ArrowLeftRight, Landmark } from "lucide-react";
 import { GameProvider, useGame } from "@/game/GameContext";
 import { Button } from "@/components/ui/button";
 import { SceneView, type Place } from "@/game/SceneView";
-import { useEffect } from "react";
 import { TopBar } from "@/game/TopBar";
-import { EmpireTab } from "@/game/tabs/EmpireTab";
 import { MapTab } from "@/game/tabs/MapTab";
-import { MarketTab } from "@/game/tabs/MarketTab";
-import { FinanceTab } from "@/game/tabs/FinanceTab";
 import { EventDialog } from "@/game/EventDialog";
 
 export const Route = createFileRoute("/")({
@@ -27,10 +23,10 @@ export const Route = createFileRoute("/")({
 });
 
 const TABS = [
-  { id: "empire", label: "Imperium", icon: Building2, C: EmpireTab },
-  { id: "map", label: "Weltkarte", icon: Globe2, C: MapTab },
-  { id: "market", label: "Markt & B2B", icon: ArrowLeftRight, C: MarketTab },
-  { id: "finance", label: "Finanzen", icon: Landmark, C: FinanceTab },
+  { id: "empire", label: "Imperium", icon: Building2 },
+  { id: "map", label: "Weltkarte", icon: Globe2 },
+  { id: "market", label: "Markt & B2B", icon: ArrowLeftRight },
+  { id: "finance", label: "Finanzen", icon: Landmark },
 ] as const;
 
 function Game() {
