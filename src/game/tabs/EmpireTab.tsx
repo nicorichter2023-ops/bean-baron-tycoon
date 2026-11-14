@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { ArrowUpCircle, Coffee, Factory, Landmark, MapPin, UserMinus, UserPlus } from "lucide-react";
+import { ArrowUpCircle, Factory, MapPin, UserMinus, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GAME_CONFIG, purchaseRoastery } from "@/engine";
 import { fireEmployee, hireEmployee, openStore, storeOpeningCost, upgradeStore } from "@/engine/engine";
 import { eur, useGame } from "../GameContext";
 import { translateEngineNote } from "../logMessages";
 import { Empty, Panel, Section } from "../ui";
+import { COMPANY_ARTWORK, getStoreArtwork } from "../artwork";
 import type { StoreTier } from "@/engine/types";
 
 const ERA: Record<string, string> = { street_vendor: "Straßenverkäufer", local_chain: "Lokale Kette", national_brand: "Nationale Marke", global_empire: "Globales Imperium" };
@@ -32,13 +33,18 @@ export function EmpireTab() {
   return (
     <>
       <Section title="Holding">
-        <Panel><div className="flex items-center gap-3"><Landmark className="h-8 w-8 text-primary" />
-          <div className="text-sm"><div className="font-semibold">{ERA[state.era]}</div>
-            <div className="text-muted-foreground">{state.stores.length} Filialen · Reputation {Math.round(state.brandReputation)} · {state.cities.length} Städte</div></div></div></Panel>
+        <Panel><div className="flex items-center gap-3">
+          <img src={COMPANY_ARTWORK.holding} alt="Isometrischer Holding-Tower von Coffee Empire" className="h-28 w-24 shrink-0 rounded-lg bg-artwork object-contain p-1" />
+          <div className="text-sm"><div className="font-display text-lg font-semibold">Coffee Inc. Holding</div><div className="font-semibold text-primary">{ERA[state.era]}</div>
+            <div className="mt-1 text-xs text-muted-foreground">{state.stores.length} Filialen · Reputation {Math.round(state.brandReputation)}<br />{state.cities.length} Städte im Imperium</div></div></div></Panel>
       </Section>
 
       <Section title="Neue Filiale">
         <Panel>
+          <div className="mb-3 flex items-center gap-3">
+            <img src={getStoreArtwork(state.city.biome, tier)} alt={`${TIER_NAME[tier]} in ${state.city.name}`} className="h-28 w-32 shrink-0 rounded-lg bg-artwork object-contain p-1" />
+            <div className="text-sm"><div className="font-semibold">{TIER_NAME[tier]} · {state.city.name}</div><div className="mt-1 text-xs text-muted-foreground">Das Gebäude passt sich dem Stadt-Biom und der gewählten Ausbaustufe an.</div></div>
+          </div>
           <div className="grid grid-cols-2 gap-2">
             <label className="col-span-2 text-xs text-muted-foreground">Stadt
               <select aria-label="Stadt für neue Filiale" className={`${inputClass} mt-1`} value={state.city.id} onChange={(event) => selectCity(event.target.value)}>
@@ -66,9 +72,10 @@ export function EmpireTab() {
           const city = state.cities.find((item) => item.id === store.cityId);
           const storeDistrict = city?.districts.find((item) => item.id === store.districtId);
           return <Panel key={store.id}>
-            <div className="flex items-start gap-3 text-sm"><Coffee className="mt-0.5 h-6 w-6 text-primary" />
-              <div className="min-w-0 flex-1"><div className="font-semibold">{store.name}</div><div className="text-xs text-muted-foreground">{city?.name} · {TIER_NAME[store.tier]} · Qualität {Math.round(store.qualityIndex)}</div></div>
-              <div className="text-right text-xs"><div className="font-mono">{eur(store.weeklyRevenue)}</div><div className="text-muted-foreground">{store.customersServedLastWeek} Kunden</div></div></div>
+            <div className="flex items-center gap-3 text-sm">
+              <img src={getStoreArtwork(city?.biome ?? "european_classic", store.tier)} alt={`${TIER_NAME[store.tier]} ${store.name}`} loading="lazy" decoding="async" className="h-28 w-28 shrink-0 rounded-lg bg-artwork object-contain p-1" />
+              <div className="min-w-0 flex-1"><div className="font-semibold">{store.name}</div><div className="mt-1 text-xs text-muted-foreground">{city?.name} · {TIER_NAME[store.tier]}<br />Qualität {Math.round(store.qualityIndex)}</div>
+                <div className="mt-2 text-xs"><div className="font-mono font-semibold">{eur(store.weeklyRevenue)}</div><div className="text-muted-foreground">{store.customersServedLastWeek} Kunden</div></div></div></div>
             <div className="mt-3 grid grid-cols-2 gap-2">
               <Button size="sm" variant="outline" onClick={() => perform((current) => hireEmployee(current, store.id, "barista"))}><UserPlus /> Barista</Button>
               <Button size="sm" variant="outline" onClick={() => perform((current) => hireEmployee(current, store.id, "manager"))}><UserPlus /> Manager</Button>
@@ -88,14 +95,15 @@ export function EmpireTab() {
       </Section>
 
       <Section title="Rösterei">
-        {state.roastery.owned ? (
-          <Panel><div className="flex items-center gap-3 text-sm"><Factory className="h-6 w-6 text-primary" /><span className="flex-1">Roh {Math.round(state.roastery.rawBeanStockKg)} kg · Geröstet {Math.round(state.roastery.roastedStockKg)} kg</span></div>
-            <div className="mt-2 text-xs text-muted-foreground">Kapazität {state.roastery.capacityKgPerWeek} kg/Wo · Automatischer Nachkauf {state.roastery.autoRestock ? "aktiv" : "aus"}</div></Panel>
-        ) : (
-          <Button className="w-full" variant="outline" disabled={!canRoast || state.cash < GAME_CONFIG.ROASTERY_COST} onClick={() => perform(purchaseRoastery)}>
+        <Panel>
+          <div className="flex items-center gap-3">
+            <img src={COMPANY_ARTWORK.roastery} alt="Isometrische Rösterei im Backstein-Stil" loading="lazy" className="h-28 w-32 shrink-0 rounded-lg bg-artwork object-contain p-1" />
+            <div className="text-sm"><div className="font-semibold">Roastery Café</div>{state.roastery.owned ? <div className="mt-1 text-xs text-muted-foreground">Roh {Math.round(state.roastery.rawBeanStockKg)} kg · Geröstet {Math.round(state.roastery.roastedStockKg)} kg<br />Kapazität {state.roastery.capacityKgPerWeek} kg/Wo<br />Automatischer Nachkauf {state.roastery.autoRestock ? "aktiv" : "aus"}</div> : <div className="mt-1 text-xs text-muted-foreground">Eigene Röstung senkt Bohnenkosten und schaltet den Bohnenhandel frei.</div>}</div>
+          </div>
+          {!state.roastery.owned && <Button className="mt-3 w-full" variant="outline" disabled={!canRoast || state.cash < GAME_CONFIG.ROASTERY_COST} onClick={() => perform(purchaseRoastery)}>
             <Factory /> {canRoast ? `Rösterei kaufen (${eur(GAME_CONFIG.ROASTERY_COST)})` : `Ab Firmenwert ${eur(GAME_CONFIG.UNLOCK_THRESHOLDS.roastery)}`}
-          </Button>
-        )}
+          </Button>}
+        </Panel>
       </Section>
 
       <Section title="Letzte Woche">

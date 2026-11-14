@@ -5,6 +5,7 @@ import { acquireRival, acquireStartup, buyShares, investInStartup, repayLoan, re
 import { createInitialState } from "@/data";
 import { eur, useGame } from "../GameContext";
 import { Empty, Panel, Section } from "../ui";
+import { COMPANY_ARTWORK } from "../artwork";
 
 const inputClass = "h-9 w-full rounded-md border border-input bg-background px-3 font-mono text-sm text-foreground";
 const RISK = { low: "Niedrig", medium: "Mittel", high: "Hoch", moonshot: "Moonshot" } as const;
@@ -26,6 +27,12 @@ export function FinanceTab() {
       </Section>
 
       <Section title={`Aktienmarkt · ${state.capitalMarkets.rivals.length} Firmen`}>
+        <Panel>
+          <div className="flex items-center gap-3">
+            <img src={COMPANY_ARTWORK.stockExchange} alt="Isometrische Börse von Coffee Empire" className="h-24 w-28 shrink-0 rounded-lg bg-artwork object-contain p-1" />
+            <div className="text-sm"><div className="font-semibold">Börse & Beteiligungen</div><div className="mt-1 text-xs text-muted-foreground">Handle Aktien, übernimm Konkurrenten und baue deine Holding aus.</div></div>
+          </div>
+        </Panel>
         {!marketsUnlocked && <Empty><Lock className="mx-auto mb-1 h-4 w-4" />Handel und Übernahmen ab Firmenwert {eur(15_000_000)}. Alle Kurse sind bereits sichtbar.</Empty>}
         {state.capitalMarkets.rivals.map((company) => {
           const holding = state.capitalMarkets.holdings.find((item) => item.companyId === company.id);
