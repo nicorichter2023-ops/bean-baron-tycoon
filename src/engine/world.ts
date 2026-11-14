@@ -38,7 +38,7 @@ export function worldEffects(g: GameState) {
   for (const id of g.world.candidates) {
     const c = MASTER.cSuiteCandidates.find(c => c.id === id); if (!c) continue;
     const perks = c.perks as Record<string, number>;
-    capacity *= 1 + (perks.storeThroughputBonus ?? 0); demand *= 1 + (perks.campaignEffectivenessBonus ?? 0) / 4;
+    capacity *= 1 + (perks['storeThroughputBonus'] ?? 0); demand *= 1 + (perks['campaignEffectivenessBonus'] ?? 0) / 4;
   }
   for (const a of g.world.assets.filter(a => a.endWeek > g.week)) {
     const csr = MASTER.csrCertifications.find(c => a.kind === 'csr' && c.id === a.id); demand *= 1 + (csr?.hipsterStudentBonus ?? 0);
@@ -55,7 +55,7 @@ export function catalogAction(g: GameState, kind: CatalogKind, id: string): Acti
     const t = MASTER.techTree.find(t => t.id === id); if (!t) return outcome(g, 'Forschung nicht gefunden.');
     if (world.technologies.includes(id) || world.research.some(r => r.id === id)) return outcome(g, 'Bereits erforscht oder in Arbeit.');
     if (t.prerequisiteId && !world.technologies.includes(t.prerequisiteId)) return outcome(g, 'Voraussetzung noch nicht erforscht.');
-    const discount = world.candidates.reduce((n, id) => Math.max(n, (MASTER.cSuiteCandidates.find(c => c.id === id)?.perks as Record<string, number> | undefined)?.techCostDiscount ?? 0), 0);
+    const discount = world.candidates.reduce((n, id) => Math.max(n, (MASTER.cSuiteCandidates.find(c => c.id === id)?.perks as Record<string, number> | undefined)?.['techCostDiscount'] ?? 0), 0);
     cost = Math.round(t.researchCost * (1 - discount)); name = t.name;
     world.research = [...world.research, { id, finishWeek: g.week + t.researchWeeks }];
   } else if (kind === 'candidate') {
