@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MapPin, Store } from "lucide-react";
+import { Store } from "lucide-react";
 import { openStore } from "@/engine";
 import { Button } from "@/components/ui/button";
 import { eur, useGame } from "../GameContext";
@@ -30,7 +30,7 @@ export function MapTab() {
       {cities.map((city) => (
         <Panel key={city.id}>
           <button className="mb-2 flex w-full items-start gap-3 text-left" onClick={() => set((current) => ({ ...current, city }))}>
-            <MapPin className="mt-0.5 h-6 w-6 shrink-0 text-primary" />
+            <img src={getCityArtwork(city).src} alt={getCityArtwork(city).alt} loading="lazy" decoding="async" className="h-24 w-24 shrink-0 rounded-lg bg-artwork object-contain p-1" />
             <span className="flex-1 text-sm"><span className="block font-semibold">{city.name}, {city.country} {state.city.id === city.id && <span className="ml-1 text-xs text-primary">· ausgewählt</span>}</span>
               <span className="block text-xs text-muted-foreground">{city.landmarkName} · {BIOME[city.biome]}</span>
               <span className="block text-xs text-muted-foreground">Kaufkraft {city.purchasingPower.toFixed(2)}× · Kaffeekultur {city.coffeeCultureIndex}</span></span>
