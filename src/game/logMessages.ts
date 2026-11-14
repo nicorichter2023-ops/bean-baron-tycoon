@@ -58,6 +58,6 @@ export function translateEngineNote(note: string): string {
     case "CONTRACT_SIGNED": return `Liefervertrag mit ${first} abgeschlossen.`;
     case "EVENT_APPLIED": return `Ereignis entschieden: ${first}.`;
     case "EVENT_RESOLVED": return `Entscheidung für „${first}“ übernommen.`;
-    default: return third ? `${first}: ${second} ${third}` : "Spielstand aktualisiert.";
+    default: return /^[A-Z_]+(?::|$)/.test(note) ? (third ? `${first}: ${second} ${third}` : "Spielstand aktualisiert.") : note;
   }
 }
