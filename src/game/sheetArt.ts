@@ -35,3 +35,15 @@ export const CAFE_MENU = [0, 2, 4, 6, 8, 13, 20, 26].map((i) => art('menu', i));
 export const ROAST_LEVELS = [16, 17, 18, 19, 20].map((i) => art('beans', i));
 export const STOREFRONT_DECOR = { forLease: art('storefronts', 40), grandOpening: art('storefronts', 41), sold: art('storefronts', 43) };
 export const DISTRICT_TILES = [0, 3, 5, 9].map((i) => art('districts', i));
+
+// Café interior pieces unlocked per store tier (1 Kiosk, 2 Café, 3 Flagship).
+export const CAFE_LOADOUT: { tier: 1 | 2 | 3; label: string; index: number }[] = [
+  { tier: 1, label: 'Siebträger', index: 1 }, { tier: 1, label: 'Mühle', index: 4 }, { tier: 1, label: 'Kasse', index: 16 }, { tier: 1, label: 'Bistrotisch', index: 20 },
+  { tier: 2, label: 'Dual-Boiler', index: 2 }, { tier: 2, label: 'Präzisionsmühle', index: 5 }, { tier: 2, label: 'Vitrine', index: 11 }, { tier: 2, label: 'Bartheke', index: 21 }, { tier: 2, label: 'Sitzgruppe', index: 26 },
+  { tier: 3, label: 'Custom-Maschine', index: 3 }, { tier: 3, label: 'Cold Drip', index: 6 }, { tier: 3, label: 'Sandwich-Vitrine', index: 12 }, { tier: 3, label: 'Lounge-Sessel', index: 19 }, { tier: 3, label: 'Eckbank', index: 22 }, { tier: 3, label: 'Menü-Screens', index: 29 }, { tier: 3, label: 'Mooswand', index: 25 },
+].map((p) => ({ ...p, tier: p.tier as 1 | 2 | 3 }));
+export const cafeLoadoutArt = (index: number) => art('interior', index);
+
+// District tiles: shopping, scene/art, nightlife, finance, old town, park, office, campus…
+const DISTRICT_TILE_ORDER = [0, 2, 4, 12, 5, 1, 13, 14, 6, 9];
+export const districtTileArt = (i: number) => art('districts', DISTRICT_TILE_ORDER[i % DISTRICT_TILE_ORDER.length] ?? 0);

@@ -21,4 +21,5 @@
 - [x] Bestehende Aktionen über Szenen zugänglich halten; Engine, Content und Speicherformat unverändert lassen.
 - [x] Echte Einnahmenanimation, Rundenfeedback und mindestens 44px große Touch-Ziele ergänzen.
 - [x] Offline-PWA vorbereiten und zentrale Abläufe mobil und am Desktop prüfen.
+- [x] Café-Einrichtung nach Ausbaustufe und Distrikt-Kacheln einbinden.
 - [ ] Installation und vollständige Offline-Wiederöffnung auf dem echten Galaxy S21 FE prüfen — wartet auf Veröffentlichung und Gerätetest; veröffentlichter Offline-Cache ist lokal regelbasiert getestet.
