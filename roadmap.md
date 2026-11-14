@@ -14,6 +14,9 @@
 - [x] Installierbare Vollbild-App für Galaxy S21 FE konfigurieren und mobil prüfen.
 
 ## Visuelle Spielwelt
+- [ ] Masterdatei vollständig anbinden: Standorte, Rivalen und alle Wirtschafts- und Konzernangebote.
+- [ ] Animierte Stadtpläne mit je 30 Gebäuden, Zonen, Standortwerten und Konkurrenz entwickeln.
+- [ ] Flughafen-Reisezentrum, echte Standortkonkurrenz, Spielstandmigration und mobile Abläufe prüfen.
 - [x] Filial-Ausstattung, Maschinen-Effekte, Anlagenwerte und COO-Nachrüstung einbauen und prüfen.
 - [x] Management-Navigation mit direkter Filialübersicht umsetzen.
 - [x] Wöchentliche GuV, Bilanz und abgestimmten Cashflow ergänzen.
