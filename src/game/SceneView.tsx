@@ -5,7 +5,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { eur, useGame } from './GameContext';
 import { SCENES } from './sceneAssets';
 import { Sprite } from './Sprite';
-import { CAFE_LOADOUT, CAFE_MENU, ROAST_LEVELS, art, cafeLoadoutArt } from './sheetArt';
+import { CAFE_LOADOUT, CAFE_MENU, ROAST_LEVELS, cafeLoadoutArt } from './sheetArt';
 import { SectionFilter, StoreFilter } from './ui';
 import { EmpireTab } from './tabs/EmpireTab';
 import { FinanceTab } from './tabs/FinanceTab';
