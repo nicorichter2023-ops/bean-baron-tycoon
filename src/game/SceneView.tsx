@@ -11,6 +11,7 @@ import { EmpireTab } from './tabs/EmpireTab';
 import { FinanceTab } from './tabs/FinanceTab';
 import { MarketTab } from './tabs/MarketTab';
 import { getStoreArtwork } from './artwork';
+import roasteryScene from '@/assets/roastery-scene.jpg';
 
 export type Place = 'cafe' | 'terrace' | 'holding' | 'office' | 'roastery' | 'port' | 'exchange' | 'farm' | 'negotiation';
 const PLACES: Record<Place, { title: string; image: string; subtitle: string }> = {
@@ -53,8 +54,8 @@ export function SceneView({ place, onPlace, destinations }: { place: Place; onPl
     <div className="scene-heading"><div><p className="eyebrow">{isCafe ? `${city.name} · Woche ${state.week}` : details.subtitle}</p><h1>{isCafe ? store?.name ?? details.title : details.title}</h1></div><Sprite sheet="finance" index={1} className="h-12 w-12" /></div>
     <div className="location-switch" aria-label="Spielorte">{destinations.map((p) => <Button key={p} variant={place === p ? 'secondary' : 'ghost'} onClick={() => onPlace(p)}>{PLACES[p].title.replace('Coffee Empire ', '').replace('Café-', '')}</Button>)}</div>
     {isCafe && <div className="store-selector"><Store className="h-4 w-4 text-primary" /><select aria-label="Filiale auswählen" value={store?.id ?? ''} onChange={(e) => setStoreId(e.target.value)}>{state.stores.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}</select></div>}
-    <div className={`scene-stage ${place === 'roastery' ? 'roastery-stage' : ''} ${pulse ? 'week-pulse' : ''}`} key={place}>
-      {place === 'roastery' ? <div className="factory-floor" aria-label="Isometrische Rösterei" role="img" /> : <img className="scene-image" src={details.image} alt={details.title} fetchPriority="high" />}
+    <div className={`scene-stage ${''} ${pulse ? 'week-pulse' : ''}`} key={place}>
+      {place === 'roastery' ? <img className="scene-image" src={roasteryScene} alt="Isometrische Rösterei mit Großröstern, Silos und Jutesäcken" width={1536} height={864} /> : <img className="scene-image" src={details.image} alt={details.title} fetchPriority="high" />}
       {isCafe && <><Hotspot x={33} y={56} label="Café verwalten" icon={<Coffee />} onClick={() => open('Café & Ausbau', 'empire', ['Filialen'])} /><Hotspot x={67} y={66} label="Personal" icon={<Users />} onClick={() => open('Personal & Filialen', 'empire', ['Filialen'])} /><Hotspot x={80} y={36} label="Neue Filiale" icon={<Store />} onClick={() => open('Expansion', 'empire', ['Neue Filiale'])} />
         {store && store.employees.length > 0 && <img src={art('people', 1)} alt="" className="scene-person barista object-contain" />}
         {store && store.customersServedLastWeek > 0 && <img src={art('traffic', 2)} alt="" className="scene-person customer object-contain" />}
@@ -64,7 +65,7 @@ export function SceneView({ place, onPlace, destinations }: { place: Place; onPl
       {place === 'holding' && <><Hotspot x={28} y={38} label="Holding" icon={<Landmark />} onClick={() => open('Holding', 'empire', ['Holding', 'Letzte Woche'])} /><Hotspot x={62} y={63} label="Startup-Pitches" icon={<Rocket />} onClick={() => open('Startup-Pitches', 'finance', ['VC-Startups'])} /></>}
       {place === 'office' && <><Hotspot x={28} y={58} label="Bankkredit" icon={<Wallet />} onClick={() => open('Bankkredit', 'finance', ['Bankkredit'])} /><Hotspot x={57} y={25} label="Aktienhandel" icon={<Landmark />} onClick={() => open('Aktien & M&A', 'finance', ['Aktienmarkt'])} /><Hotspot x={59} y={74} label="Übernahmen" icon={<Rocket />} onClick={() => onPlace('negotiation')} /></>}
       {place === 'negotiation' && <Hotspot x={50} y={63} label="Verträge & Übernahmen" icon={<Landmark />} onClick={() => open('M&A und Beteiligungen', 'finance', ['Aktienmarkt', 'VC-Startups'])} />}
-      {place === 'roastery' && <><Sprite sheet="roastery" index={1} className="roaster-machine" /><Sprite sheet="logistics" index={0} className="bean-pallet" /><Sprite sheet="logistics" index={8} className="storage-rack" /><Sprite sheet="vehicles" index={12} className="forklift" /><Sprite sheet="roastery" index={9} className="factory-silos" /><Hotspot x={37} y={55} label="Rösterei" icon={<Factory />} onClick={() => open('Rösterei', 'empire', ['Rösterei'])} /><Hotspot x={77} y={56} label="Bohnenlager" icon={<Package />} onClick={() => open('Bohnen einkaufen', 'market', ['Bohnen einkaufen'])} /></>}
+      {place === 'roastery' && <><Hotspot x={28} y={42} label="Rösterei" icon={<Factory />} onClick={() => open('Rösterei', 'empire', ['Rösterei'])} /><Hotspot x={22} y={70} label="Bohnenlager" icon={<Package />} onClick={() => open('Bohnen einkaufen', 'market', ['Bohnen einkaufen'])} /></>}
       {(place === 'port' || place === 'exchange' || place === 'farm') && <><Hotspot x={35} y={53} label="Bohnenmarkt" icon={<Coffee />} onClick={() => open('Bohnenmarkt', 'market', ['Kaffee-Futures', 'Bohnen einkaufen'])} />{place !== 'farm' && <Hotspot x={72} y={67} label="B2B-Lieferverträge" icon={<Package />} onClick={() => open('Lieferverträge', 'market', ['B2B-Vertrag', 'Aktive Lieferverträge'])} />}</>}
       <div className="scene-badge"><span className="live-dot" />{isCafe ? `${store?.employees.length ?? 0} im Team` : place === 'roastery' ? state.roastery.owned ? 'In Betrieb' : 'Noch nicht erworben' : 'Coffee Empire'}</div>
     </div>
