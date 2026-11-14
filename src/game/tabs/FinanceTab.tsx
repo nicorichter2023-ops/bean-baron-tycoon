@@ -6,6 +6,7 @@ import { createInitialState } from "@/data";
 import { eur, useGame } from "../GameContext";
 import { Empty, Panel, Section } from "../ui";
 import { COMPANY_ARTWORK } from "../artwork";
+import { Sprite } from '../Sprite';
 
 const inputClass = "h-9 w-full rounded-md border border-input bg-background px-3 font-mono text-sm text-foreground";
 const RISK = { low: "Niedrig", medium: "Mittel", high: "Hoch", moonshot: "Moonshot" } as const;
@@ -49,14 +50,14 @@ export function FinanceTab() {
 
       <Section title={`VC-Startups · ${state.capitalMarkets.startups.length}`}>
         {state.capitalMarkets.startups.map((startup) => <Panel key={startup.id}>
-          <div className="flex items-start gap-3"><Rocket className="mt-0.5 h-5 w-5 shrink-0 text-primary" /><div className="min-w-0 flex-1 text-sm"><div className="font-semibold">{startup.name}</div><div className="text-xs text-muted-foreground">{startup.sector} · Risiko {RISK[startup.riskClass]} · Chance {startup.successChance}%</div></div></div>
+          <div className="flex items-start gap-3"><Sprite sheet="startup" index={state.capitalMarkets.startups.indexOf(startup) % 8} className="h-16 w-16" /><div className="min-w-0 flex-1 text-sm"><div className="font-semibold">{startup.name}</div><div className="text-xs text-muted-foreground">{startup.sector} · Risiko {RISK[startup.riskClass]} · Chance {startup.successChance}%</div></div></div>
           <div className="mt-1 text-xs text-muted-foreground">Bewertung {eur(startup.valuation)} · Finanzierung {eur(startup.requiredFunding)} · Auszahlung ×{startup.payoutMultiple}</div>
           {startup.investedAmount > 0 && <div className="mt-1 text-xs text-primary">Investiert: {eur(startup.investedAmount)} · {startup.status === "active" ? "aktiv" : startup.status === "succeeded" ? "erfolgreich" : "gescheitert"}</div>}
           {startup.acquired ? <p className="mt-2 text-xs font-semibold text-success">Vollständig übernommen</p> : <div className="mt-2 grid grid-cols-2 gap-2"><Button size="sm" variant="outline" disabled={!marketsUnlocked || startup.status !== "active"} onClick={() => perform((current) => investInStartup(current, startup.id, startup.requiredFunding))}>Finanzieren</Button><Button size="sm" variant="outline" disabled={!marketsUnlocked} onClick={() => perform((current) => acquireStartup(current, startup.id))}>Übernehmen</Button></div>}
         </Panel>)}
       </Section>
 
-      <Button variant="ghost" className="w-full text-muted-foreground" onClick={() => { if (confirm("Spielstand wirklich löschen?")) { resetGame(); set(() => createInitialState()); } }}><RotateCcw /> Neues Spiel</Button>
+      <Section title="Spielstand"><Button variant="ghost" className="w-full text-muted-foreground" onClick={() => { if (confirm("Spielstand wirklich löschen?")) { resetGame(); set(() => createInitialState()); } }}><RotateCcw /> Neues Spiel</Button></Section>
     </>
   );
 }

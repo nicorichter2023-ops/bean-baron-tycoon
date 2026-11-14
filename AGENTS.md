@@ -30,3 +30,6 @@ use the editor.
 <!-- LOVABLE:END -->
 
 - Game logic lives in src/engine/ (user-supplied pure types.ts/engine.ts with processTurn, plus save.ts for localStorage with schemaVersion migrations); content and createInitialState live in src/data/; UI in src/game/ only calls engine functions — keeps engine/content swappable.
+- SceneView and MapTab form the visual presentation layer; SectionFilter exposes existing action panels in sheets, so economic actions stay on the existing engine path.
+- New uploaded media is served through asset JSON pointers; sprite atlases use a 4×4 grid to limit requests and keep scene composition browser-safe.
+- Register the public offline service worker only in production; cache only successful same-origin public GET assets and navigations, never authenticated requests or API responses.

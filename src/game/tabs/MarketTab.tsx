@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { eur, useGame } from "../GameContext";
 import { Empty, Panel, Section } from "../ui";
 import { COMPANY_ARTWORK } from "../artwork";
+import { Sprite } from '../Sprite';
 
 const inputClass = "h-9 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground";
 
@@ -26,7 +27,7 @@ export function MarketTab() {
         <Panel>
           <div className="flex items-center gap-3">
             <img src={COMPANY_ARTWORK.port} alt="Isometrischer Kaffee-Handelshafen" className="h-24 w-32 shrink-0 rounded-lg bg-artwork object-contain p-1" />
-            <div className="text-sm"><div className="font-semibold">Hafen & Terminmarkt</div><div className="mt-1 text-xs text-muted-foreground">Internationale Lieferketten, Bohnenpreise und B2B-Exporte auf einen Blick.</div></div>
+            <div className="text-sm"><div className="font-semibold">Hafen & Terminmarkt</div></div>
           </div>
         </Panel>
         <Panel>
@@ -38,7 +39,7 @@ export function MarketTab() {
       <Section title={`Bohnen einkaufen · ${state.market.beanVarieties.length} Sorten`}>
         {!state.roastery.owned && <Empty><Lock className="mx-auto mb-1 h-4 w-4" />Kaufe zuerst eine Rösterei, um Bohnen einzulagern.</Empty>}
         {state.market.beanVarieties.map((bean) => <Panel key={bean.id}>
-          <div className="flex items-start gap-3"><Bean className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+          <div className="flex items-start gap-3"><Sprite sheet="logistics" index={0} className="h-14 w-14" />
             <div className="min-w-0 flex-1 text-sm"><div className="font-semibold">{bean.name}</div><div className="text-xs text-muted-foreground">{bean.originCountry} · Qualität {bean.qualityScore} · {beanPricePerKg(state, bean.id).toFixed(2)} €/kg</div>
               <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{bean.flavorProfile}</p></div></div>
           <div className="mt-2 grid grid-cols-2 gap-2"><Button size="sm" variant="outline" disabled={!state.roastery.owned} onClick={() => perform((current) => buyBeans(current, bean.id, 10))}><PackageOpen /> 10 kg</Button><Button size="sm" variant="outline" disabled={!state.roastery.owned} onClick={() => perform((current) => buyBeans(current, bean.id, 50))}>50 kg</Button></div>

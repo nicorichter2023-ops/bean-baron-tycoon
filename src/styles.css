@@ -168,3 +168,123 @@
   body { font-family: var(--font-sans); overscroll-behavior: none; -webkit-tap-highlight-color: transparent; }
 }
 @utility shadow-glow { box-shadow: var(--shadow-glow); }
+
+/* The scene art carries warmth; the interface uses graphite, mint and gold. */
+.dark {
+  --background: oklch(0.19 0.012 165);
+  --foreground: oklch(0.95 0.008 110);
+  --card: oklch(0.235 0.013 165);
+  --card-foreground: var(--foreground);
+  --popover: oklch(0.235 0.013 165);
+  --popover-foreground: var(--foreground);
+  --primary: oklch(0.82 0.11 85);
+  --primary-foreground: oklch(0.2 0.018 100);
+  --secondary: oklch(0.31 0.045 165);
+  --secondary-foreground: oklch(0.94 0.03 165);
+  --muted: oklch(0.27 0.012 165);
+  --muted-foreground: oklch(0.72 0.015 165);
+  --accent: oklch(0.32 0.03 165);
+  --accent-foreground: var(--foreground);
+  --border: oklch(0.38 0.015 165);
+  --input: var(--border);
+  --ring: var(--primary);
+  --radius: 0.5rem;
+}
+.game-main { padding-inline: 20px; }
+.scene-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px 0 12px; }
+.scene-heading h1 { font-family:var(--font-display); font-size:28px; line-height:1.15; margin-top:5px; overflow-wrap:anywhere; }
+.eyebrow { color:var(--muted-foreground); font-size:11px; text-transform:uppercase; letter-spacing:0; }
+.location-switch { display:flex; gap:4px; overflow-x:auto; padding-bottom:12px; scrollbar-width:none; }
+.location-switch button { flex-shrink:0; font-size:12px; }
+.store-selector { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+select, input { min-height:44px; }
+.store-selector select { flex:1; min-width:0; background:var(--card); border:1px solid var(--border); padding:8px 12px; color:var(--foreground); border-radius:6px; }
+.scene-stage { position:relative; aspect-ratio:1376/768; width:100%; overflow:hidden; isolation:isolate; background:var(--artwork); }
+.scene-image { width:100%; height:100%; object-fit:contain; }
+.scene-hotspot { position:absolute; z-index:4; transform:translate(-50%,-50%); width:44px; height:44px; padding:0; border-radius:50%; border:2px solid var(--primary); box-shadow:var(--shadow-glow); }
+.scene-hotspot span { position:absolute; top:48px; background:var(--card); border:1px solid var(--border); border-radius:4px; padding:5px 8px; font-size:10px; opacity:0; pointer-events:none; transition:opacity .2s; }
+.scene-hotspot:hover span,.scene-hotspot:focus-visible span { opacity:1; }
+.scene-badge { position:absolute; bottom:10px; left:10px; z-index:5; display:flex; align-items:center; gap:7px; background:var(--card); color:var(--foreground); padding:6px 10px; font-size:10px; border-radius:4px; }
+.live-dot { display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--success); flex-shrink:0; }
+.sprite { display:inline-block; background-repeat:no-repeat; flex-shrink:0; aspect-ratio:1; }
+.scene-person { position:absolute; width:13%; pointer-events:none; z-index:2; }
+.barista { left:31%; top:37%; animation:breathe 4s ease-in-out infinite; }
+.customer { left:67%; top:45%; }
+.coffee-steam { position:absolute; left:30%; top:42%; color:var(--primary-foreground); font-size:25px; opacity:.6; animation:steam 3s infinite; pointer-events:none; }
+.roastery-stage { background:var(--artwork); }
+.factory-floor { position:absolute; width:72%; height:65%; top:19%; left:14%; transform:skewY(-12deg); background:var(--muted-foreground); border:8px solid var(--border); }
+.factory-floor::before { content:''; position:absolute; width:100%; height:28%; top:-28%; left:-8px; background:var(--secondary); border:8px solid var(--border); }
+.forklift { position:absolute; width:18%; left:58%; top:62%; }
+.factory-silos { position:absolute; width:22%; left:10%; top:10%; }
+.roaster-machine { position:absolute; width:32%; left:19%; top:30%; }
+.bean-pallet { position:absolute; width:18%; left:55%; top:55%; }
+.storage-rack { position:absolute; width:27%; right:4%; top:20%; }
+.scene-metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); border-bottom:1px solid var(--border); padding:18px 0; gap:10px; }
+.scene-metrics div { min-width:0; }
+.scene-metrics span { display:block; color:var(--muted-foreground); font-size:10px; margin-bottom:6px; }
+.scene-metrics strong { display:block; font-family:var(--font-mono); font-size:15px; overflow-wrap:anywhere; }
+.scene-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:16px 0 25px; }
+.scene-actions button { white-space:normal; }
+.owned-stores h2,.city-directory h2 { font-family:var(--font-display); font-size:18px; }
+.store-strip { display:flex; gap:10px; overflow-x:auto; }
+.store-tile { display:flex; flex:0 0 160px; height:100px; border:1px solid var(--border); justify-content:flex-start; padding:8px; }
+.store-tile img { width:66px; height:75px; object-fit:contain; }
+.store-tile span { white-space:normal; font-size:12px; text-align:left; }
+.store-tile small { display:block; color:var(--muted-foreground); margin-top:4px; font-size:10px; }
+.selected-store { border-color:var(--primary); background:var(--secondary); }
+.action-sheet { max-height:88dvh; width:min(100%,700px); margin-inline:auto; overflow-y:auto; padding:24px 20px calc(24px + env(safe-area-inset-bottom)); background:var(--background); border-radius:8px 8px 0 0; }
+.action-sheet section { margin-bottom:20px; }
+.action-sheet button { min-height:44px; }
+.nav-tab { position:relative; border-radius:0; }
+.nav-tab[aria-current=page]::before { content:''; position:absolute; top:0; width:30px; height:3px; background:var(--primary); }
+.nav-tab svg { width:21px; height:21px; }
+.income-float { position:absolute; top:35%; left:43%; z-index:6; font-family:var(--font-mono); font-weight:700; padding:8px; color:var(--success); background:var(--card); border-radius:4px; animation:float-income 3.5s forwards; }
+.week-pulse { animation:week-light 1s; }
+.hud-flash { animation:hud-light 1.6s; }
+.map-toolbar { display:flex; align-items:center; justify-content:space-between; font-size:12px; color:var(--muted-foreground); }
+.map-toolbar > div { display:flex; }
+.world-scroll { overflow:auto; width:100%; max-height:560px; border:1px solid var(--border); touch-action:pan-x pan-y; }
+.world-canvas { position:relative; }
+.world-canvas > img { width:100%; height:100%; }
+.city-marker { position:absolute; transform:translate(-50%,-50%); width:44px; height:44px; padding:0; z-index:2; background:color-mix(in oklab,var(--artwork) 80%,transparent); border-radius:50%; border:1px solid var(--primary); }
+.city-marker img { width:38px; height:38px; object-fit:contain; }
+.city-marker span { position:absolute; bottom:-16px; font-size:9px; color:var(--foreground); padding:2px 4px; background:var(--card); border-radius:2px; pointer-events:none; }
+.city-marker:hover,.city-marker:focus { z-index:10; }
+.city-marker .live-dot { position:absolute; top:0; right:0; }
+.city-directory { margin-top:24px; }
+.city-directory > div { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-top:14px; }
+.city-directory button { justify-content:flex-start; height:65px; min-width:0; padding:6px; }
+.city-directory img { width:42px; height:48px; object-fit:contain; }
+.city-directory span { text-align:left; font-size:11px; white-space:normal; }
+.city-directory small { display:block; font-size:9px; color:var(--muted-foreground); margin-top:3px; }
+.city-panorama { position:relative; aspect-ratio:16/7; overflow:hidden; }
+.city-panorama img { width:100%; height:100%; object-fit:cover; }
+.city-panorama > div { position:absolute; bottom:0; left:0; right:0; padding:10px 14px; background:var(--card); display:flex; justify-content:space-between; gap:8px; align-items:center; }
+.city-panorama span { font-size:10px; color:var(--muted-foreground); }
+.district-tabs { display:flex; gap:5px; overflow:auto; padding:14px 0; }
+.district-tabs button { flex-shrink:0; font-size:11px; }
+.district-scene { position:relative; aspect-ratio:1376/768; }
+.district-scene > img { width:100%; height:100%; object-fit:contain; }
+.plot-marker { position:absolute; transform:translate(-50%,-50%); padding:6px 9px; max-width:40%; gap:5px; }
+.plot-marker span { font-size:11px; white-space:normal; text-align:left; }
+.plot-marker small { display:block; font-size:9px; }
+.plot-0 { left:35%; top:43%; }.plot-1 { left:64%; top:30%; }.plot-2 { left:56%; top:78%; }.plot-3 { left:82%; top:55%; }
+.loading-game { min-height:400px; display:grid; place-items:center; font-family:var(--font-display); }
+@keyframes breathe { 50% { transform:translateY(-2px); } }
+@keyframes steam { from { transform:translateY(0); opacity:0; } 30% { opacity:.6; } to { transform:translateY(-18px); opacity:0; } }
+@keyframes float-income { from { transform:translateY(0); opacity:1; } to { transform:translateY(-65px); opacity:0; } }
+@keyframes week-light { 50% { filter:brightness(1.1); } }
+@keyframes hud-light { 25% { background:var(--secondary); } }
+@media (max-width:600px) {
+  .game-main { padding-inline:12px; }
+  .scene-heading h1 { font-size:24px; }
+  .scene-stage,.district-scene { margin-inline:-12px; width:calc(100% + 24px); }
+  .scene-metrics strong { font-size:13px; }
+  .city-directory > div { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .world-scroll { height:410px; }
+  .city-panorama { aspect-ratio:4/3; }
+  .plot-marker span { font-size:10px; }
+  .scene-badge { bottom:5px; left:5px; font-size:9px; padding:4px 6px; }
+  .hud { gap:4px; }
+}
+@media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none !important; transition:none !important; } }
