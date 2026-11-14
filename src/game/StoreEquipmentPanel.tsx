@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ArrowUpCircle, Wrench } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { Store } from '@/engine/types';
-import { EQUIPMENT, equipmentOf, equipmentUpgradeCost, upgradeEquipment, type EquipmentCategory, type EquipmentLevel } from '@/engine/equipment';
+import { EQUIPMENT, equipmentEffects, equipmentOf, equipmentUpgradeCost, upgradeEquipment, type EquipmentCategory, type EquipmentLevel } from '@/engine/equipment';
 import { equipmentArt } from './sheetArt';
 import { eur, useGame } from './GameContext';
 
@@ -11,12 +11,14 @@ export function StoreEquipmentPanel({ store }: { store: Store }) {
   const { state, perform } = useGame();
   const [category, setCategory] = useState<EquipmentCategory>('espresso');
   const current = equipmentOf(store);
+  const effects = equipmentEffects(store);
   const [selected, setSelected] = useState<EquipmentLevel>(1);
   const options = EQUIPMENT[category];
   const level = options[selected] ? selected : 1;
   const cost = equipmentUpgradeCost(store, category, level);
   return <div className="mt-4 border-t border-border pt-4" aria-label={`Ausstattung ${store.name}`}>
     <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="flex items-center gap-2 text-sm font-semibold"><Wrench className="h-4 w-4" /> Ausstattung</h3><span className="text-xs text-muted-foreground">Anlagenwert {eur(current.bookValue)}</span></div>
+    <p className="mt-2 text-xs text-muted-foreground">Zufriedenheitsbonus +{effects.satisfaction} · Verweildauer +{Math.round((effects.dwell - 1) * 100)} %</p>
     <div className="mt-3 grid grid-cols-3 gap-2">{CATEGORIES.map(([c, label]) => <Button key={c} variant={category === c ? 'secondary' : 'ghost'} aria-label={label} aria-pressed={category === c} className="h-auto min-h-11 flex-col gap-1 whitespace-normal px-1 py-2 text-center" onClick={() => { setCategory(c); setSelected(Math.min(current[c] + 1, EQUIPMENT[c].length - 1) as EquipmentLevel); }}>
       <img src={equipmentArt(c, current[c])} alt="" className="h-12 w-12 object-contain" /><span className="text-xs">{label}</span><span className="text-[11px] text-muted-foreground">Stufe {current[c] + 1}</span>
     </Button>)}</div>
