@@ -10,7 +10,8 @@ export type Extra = 'none' | 'caramel' | 'vanilla' | 'cinnamon';
 export interface Recipe { id: string; name: string; base: Base; milk: Milk; extra: Extra; price: number; createdWeek: number; }
 export type CampaignKind = 'social' | 'poster' | 'tasting';
 export interface Campaign { id: string; kind: CampaignKind; cityId: string; weeksLeft: number; }
-export interface ExpansionState { schemaVersion: number; recipes: Recipe[]; campaigns: Campaign[]; lastBonus: number; }
+export interface WeekRecord { week: number; guests: number; revenue: number; campaigns: number; }
+export interface ExpansionState { schemaVersion: number; recipes: Recipe[]; campaigns: Campaign[]; lastBonus: number; history: WeekRecord[]; }
 
 export const BASES: Record<Base, { label: string; cost: number; quality: number }> = {
   espresso: { label: 'Espresso', cost: 0.45, quality: 6 }, double: { label: 'Double Shot', cost: 0.8, quality: 9 },
@@ -36,7 +37,7 @@ export const BIOME_TASTE: Record<string, { milk: Milk; base: Base }> = {
 };
 export const MAX_RECIPES = 4;
 
-export const createExpansion = (): ExpansionState => ({ schemaVersion: EXPANSION_SCHEMA, recipes: [], campaigns: [], lastBonus: 0 });
+export const createExpansion = (): ExpansionState => ({ schemaVersion: EXPANSION_SCHEMA, recipes: [], campaigns: [], lastBonus: 0, history: [] });
 export const recipeCost = (r: Pick<Recipe, 'base' | 'milk' | 'extra'>) => +(BASES[r.base].cost + MILKS[r.milk].cost + EXTRAS[r.extra].cost).toFixed(2);
 export const recipeQuality = (r: Pick<Recipe, 'base' | 'milk' | 'extra'>) => BASES[r.base].quality + MILKS[r.milk].quality + EXTRAS[r.extra].quality;
 /** Fairer Preis: Qualität × 0,25 € + Kosten. Darüber sinkt die Nachfrage. */
@@ -68,7 +69,12 @@ export function applyExpansionWeek(game: GameState, exp: ExpansionState) {
   const { profit, reputation } = weekBonus(game, exp);
   return {
     game: { ...game, cash: game.cash + profit, brandReputation: Math.min(100, game.brandReputation + reputation) },
-    exp: { ...exp, lastBonus: profit, campaigns: exp.campaigns.map((c) => ({ ...c, weeksLeft: c.weeksLeft - 1 })).filter((c) => c.weeksLeft > 0) },
+    exp: { ...exp, lastBonus: profit, history: [...exp.history, {
+      week: game.week,
+      guests: game.stores.reduce((n, s) => n + s.customersServedLastWeek, 0),
+      revenue: Math.round(game.stores.reduce((n, s) => n + s.weeklyRevenue, 0) + profit),
+      campaigns: exp.campaigns.length,
+    }].slice(-52), campaigns: exp.campaigns.map((c) => ({ ...c, weeksLeft: c.weeksLeft - 1 })).filter((c) => c.weeksLeft > 0) },
   };
 }
 
@@ -95,3 +101,10 @@ export function loadExpansion(): ExpansionState {
   } catch { return createExpansion(); }
 }
 export const saveExpansion = (exp: ExpansionState) => { try { localStorage.setItem(EXPANSION_KEY, JSON.stringify(exp)); } catch { /* voll */ } };
+
+/** Durchschnitt von Gästen und Umsatz in Wochen mit vs. ohne laufende Kampagne. */
+export function compareCampaignWeeks(history: WeekRecord[]) {
+  const avg = (rows: WeekRecord[], k: 'guests' | 'revenue') => rows.length ? Math.round(rows.reduce((n, r) => n + r[k], 0) / rows.length) : 0;
+  const withC = history.filter((h) => h.campaigns > 0); const without = history.filter((h) => h.campaigns === 0);
+  return { with: { weeks: withC.length, guests: avg(withC, 'guests'), revenue: avg(withC, 'revenue') }, without: { weeks: without.length, guests: avg(without, 'guests'), revenue: avg(without, 'revenue') } };
+}
