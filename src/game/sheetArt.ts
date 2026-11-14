@@ -3,7 +3,7 @@ export type SheetName = 'districts' | 'traffic' | 'interior' | 'menu' | 'storefr
 export const SHEET_COUNTS: Record<SheetName, number> = { districts: 44, traffic: 49, interior: 38, menu: 46, storefronts: 44, beans: 40, hud: 47, partners: 39, people: 34 };
 export const art = (sheet: SheetName, index: number) => `/assets/sheets/${sheet}/${((index % SHEET_COUNTS[sheet]) + SHEET_COUNTS[sheet]) % SHEET_COUNTS[sheet]}.webp`;
 
-export const HUD = { cash: art('hud', 0), valuation: art('hud', 5), calendar: art('hud', 45), nextWeek: art('hud', 44), empire: art('hud', 4), map: art('hud', 16), market: art('hud', 24), finance: art('hud', 6), news: art('hud', 28), deal: art('hud', 42), rejected: art('hud', 43) };
+export const HUD = { cash: art('hud', 0), valuation: art('hud', 6), calendar: art('hud', 46), nextWeek: art('hud', 45), empire: art('hud', 5), map: art('hud', 17), market: art('hud', 25), finance: art('hud', 7), news: art('hud', 29), deal: art('hud', 43), rejected: art('hud', 44) };
 
 const BEAN_SACKS: Record<string, number> = {
   ethiopia_yirgacheffe: 0, colombia_supremo: 1, brazil_santos: 2, kenya_aa: 3, costa_rica_tarrazu: 4, guatemala_antigua: 5,
