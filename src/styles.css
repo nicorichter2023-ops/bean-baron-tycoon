@@ -299,9 +299,9 @@ select, input { min-height:44px; }
 .walker-1 { left:34%; bottom:20%; }
 .walker-2 { left:58%; bottom:12%; }
 .walker-3 { left:78%; bottom:24%; }
-.district-scene > .street-vehicle { height:14%; bottom:4%; }
-.vehicle-0 { left:8%; }
-.vehicle-1 { left:55%; bottom:0; }
+.district-scene > .street-vehicle { height:14%; bottom:9%; }
+.vehicle-0 { left:6%; }
+.vehicle-1 { left:47%; bottom:6%; }
 .cafe-loadout { margin-top:16px; }
 .loadout-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }
 .loadout-grid button { display:flex; flex-direction:column; align-items:center; gap:2px; min-height:44px; padding:6px 2px; border-radius:12px; background:var(--card); border:1px solid var(--border); }
