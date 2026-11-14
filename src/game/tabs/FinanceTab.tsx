@@ -6,7 +6,7 @@ import { createInitialState } from "@/data";
 import { eur, useGame } from "../GameContext";
 import { Empty, Panel, Section } from "../ui";
 import { COMPANY_ARTWORK } from "../artwork";
-import { Sprite } from '../Sprite';
+import { rivalArt, startupArt } from '../sheetArt';
 
 const inputClass = "h-9 w-full rounded-md border border-input bg-background px-3 font-mono text-sm text-foreground";
 const RISK = { low: "Niedrig", medium: "Mittel", high: "Hoch", moonshot: "Moonshot" } as const;
@@ -38,7 +38,7 @@ export function FinanceTab() {
         {state.capitalMarkets.rivals.map((company) => {
           const holding = state.capitalMarkets.holdings.find((item) => item.companyId === company.id);
           return <Panel key={company.id}>
-            <div className="flex items-start gap-3"><LineChart className="mt-0.5 h-5 w-5 shrink-0 text-primary" /><div className="min-w-0 flex-1 text-sm"><div className="font-semibold">{company.name}</div><div className="text-xs text-muted-foreground">{company.ticker} · {company.sharePrice.toFixed(2)} € · Dividende {(company.dividendYield * 100).toFixed(1)}% p.a.</div></div>{holding && <span className="text-xs font-mono">{holding.shares} Stk.</span>}</div>
+            <div className="flex items-start gap-3"><img src={rivalArt(state.capitalMarkets.rivals.indexOf(company))} alt="" className="h-12 w-12 shrink-0 object-contain" /><div className="min-w-0 flex-1 text-sm"><div className="font-semibold">{company.name}</div><div className="text-xs text-muted-foreground">{company.ticker} · {company.sharePrice.toFixed(2)} € · Dividende {(company.dividendYield * 100).toFixed(1)}% p.a.</div></div>{holding && <span className="text-xs font-mono">{holding.shares} Stk.</span>}</div>
             <p className="mt-1 text-xs text-muted-foreground">{company.description}</p>
             {company.acquired ? <p className="mt-2 text-xs font-semibold text-success">Zum Imperium gehörig</p> : <>
               <div className="mt-2 grid grid-cols-2 gap-2"><Button size="sm" variant="outline" disabled={!marketsUnlocked} onClick={() => perform((current) => buyShares(current, company.id, 1))}>1 Aktie kaufen</Button><Button size="sm" variant="outline" disabled={!marketsUnlocked || !holding} onClick={() => perform((current) => sellShares(current, company.id, 1))}>1 Aktie verkaufen</Button></div>
@@ -50,7 +50,7 @@ export function FinanceTab() {
 
       <Section title={`VC-Startups · ${state.capitalMarkets.startups.length}`}>
         {state.capitalMarkets.startups.map((startup) => <Panel key={startup.id}>
-          <div className="flex items-start gap-3"><Sprite sheet="startup" index={state.capitalMarkets.startups.indexOf(startup) % 8} className="h-16 w-16" /><div className="min-w-0 flex-1 text-sm"><div className="font-semibold">{startup.name}</div><div className="text-xs text-muted-foreground">{startup.sector} · Risiko {RISK[startup.riskClass]} · Chance {startup.successChance}%</div></div></div>
+          <div className="flex items-start gap-3"><img src={startupArt(state.capitalMarkets.startups.indexOf(startup))} alt="" className="h-16 w-16 shrink-0 object-contain" /><div className="min-w-0 flex-1 text-sm"><div className="font-semibold">{startup.name}</div><div className="text-xs text-muted-foreground">{startup.sector} · Risiko {RISK[startup.riskClass]} · Chance {startup.successChance}%</div></div></div>
           <div className="mt-1 text-xs text-muted-foreground">Bewertung {eur(startup.valuation)} · Finanzierung {eur(startup.requiredFunding)} · Auszahlung ×{startup.payoutMultiple}</div>
           {startup.investedAmount > 0 && <div className="mt-1 text-xs text-primary">Investiert: {eur(startup.investedAmount)} · {startup.status === "active" ? "aktiv" : startup.status === "succeeded" ? "erfolgreich" : "gescheitert"}</div>}
           {startup.acquired ? <p className="mt-2 text-xs font-semibold text-success">Vollständig übernommen</p> : <div className="mt-2 grid grid-cols-2 gap-2"><Button size="sm" variant="outline" disabled={!marketsUnlocked || startup.status !== "active"} onClick={() => perform((current) => investInStartup(current, startup.id, startup.requiredFunding))}>Finanzieren</Button><Button size="sm" variant="outline" disabled={!marketsUnlocked} onClick={() => perform((current) => acquireStartup(current, startup.id))}>Übernehmen</Button></div>}

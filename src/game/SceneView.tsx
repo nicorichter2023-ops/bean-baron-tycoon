@@ -5,6 +5,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { eur, useGame } from './GameContext';
 import { SCENES } from './sceneAssets';
 import { Sprite } from './Sprite';
+import { CAFE_MENU, ROAST_LEVELS, art } from './sheetArt';
 import { SectionFilter, StoreFilter } from './ui';
 import { EmpireTab } from './tabs/EmpireTab';
 import { FinanceTab } from './tabs/FinanceTab';
@@ -55,8 +56,8 @@ export function SceneView({ place, onPlace, destinations }: { place: Place; onPl
     <div className={`scene-stage ${place === 'roastery' ? 'roastery-stage' : ''} ${pulse ? 'week-pulse' : ''}`} key={place}>
       {place === 'roastery' ? <div className="factory-floor" aria-label="Isometrische Rösterei" role="img" /> : <img className="scene-image" src={details.image} alt={details.title} fetchPriority="high" />}
       {isCafe && <><Hotspot x={33} y={56} label="Café verwalten" icon={<Coffee />} onClick={() => open('Café & Ausbau', 'empire', ['Filialen'])} /><Hotspot x={67} y={66} label="Personal" icon={<Users />} onClick={() => open('Personal & Filialen', 'empire', ['Filialen'])} /><Hotspot x={80} y={36} label="Neue Filiale" icon={<Store />} onClick={() => open('Expansion', 'empire', ['Neue Filiale'])} />
-        {store && store.employees.length > 0 && <Sprite sheet="staff" index={1} className="scene-person barista" />}
-        {store && store.customersServedLastWeek > 0 && <Sprite sheet="customers" index={3} className="scene-person customer" />}
+        {store && store.employees.length > 0 && <img src={art('people', 1)} alt="" className="scene-person barista object-contain" />}
+        {store && store.customersServedLastWeek > 0 && <img src={art('traffic', 2)} alt="" className="scene-person customer object-contain" />}
         <span className="coffee-steam" aria-hidden="true">∿</span>
         {pulse && store && <div className="income-float" role="status">+{eur(store.weeklyRevenue)}</div>}
       </>}
@@ -68,6 +69,7 @@ export function SceneView({ place, onPlace, destinations }: { place: Place; onPl
       <div className="scene-badge"><span className="live-dot" />{isCafe ? `${store?.employees.length ?? 0} im Team` : place === 'roastery' ? state.roastery.owned ? 'In Betrieb' : 'Noch nicht erworben' : 'Coffee Empire'}</div>
     </div>
     <div className="scene-metrics">{isCafe ? <><Metric label="Umsatz / Woche" value={eur(store?.weeklyRevenue ?? 0)} /><Metric label="Gäste" value={String(store?.customersServedLastWeek ?? 0)} /><Metric label="Qualität" value={`${Math.round(store?.qualityIndex ?? 0)} / 100`} /></> : place === 'roastery' ? <><Metric label="Rohbohnen" value={`${Math.round(state.roastery.rawBeanStockKg)} kg`} /><Metric label="Geröstet" value={`${Math.round(state.roastery.roastedStockKg)} kg`} /><Metric label="Kapazität / Wo" value={`${state.roastery.capacityKgPerWeek} kg`} /></> : <><Metric label="Filialen" value={String(state.stores.length)} /><Metric label="Reputation" value={String(Math.round(state.brandReputation))} /><Metric label="Ergebnis / Wo" value={eur(state.lastReport?.netIncome ?? 0)} /></>}</div>
+    {(isCafe || place === 'roastery') && <div className="art-strip" aria-label={isCafe ? 'Speisekarte' : 'Röstgrade'}>{(isCafe ? CAFE_MENU : ROAST_LEVELS).map((src) => <img key={src} src={src} alt="" />)}</div>}
     <div className="scene-actions">
       {isCafe ? <><Button onClick={() => open('Filialen & Personal', 'empire', ['Filialen'])}><Users /> Team & Ausbau</Button><Button variant="outline" onClick={() => open('Neue Filiale', 'empire', ['Neue Filiale'])}><Store /> Eröffnen</Button></> : place === 'roastery' ? <><Button onClick={() => open('Rösterei', 'empire', ['Rösterei'])}><Factory /> Rösterei</Button><Button variant="outline" onClick={() => open('Bohnenlager', 'market', ['Bohnen einkaufen'])}><Package /> Lager</Button></> : place === 'holding' ? <><Button onClick={() => open('Startup-Pitches', 'finance', ['VC-Startups'])}><Rocket /> Pitches</Button><Button variant="outline" onClick={() => open('Wochenbericht', 'empire', ['Letzte Woche'])}><Landmark /> Bericht</Button></> : place === 'office' || place === 'negotiation' ? <><Button onClick={() => open('Bankkredit', 'finance', ['Bankkredit'])}><Wallet /> Bank</Button><Button variant="outline" onClick={() => open('Aktien & M&A', 'finance', ['Aktienmarkt'])}><Landmark /> Börse & M&A</Button></> : <><Button onClick={() => open('Bohnen einkaufen', 'market', ['Bohnen einkaufen'])}><Coffee /> Bohnen</Button><Button variant="outline" onClick={() => open('B2B-Lieferverträge', 'market', ['B2B-Vertrag', 'Aktive Lieferverträge'])}><Package /> Verträge</Button></>}
     </div>

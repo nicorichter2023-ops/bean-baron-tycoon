@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { eur, useGame } from "../GameContext";
 import { Empty, Panel, Section } from "../ui";
 import { COMPANY_ARTWORK } from "../artwork";
-import { Sprite } from '../Sprite';
+import { beanArt, b2bPartnerArt } from '../sheetArt';
 
 const inputClass = "h-9 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground";
 
@@ -39,7 +39,7 @@ export function MarketTab() {
       <Section title={`Bohnen einkaufen · ${state.market.beanVarieties.length} Sorten`}>
         {!state.roastery.owned && <Empty><Lock className="mx-auto mb-1 h-4 w-4" />Kaufe zuerst eine Rösterei, um Bohnen einzulagern.</Empty>}
         {state.market.beanVarieties.map((bean) => <Panel key={bean.id}>
-          <div className="flex items-start gap-3"><Sprite sheet="logistics" index={0} className="h-14 w-14" />
+          <div className="flex items-start gap-3"><img src={beanArt(bean.id)} alt="" className="h-14 w-14 shrink-0 object-contain" />
             <div className="min-w-0 flex-1 text-sm"><div className="font-semibold">{bean.name}</div><div className="text-xs text-muted-foreground">{bean.originCountry} · Qualität {bean.qualityScore} · {beanPricePerKg(state, bean.id).toFixed(2)} €/kg</div>
               <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{bean.flavorProfile}</p></div></div>
           <div className="mt-2 grid grid-cols-2 gap-2"><Button size="sm" variant="outline" disabled={!state.roastery.owned} onClick={() => perform((current) => buyBeans(current, bean.id, 10))}><PackageOpen /> 10 kg</Button><Button size="sm" variant="outline" disabled={!state.roastery.owned} onClick={() => perform((current) => buyBeans(current, bean.id, 50))}>50 kg</Button></div>
@@ -60,7 +60,7 @@ export function MarketTab() {
       </Section>
 
       <Section title="Aktive Lieferverträge">
-        {state.b2b.contracts.length === 0 ? <Empty>Keine aktiven Verträge.</Empty> : state.b2b.contracts.map((contract) => <Panel key={contract.id}><div className="flex justify-between gap-3 text-sm"><span>{contract.partnerName}</span><span className="text-right text-muted-foreground">{contract.volumeKgPerWeek} kg/Wo · {eur(contract.volumeKgPerWeek * contract.pricePerKg)}<br />{contract.weeksRemaining} Wochen verbleibend</span></div></Panel>)}
+        {state.b2b.contracts.length === 0 ? <Empty>Keine aktiven Verträge.</Empty> : state.b2b.contracts.map((contract) => <Panel key={contract.id}><div className="flex items-center justify-between gap-3 text-sm"><img src={b2bPartnerArt(state.b2b.contracts.indexOf(contract))} alt="" className="h-10 w-10 object-contain" /><span className="flex-1">{contract.partnerName}</span><span className="text-right text-muted-foreground">{contract.volumeKgPerWeek} kg/Wo · {eur(contract.volumeKgPerWeek * contract.pricePerKg)}<br />{contract.weeksRemaining} Wochen verbleibend</span></div></Panel>)}
       </Section>
     </>
   );
