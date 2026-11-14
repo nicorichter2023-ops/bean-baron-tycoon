@@ -46,4 +46,4 @@ export const cafeLoadoutArt = (index: number) => art('interior', index);
 
 // District tiles: shopping, scene/art, nightlife, finance, old town, park, office, campus…
 const DISTRICT_TILE_ORDER = [0, 2, 4, 12, 5, 1, 13, 14, 6, 9];
-export const districtTileArt = (i: number) => art('districts', DISTRICT_TILE_ORDER[i % DISTRICT_TILE_ORDER.length]);
+export const districtTileArt = (i: number) => art('districts', DISTRICT_TILE_ORDER[i % DISTRICT_TILE_ORDER.length] ?? 0);
