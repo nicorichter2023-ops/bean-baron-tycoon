@@ -9,7 +9,7 @@ import { BIOME_SCENE, CITY_POSITIONS, SCENES } from '../sceneAssets';
 import { getCityArtwork, getStoreArtwork } from '../artwork';
 import { EmpireTab } from './EmpireTab';
 import { SectionFilter, StoreFilter } from '../ui';
-import { STREET_LIFE, STREET_VEHICLES, STOREFRONT_DECOR } from '../sheetArt';
+import { districtTileArt, STREET_LIFE, STREET_VEHICLES, STOREFRONT_DECOR } from '../sheetArt';
 
 export function MapTab() {
   const { state, set, perform } = useGame();
@@ -28,13 +28,13 @@ export function MapTab() {
       <div className="city-directory"><h2>Metropolen</h2><div>{state.cities.map((c) => <Button key={c.id} variant="ghost" onClick={() => selectCity(c)}><img src={getCityArtwork(c).badge} alt="" /><span>{c.name}<small>{c.country}</small></span></Button>)}</div></div>
     </> : <>
       <div className="city-panorama"><img src={BIOME_SCENE[city.biome]} alt={`${city.name} – Stadtpanorama`} /><div><strong>{city.name}</strong><span>Kaufkraft {city.purchasingPower.toFixed(2)}× · Kaffeekultur {city.coffeeCultureIndex}</span></div></div>
-      <div className="district-tabs">{city.districts.map((d) => <Button variant={district?.id === d.id ? 'secondary' : 'ghost'} key={d.id} onClick={() => { setTier(1); setDistrict(d); }}>{d.name}</Button>)}</div>
+      <div className="district-tiles">{city.districts.map((d, i) => { const own = state.stores.find((s) => s.cityId === city.id && s.districtId === d.id); return <Button variant={district?.id === d.id ? 'secondary' : 'ghost'} key={d.id} onClick={() => { setTier(1); setDistrict(d); }}><img src={districtTileArt(i)} alt="" /><span>{d.name}<small>{own ? own.name : `Laufkundschaft ${d.footTraffic}`}</small></span>{own && <i className="live-dot" />}</Button>; })}</div>
       <div className="district-scene"><img src={SCENES.district.url} alt={`Grundstücke in ${city.name}`} />{STREET_LIFE.map((src, i) => <img key={src} src={src} alt="" aria-hidden="true" className={`street-walker walker-${i}`} />)}{STREET_VEHICLES.map((src, i) => <img key={src} src={src} alt="" aria-hidden="true" className={`street-vehicle vehicle-${i}`} />)}{city.districts.map((d, i) => { const store = state.stores.find((s) => s.cityId === city.id && s.districtId === d.id); return <Button key={d.id} className={`plot-marker plot-${i % 4}`} variant={store ? 'secondary' : 'default'} onClick={() => { setTier(1); setDistrict(d); }} aria-label={`${d.name} Grundstück`}><Store /><span>{d.name}<small>{store ? store.name : 'Zu vermieten'}</small></span></Button>; })}</div>
     </>}
     <Sheet open={Boolean(district)} onOpenChange={(open) => { if (!open) { setDistrict(null); setManage(false); } }}><SheetContent side="bottom" className="action-sheet"><SheetHeader><SheetTitle>{district?.name}</SheetTitle><SheetDescription>{city?.name} · {occupied ? 'Deine Filiale' : 'Freies Grundstück'}</SheetDescription></SheetHeader>{district && city && <div className="mt-5">
       {occupied ? <><img className="mx-auto h-36" src={getStoreArtwork(city.biome, occupied.tier)} alt={occupied.name} /><h2 className="text-center">{occupied.name}</h2><Button className="mt-4 w-full" onClick={() => setManage(true)}><Store /> Filiale verwalten</Button>{manage && <div className="mt-4"><SectionFilter.Provider value={['Filialen']}><StoreFilter.Provider value={occupied.id}><EmpireTab /></StoreFilter.Provider></SectionFilter.Provider></div>}</> : <>
         <div className="scene-metrics"><div><span>Miete / Woche</span><strong>{eur(district.rentWeekly)}</strong></div><div><span>Laufkundschaft</span><strong>{district.footTraffic} / 100</strong></div><div><span>Konkurrenz</span><strong>{district.competition} / 100</strong></div></div>
-        <img className="mx-auto h-16" src={STOREFRONT_DECOR.forLease} alt="Zu vermieten" /><img className="mx-auto h-40" src={getStoreArtwork(city.biome, tier)} alt={['','Kiosk','Café','Flagship'][tier]} /><div className="grid grid-cols-3 gap-2">{([1,2,3] as StoreTier[]).map((t) => <Button key={t} variant={tier === t ? 'default' : 'outline'} disabled={t > district.maxStoreTier} onClick={() => setTier(t)}>{['','Kiosk','Café','Flagship'][t]}</Button>)}</div>
+        <img className="mx-auto h-24" src={districtTileArt(city.districts.indexOf(district))} alt="" /><img className="mx-auto h-16" src={STOREFRONT_DECOR.forLease} alt="Zu vermieten" /><img className="mx-auto h-40" src={getStoreArtwork(city.biome, tier)} alt={['','Kiosk','Café','Flagship'][tier]} /><div className="grid grid-cols-3 gap-2">{([1,2,3] as StoreTier[]).map((t) => <Button key={t} variant={tier === t ? 'default' : 'outline'} disabled={t > district.maxStoreTier} onClick={() => setTier(t)}>{['','Kiosk','Café','Flagship'][t]}</Button>)}</div>
         <Button className="mt-4 w-full" onClick={() => perform((s) => openStore(s, city.id, district.id, tier))}><Store /> Eröffnen · {eur(storeOpeningCost(district, tier))}</Button>
       </>}
     </div>}</SheetContent></Sheet>

@@ -301,3 +301,15 @@ select, input { min-height:44px; }
 .vehicle-1 { animation-delay:-4s; animation-duration:13s; animation-direction:reverse; bottom:0; }
 @keyframes walk-across { from { left:-12%; } to { left:104%; } }
 @media (prefers-reduced-motion: reduce) { .street-walker, .street-vehicle { animation:none; left:40%; } }
+.cafe-loadout { margin-top:16px; }
+.loadout-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }
+.loadout-grid button { display:flex; flex-direction:column; align-items:center; gap:2px; min-height:44px; padding:6px 2px; border-radius:12px; background:var(--card); border:1px solid var(--border); }
+.loadout-grid img { width:52px; height:52px; object-fit:contain; }
+.loadout-grid span { font-size:9px; line-height:1.1; text-align:center; color:var(--muted-foreground); }
+.loadout-grid .locked img { filter:grayscale(1); opacity:.35; }
+.district-tiles { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; padding:14px 0; }
+.district-tiles button { position:relative; height:auto; min-height:44px; justify-content:flex-start; gap:8px; padding:6px; white-space:normal; text-align:left; }
+.district-tiles img { width:52px; height:52px; object-fit:contain; flex-shrink:0; }
+.district-tiles span { font-size:11px; }
+.district-tiles small { display:block; font-size:9px; color:var(--muted-foreground); }
+.district-tiles .live-dot { position:absolute; top:6px; right:6px; }
