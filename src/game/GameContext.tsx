@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { loadGame, processTurn, saveGame, type ActionResult, type GameState } from "@/engine";
 import { createInitialState } from "@/data";
 import { translateEngineNote } from "./logMessages";
+import { applyExpansionWeek, createExpansion, loadExpansion, saveExpansion, type ExpansionState } from "@/engine/expansion";
 
 type Ctx = {
   state: GameState;
@@ -10,6 +11,8 @@ type Ctx = {
   perform: (action: (state: GameState) => ActionResult) => void;
   nextWeek: () => void;
   loaded: boolean;
+  exp: ExpansionState;
+  setBoth: (fn: (state: GameState, exp: ExpansionState) => { game: GameState; exp: ExpansionState } | string) => void;
 };
 
 const GameCtx = createContext<Ctx | null>(null);
@@ -17,9 +20,11 @@ const GameCtx = createContext<Ctx | null>(null);
 export function GameProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<GameState>(createInitialState);
   const [loaded, setLoaded] = useState(false);
+  const [exp, setExp] = useState<ExpansionState>(createExpansion);
 
   useEffect(() => {
     setState(loadGame());
+    setExp(loadExpansion());
     setLoaded(true);
   }, []);
 
@@ -38,8 +43,21 @@ export function GameProvider({ children }: { children: ReactNode }) {
     return result.state;
   });
 
-  const nextWeek = () => set(processTurn);
-  return <GameCtx.Provider value={{ state, set, perform, nextWeek, loaded }}>{children}</GameCtx.Provider>;
+  const setBoth: Ctx["setBoth"] = (fn) => {
+    const result = fn(state, exp);
+    if (typeof result === "string") { toast.error(result); return; }
+    saveGame(result.game); saveExpansion(result.exp);
+    setState(result.game); setExp(result.exp);
+  };
+  const nextWeek = () => {
+    const turned = processTurn(state);
+    // Wochenwechsel pausiert bei offenem Ereignis; Erweiterung nur bei echtem Fortschritt verrechnen.
+    const result = turned.week > state.week ? applyExpansionWeek(turned, exp) : { game: turned, exp };
+    saveGame(result.game); saveExpansion(result.exp);
+    setState(result.game); setExp(result.exp);
+    if (result.exp.lastBonus && turned.week > state.week) toast.success(`Labor & Marketing: +${eur(result.exp.lastBonus)}`);
+  };
+  return <GameCtx.Provider value={{ state, set, perform, nextWeek, loaded, exp, setBoth }}>{children}</GameCtx.Provider>;
 }
 
 export function useGame() {
