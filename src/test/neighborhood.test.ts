@@ -62,4 +62,10 @@ describe('CMO, CTO und Forschung',()=>{
     expect(Object.keys(CITY_GEOGRAPHY)).toHaveLength(20);for(const c of MASTER.cities)expect(CITY_GEOGRAPHY[c.cityId]?.water).toBeTruthy();
     expect(CITY_GEOGRAPHY['london']?.water).toBe('Themse');expect(CITY_GEOGRAPHY['paris']?.water).toBe('Seine');expect(CITY_GEOGRAPHY['amsterdam']?.kind).toBe('canals');expect(CITY_GEOGRAPHY['tokio']?.water).toBe('Tokyo Bay');expect(CITY_GEOGRAPHY['sydney']?.water).toBe('Sydney Harbour');
   });
+  it('Roboter-Baristas bedienen tatsächlich Gäste ohne Mitarbeiter',()=>{
+    const g=createInitialState(),empty={...g,stores:g.stores.map(s=>({...s,employees:[]}))};
+    expect(processTurn(empty).stores[0]?.customersServedLastWeek).toBe(0);
+    const robotic={...empty,world:{...empty.world,technologies:['tech_operations_t4']}};
+    expect(processTurn(robotic).stores[0]?.customersServedLastWeek).toBeGreaterThan(0);
+  });
 });
