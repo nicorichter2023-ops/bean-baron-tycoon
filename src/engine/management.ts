@@ -3,7 +3,7 @@ import { GAME_CONFIG, calculateCompanyValuation, hireEmployee, processTurn } fro
 import { applyExpansionWeek, type ExpansionState, cupsSold, recipeCost, CAMPAIGNS } from './expansion';
 import { equipmentOf } from './equipment';
 import { MASTER } from '@/data/master';
-import { advanceWorld, applyWorldSupply, worldWeeklyFlows } from './world';
+import { advanceWorld, applyWorldSupply, worldWeeklyFlows, campaignMultiplier } from './world';
 
 export type ExecutiveRole = 'coo' | 'cfo';
 export const EXECUTIVES = {
@@ -88,7 +88,7 @@ export function processManagementWeek(state: GameState, exp: ExpansionState) {
   const expansion = applyExpansionWeek(turned, exp);
   let recipeRevenue = 0, ingredients = 0;
   for (const store of turned.stores) {
-    const boost = exp.campaigns.filter(c => c.cityId === store.cityId).reduce((n, c) => n + CAMPAIGNS[c.kind].boost, 0);
+    const boost = exp.campaigns.filter(c => c.cityId === store.cityId).reduce((n, c) => n + CAMPAIGNS[c.kind].boost * campaignMultiplier(turned), 0);
     for (const recipe of exp.recipes) {
       const cups = cupsSold(recipe, store, turned.cities.find(c => c.id === store.cityId)?.biome ?? '', boost);
       recipeRevenue += cups * recipe.price; ingredients += cups * recipeCost(recipe);

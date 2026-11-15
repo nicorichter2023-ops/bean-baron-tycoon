@@ -318,7 +318,7 @@ function processStore(
     served = Math.max(0, Math.min(served, beanLimited));
   }
 
-  const revenue = round2(served * Math.max(0, store.pricePerCup));
+  const revenue = round2(served * Math.max(0, store.pricePerCup) * location.margin);
   const salaries = round2(staff.reduce((sum, e) => sum + Math.max(0, e.salaryWeekly), 0));
   const rent = round2(
     Math.max(0, district.rentWeekly) * (store.propertyBookValue ? 0 : buildingById(district.id) ? 1 : (GAME_CONFIG.TIER_RENT_FACTOR[tier] ?? 1)),

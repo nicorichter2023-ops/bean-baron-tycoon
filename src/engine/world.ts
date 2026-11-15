@@ -1,4 +1,5 @@
 import { MASTER, buildingById } from '@/data/master';
+import { neighborhoodEffects } from './neighborhood';
 import type { ActionResult, GameState } from './types';
 
 export interface WorldState {
@@ -22,12 +23,13 @@ export function travelToCity(g: GameState, cityId: string, cabin: 'economy' | 'b
 }
 export function locationEffects(g: GameState, id: string) {
   const b = buildingById(id);
-  if (!b) return { demand: 1, capacity: 1, quality: 0, prestige: 0 };
+  if (!b) return { demand: 1, capacity: 1, quality: 0, prestige: 0, margin: 1 };
   const bonus = b.locationBonus.valuePercent / 100;
+  const neighbors = neighborhoodEffects(g, id);
   const occupied = MASTER.cities.find(c => c.buildings.some(x => x.id === id))?.buildings.filter(x => g.world.occupants[x.id] && !g.capitalMarkets.rivals.find(r => r.id === g.world.occupants[x.id])?.acquired).length ?? 0;
-  return { demand: (1 + (b.locationBonus.bonusType === 'volume' ? bonus : b.locationBonus.bonusType === 'margin' ? bonus * .5 : 0)) * (1 - Math.min(.3, occupied * .008)),
-    capacity: 1 + (b.locationBonus.bonusType === 'takeaway' ? bonus : 0), quality: b.clientele === 'creatives' ? 3 : 0,
-    prestige: b.locationBonus.bonusType === 'prestige' ? b.locationBonus.valuePercent / 5 : 0 };
+  return { demand: (1 + (b.locationBonus.bonusType === 'volume' ? bonus : 0)) * Math.max(.75, (1 - Math.min(.3, occupied * .008)) * neighbors.demand),
+    capacity: 1 + (b.locationBonus.bonusType === 'takeaway' ? bonus : 0) * (1 + neighbors.takeaway), margin: (1 + (b.locationBonus.bonusType === 'margin' ? bonus : 0)) * (1 + neighbors.margin), quality: b.clientele === 'creatives' ? 3 : 0,
+    prestige: (b.locationBonus.bonusType === 'prestige' ? b.locationBonus.valuePercent / 5 : 0) + neighbors.prestige };
 }
 export function worldEffects(g: GameState) {
   let capacity = 1, quality = 0, beanFactor = 1, demand = 1;
@@ -38,13 +40,18 @@ export function worldEffects(g: GameState) {
   for (const id of g.world.candidates) {
     const c = MASTER.cSuiteCandidates.find(c => c.id === id); if (!c) continue;
     const perks = c.perks as Record<string, number>;
-    capacity *= 1 + (perks['storeThroughputBonus'] ?? 0); demand *= 1 + (perks['campaignEffectivenessBonus'] ?? 0) / 4;
+    capacity *= 1 + (perks['storeThroughputBonus'] ?? 0); 
   }
   for (const a of g.world.assets.filter(a => a.endWeek > g.week)) {
     const csr = MASTER.csrCertifications.find(c => a.kind === 'csr' && c.id === a.id); demand *= 1 + (csr?.hipsterStudentBonus ?? 0);
   }
   return { capacity, quality: Math.min(30, quality), beanFactor: Math.max(.3, beanFactor), demand };
 }
+export function executivePerk(g: GameState, role: string, perk: string): number {
+  return g.world.candidates.reduce((n, id) => { const c = MASTER.cSuiteCandidates.find(c => c.id === id && c.role === role); return Math.max(n, (c?.perks as Record<string, number> | undefined)?.[perk] ?? 0); }, 0);
+}
+export function researchDuration(g: GameState, weeks: number) { return Math.max(1, Math.ceil(weeks / (1 + executivePerk(g, 'CTO', 'weeklyResearchPoints') / 100))); }
+export const campaignMultiplier = (g: GameState) => 1 + executivePerk(g, 'CMO', 'campaignEffectivenessBonus');
 export type CatalogKind = 'research' | 'candidate' | 'plantation' | 'tenant' | 'future' | 'policy' | 'csr' | 'celebrity' | 'underwriter' | 'training' | 'app';
 export function catalogAction(g: GameState, kind: CatalogKind, id: string): ActionResult {
   if (g.pendingEvent) return outcome(g, 'Bitte zuerst das Wochenereignis entscheiden.');
@@ -57,7 +64,7 @@ export function catalogAction(g: GameState, kind: CatalogKind, id: string): Acti
     if (t.prerequisiteId && !world.technologies.includes(t.prerequisiteId)) return outcome(g, 'Voraussetzung noch nicht erforscht.');
     const discount = world.candidates.reduce((n, id) => Math.max(n, (MASTER.cSuiteCandidates.find(c => c.id === id)?.perks as Record<string, number> | undefined)?.['techCostDiscount'] ?? 0), 0);
     cost = Math.round(t.researchCost * (1 - discount)); name = t.name;
-    world.research = [...world.research, { id, finishWeek: g.week + t.researchWeeks }];
+    world.research = [...world.research, { id, finishWeek: g.week + researchDuration(g, t.researchWeeks) }];
   } else if (kind === 'candidate') {
     const c = MASTER.cSuiteCandidates.find(c => c.id === id); if (!c) return outcome(g, 'Kandidat nicht gefunden.');
     if (world.candidates.some(id => MASTER.cSuiteCandidates.find(x => x.id === id)?.role === c.role) || g.management.executives.some(e => e.role === c.role.toLowerCase())) return outcome(g, 'Position bereits besetzt.');

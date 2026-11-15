@@ -1,5 +1,6 @@
 // Erweiterung: Rezeptur-Labor & Marketing. Eigener Speicherstand, damit engine.ts/types.ts unverändert bleiben.
 import type { GameState, Store } from './types';
+import { campaignMultiplier } from './world';
 import { equipmentEffects } from './equipment';
 
 export const EXPANSION_SCHEMA = 1;
@@ -57,7 +58,7 @@ export function weekBonus(game: GameState, exp: ExpansionState) {
   for (const store of game.stores) {
     const city = game.cities.find((c) => c.id === store.cityId);
     const camps = exp.campaigns.filter((c) => c.cityId === store.cityId);
-    const boost = camps.reduce((s, c) => s + CAMPAIGNS[c.kind].boost, 0);
+    const boost = camps.reduce((s, c) => s + CAMPAIGNS[c.kind].boost * campaignMultiplier(game), 0);
     profit += store.weeklyRevenue * boost * 0.5;
     for (const r of exp.recipes) profit += cupsSold(r, store, city?.biome ?? '', boost) * (r.price - recipeCost(r));
   }
