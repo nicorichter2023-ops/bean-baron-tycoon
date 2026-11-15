@@ -11,7 +11,7 @@ import barPhoto from '@/assets/cafe-interior-espressobar.jpg';
 import roasteryPhoto from '@/assets/cafe-interior-roastery.jpg';
 import { useGame } from './GameContext';
 import { leversOf } from '@/engine/progression';
-import { STAGES } from '@/engine/unlocks';
+import { stg } from '@/engine/unlocks';
 import { espressoTierArt, grinderTierArt, seatingArt, terraceArt, vitrineArt, decorArt } from './sheetArt';
 
 const STAGE_PHOTOS = [cartPhoto, kioskPhoto, barPhoto, cafePhoto, bistroPhoto, roasteryPhoto, flagshipPhoto];
@@ -19,7 +19,7 @@ const STAGE_PHOTOS = [cartPhoto, kioskPhoto, barPhoto, cafePhoto, bistroPhoto, r
 export function stageInteriorVariant(stage: number, interior: number) {
   const s = Math.max(1, Math.min(7, stage));
   const shown = interior >= 2 && (s === 4 || s === 5) ? s + 1 : interior >= 1 && s === 3 ? 4 : s;
-  return { src: STAGE_PHOTOS[shown - 1], label: STAGES[s - 1].label };
+  return { src: STAGE_PHOTOS[shown - 1], label: stg(s - 1).label };
 }
 
 const ESPRESSO = ['Standard-Maschine','Multi-Boiler Commercial','High-End Handcraft'];

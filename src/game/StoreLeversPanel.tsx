@@ -2,14 +2,14 @@ import { Button } from '@/components/ui/button';
 import type { Store } from '@/engine/types';
 import { useGame, eur } from './GameContext';
 import { leverEffect, leversOf, setLever, stageUpgrade, progressOf, signBeanContract, type Hours, type Specialization } from '@/engine/progression';
-import { STAGES, leverUnlocked, maxStage, tierOfStage, RANKS, LEVER_RANK, type LeverId } from '@/engine/unlocks';
+import { STAGES, stg, rk, leverUnlocked, maxStage, tierOfStage, RANKS, LEVER_RANK, type LeverId } from '@/engine/unlocks';
 import { GAME_CONFIG } from '@/engine/engine';
 import { stageArt } from './sheetArt';
 
-const Lock = ({ id }: { id: LeverId }) => <p className="text-xs text-muted-foreground">🔒 Ab Rang „{RANKS[LEVER_RANK[id] - 1].name}“</p>;
+const Lock = ({ id }: { id: LeverId }) => <p className="text-xs text-muted-foreground">🔒 Ab Rang „{rk(LEVER_RANK[id) - 1].name}“</p>;
 export function StoreLeversPanel({ store }: { store: Store }) {
   const { state, perform } = useGame();
-  const l = leversOf(state, store), next = l.stage < 7 ? STAGES[l.stage] : null;
+  const l = leversOf(state, store), next = l.stage < 7 ? stg(l.stage) : null;
   const crossesTier = next && tierOfStage(l.stage + 1) > store.tier;
   const nextCost = next ? (crossesTier ? GAME_CONFIG.STORE_UPGRADE_COST[(store.tier + 1) as 2 | 3] : next.cost) : 0;
   const fx = leverEffect(l, store, state.week);
@@ -18,7 +18,7 @@ export function StoreLeversPanel({ store }: { store: Store }) {
   const contract = progressOf(state).beanContract;
   return <div className="grid gap-3 text-sm">
     <div className="flex items-center gap-3"><img src={stageArt(l.stage)} alt="" width={64} height={64} className="h-16 w-16 rounded-lg object-cover" />
-      <div className="flex-1"><p className="text-xs text-muted-foreground">Ausbaustufe {l.stage}/7</p><strong>{STAGES[l.stage - 1].label}</strong>
+      <div className="flex-1"><p className="text-xs text-muted-foreground">Ausbaustufe {l.stage}/7</p><strong>{stg(l.stage - 1).label}</strong>
         <div className="mt-1 flex gap-0.5" aria-hidden>{STAGES.map((_, i) => <span key={i} className={`h-1.5 flex-1 rounded ${i < l.stage ? 'bg-primary' : 'bg-muted'}`} />)}</div></div></div>
     {next && <Button className="h-12" disabled={l.stage + 1 > maxStage(state) || state.cash < nextCost} onClick={() => perform(g => stageUpgrade(g, store.id))}>
       {l.stage + 1 > maxStage(state) ? `🔒 ${next.label} – höherer Rang nötig` : `Ausbauen zu ${next.label} · ${eur(nextCost)}`}</Button>}

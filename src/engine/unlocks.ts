@@ -11,8 +11,10 @@ export const STAGES = [
   { label: 'Rösterei-Café', tier: 3, cost: 60_000, bonus: 0.18, upkeep: 400 },
   { label: 'Flagship', tier: 3, cost: 140_000, bonus: 0.38, upkeep: 900 },
 ] as const;
+export type StageDef = { label: string; tier: number; cost: number; bonus: number; upkeep: number };
+export const stg = (i: number): StageDef => STAGES[Math.max(0, Math.min(6, i))] ?? STAGES[0];
 export type Stage = 1 | 2 | 3 | 4 | 5 | 6 | 7;
-export const tierOfStage = (s: number) => STAGES[Math.max(0, Math.min(6, s - 1))].tier;
+export const tierOfStage = (s: number) => stg(s - 1).tier;
 export const firstStageOfTier = (t: number): Stage => (t <= 1 ? 1 : t === 2 ? 3 : 5);
 /** Legacy tiers 1/2/3 map to stages 2/4/7 when migrating old saves. */
 export const legacyStage = (t: number): Stage => (t <= 1 ? 2 : t === 2 ? 4 : 7);
@@ -30,10 +32,11 @@ export const RANKS: { name: string; req: RankReq; maxStage: Stage; cities: numbe
   { name: 'Weltmarke', req: { stores: 32, cities: 12, reputation: 78, valuation: 40_000_000, weeklyRevenue: 120_000 }, maxStage: 7, cities: 20, unlocks: ['Alle Städte'] },
   { name: 'Kaffee-Imperium', req: { stores: 45, cities: 16, reputation: 86, valuation: 100_000_000, weeklyRevenue: 200_000 }, maxStage: 7, cities: 20, unlocks: ['Endziel erreicht'] },
 ];
+export const rk = (i: number) => RANKS[Math.max(0, Math.min(9, i))] ?? RANKS[0]!;
 export type LeverId = 'hours' | 'focus' | 'specialization' | 'loyalty' | 'beanContract';
 export const LEVER_RANK: Record<LeverId, number> = { hours: 2, focus: 3, specialization: 4, loyalty: 4, beanContract: 5 };
 export const rankIndex = (g: Pick<GameState, 'progress'>) => g.progress?.rank ?? 1;
-export const rankInfo = (rank: number) => RANKS[Math.max(1, Math.min(10, rank)) - 1];
+export const rankInfo = (rank: number) => rk(rank - 1);
 export const maxStage = (g: Pick<GameState, 'progress'>) => g.progress ? rankInfo(rankIndex(g)).maxStage : 7;
 export const leverUnlocked = (g: Pick<GameState, 'progress'>, id: LeverId) => !g.progress || rankIndex(g) >= LEVER_RANK[id];
 /** Cities open by rank (master order), plus every city the player already visited or operates in. */
@@ -44,4 +47,4 @@ export function openCityIds(g: GameState): string[] {
   return [...ids];
 }
 /** Dependency graph: each unlock names the rank that grants it. Used by tests for reachability. */
-export const UNLOCK_GRAPH: Record<string, string[]> = Object.fromEntries(RANKS.map((r, i) => [`rank-${i + 1}`, i ? [`rank-${i}`] : []]));
+export const UNLOCK_GRAPH: Record<string, string[]> = Object.fromEntries(RANKS.map((_r, i) => [`rank-${i + 1}`, i ? [`rank-${i}`] : []]));

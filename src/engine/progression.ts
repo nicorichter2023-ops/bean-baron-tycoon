@@ -2,7 +2,7 @@ import type { ActionResult, GameState, GameEvent, Store } from './types';
 import { applyEventChoice, upgradeStore } from './engine';
 import { processManagementWeek } from './management';
 import type { ExpansionState } from './expansion';
-import { RANKS, STAGES, firstStageOfTier, leverUnlocked, legacyStage, maxStage, rankInfo, tierOfStage, type LeverId, type Stage } from './unlocks';
+import { RANKS, STAGES, stg, rk, firstStageOfTier, leverUnlocked, legacyStage, maxStage, rankInfo, tierOfStage, type LeverId, type Stage } from './unlocks';
 
 export type Hours = 'early' | 'standard' | 'late';
 export type Specialization = 'none' | 'business' | 'students' | 'tourists' | 'connoisseur';
@@ -33,7 +33,7 @@ export const leversOf = (g: GameState, s: Store): StoreLevers => {
   const l = progressOf(g).stores[s.id] ?? defaultLevers(s.tier);
   return tierOfStage(l.stage) === s.tier ? l : { ...l, stage: firstStageOfTier(s.tier) };
 };
-export const stageLabel = (g: GameState, s: Store) => STAGES[leversOf(g, s).stage - 1].label;
+export const stageLabel = (g: GameState, s: Store) => stg(leversOf(g, s).stage - 1).label;
 
 // ---------- metrics & ranks ----------
 export function metrics(g: GameState) {
@@ -41,7 +41,7 @@ export function metrics(g: GameState) {
     weeklyRevenue: g.stores.reduce((n, s) => n + s.weeklyRevenue, 0), guests: g.stores.reduce((n, s) => n + s.customersServedLastWeek, 0) };
 }
 export function rankProgress(g: GameState) {
-  const p = progressOf(g), next = RANKS[p.rank];
+  const p = progressOf(g), next = rk(p.rank);
   if (!next) return { next: null, parts: [], ratio: 1 };
   const m = metrics(g);
   const parts = (Object.keys(next.req) as (keyof typeof next.req)[]).filter(k => next.req[k] > 0).map(k => ({ key: k, have: m[k], need: next.req[k], ok: m[k] >= next.req[k] }));
@@ -110,17 +110,17 @@ export function stageUpgrade(g: GameState, id: string): ActionResult {
   const s = g.stores.find(x => x.id === id); if (!s) return no(g, 'Filiale nicht gefunden.');
   const l = leversOf(g, s); const next = (l.stage + 1) as Stage;
   if (l.stage >= 7) return no(g, 'Höchste Stufe erreicht.');
-  if (next > maxStage(g)) return no(g, `„${STAGES[next - 1].label}“ wird mit einem höheren Firmenrang freigeschaltet.`);
+  if (next > maxStage(g)) return no(g, `„${stg(next - 1).label}“ wird mit einem höheren Firmenrang freigeschaltet.`);
   const p = progressOf(g);
   if (tierOfStage(next) > s.tier) {
     const r = upgradeStore(g, id); if (!r.ok) return r;
     const done = withLevers(r.state, id, { stage: next });
-    return ok({ ...done, progress: { ...done.progress!, upgradesDone: p.upgradesDone + 1 } }, `${s.name}: jetzt ${STAGES[next - 1].label}.`);
+    return ok({ ...done, progress: { ...done.progress!, upgradesDone: p.upgradesDone + 1 } }, `${s.name}: jetzt ${stg(next - 1).label}.`);
   }
-  const cost = STAGES[next - 1].cost;
+  const cost = stg(next - 1).cost;
   if (g.cash < cost) return no(g, 'Nicht genug Barvermögen.');
   const done = withLevers({ ...g, cash: r2(g.cash - cost) }, id, { stage: next });
-  return ok({ ...done, progress: { ...done.progress!, upgradesDone: p.upgradesDone + 1 } }, `${s.name}: jetzt ${STAGES[next - 1].label}.`);
+  return ok({ ...done, progress: { ...done.progress!, upgradesDone: p.upgradesDone + 1 } }, `${s.name}: jetzt ${stg(next - 1).label}.`);
 }
 export function setLever(g: GameState, id: string, lever: Exclude<LeverId, 'beanContract'>, value: StoreLevers[keyof StoreLevers]): ActionResult {
   if (!leverUnlocked(g, lever)) return no(g, 'Dieser Hebel wird mit einem höheren Firmenrang freigeschaltet.');
@@ -212,8 +212,8 @@ export function nextHint(g: GameState): string {
   const s = g.stores[0];
   if (s && s.employees.length === 0) return `${s.name}: Stelle einen Barista ein.`;
   const rp = rankProgress(g); const missing = rp.parts.find(x => !x.ok);
-  const cheap = g.stores.map(x => ({ x, l: leversOf(g, x) })).find(({ l, x }) => l.stage < maxStage(g) && tierOfStage(l.stage + 1) === x.tier && g.cash >= STAGES[l.stage].cost);
-  if (cheap) return `${cheap.x.name} zu „${STAGES[cheap.l.stage].label}“ ausbauen: +${Math.round(STAGES[cheap.l.stage].bonus * 100)} % Umsatz.`;
+  const cheap = g.stores.map(x => ({ x, l: leversOf(g, x) })).find(({ l, x }) => l.stage < maxStage(g) && tierOfStage(l.stage + 1) === x.tier && g.cash >= stg(l.stage).cost);
+  if (cheap) return `${cheap.x.name} zu „${stg(cheap.l.stage).label}“ ausbauen: +${Math.round(stg(cheap.l.stage).bonus * 100)} % Umsatz.`;
   if (missing?.key === 'stores') return 'Eröffne eine weitere Filiale für den nächsten Rang.';
   if (missing?.key === 'reputation') return 'Stelle eine Filiale auf „Qualität“, um den Ruf zu steigern.';
   if (missing?.key === 'cities') return 'Fliege in eine neue Stadt und eröffne dort.';

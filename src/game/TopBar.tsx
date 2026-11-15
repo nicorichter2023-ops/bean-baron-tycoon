@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { HUD, rankArt } from './sheetArt';
 import { progressOf, rankProgress } from '@/engine/progression';
-import { RANKS } from '@/engine/unlocks';
+import { rk } from '@/engine/unlocks';
 
 export function TopBar({ onProgress }: { onProgress?: () => void }) {
   const { state, nextWeek } = useGame();
@@ -14,8 +14,8 @@ export function TopBar({ onProgress }: { onProgress?: () => void }) {
   useEffect(() => {
     const root = document.documentElement;
     root.style.fontSize = `${p.settings.fontScale * 100}%`;
-    root.dataset.reduceMotion = String(p.settings.reduceMotion);
-    root.dataset.contrast = p.settings.highContrast ? 'high' : 'normal';
+    root.dataset['reduceMotion'] = String(p.settings.reduceMotion);
+    root.dataset['contrast'] = p.settings.highContrast ? 'high' : 'normal';
   }, [p.settings.fontScale, p.settings.reduceMotion, p.settings.highContrast]);
   const h = state.market.priceHistory;
   const price = state.market.futuresPricePerKg;
@@ -33,9 +33,9 @@ export function TopBar({ onProgress }: { onProgress?: () => void }) {
             <span className={`font-mono font-semibold ${up ? "text-success" : "text-destructive"}`}>{price.toFixed(2)}€</span>
           </div>
         </div>
-        <button type="button" className="rank-bar" onClick={onProgress} aria-label={`Rang ${p.rank}: ${RANKS[p.rank - 1].name}, ${Math.round(rp.ratio * 100)} Prozent zum nächsten Rang. Fortschritt öffnen`}>
+        <button type="button" className="rank-bar" onClick={onProgress} aria-label={`Rang ${p.rank}: ${rk(p.rank - 1).name}, ${Math.round(rp.ratio * 100)} Prozent zum nächsten Rang. Fortschritt öffnen`}>
           <img src={rankArt(p.rank)} alt="" width={32} height={32} />
-          <span className="flex-1"><span className="flex justify-between text-[11px]"><strong>{RANKS[p.rank - 1].name}</strong><span className="text-muted-foreground">{rp.next ? `→ ${rp.next.name} ${Math.round(rp.ratio * 100)} %` : 'Max'}</span></span>
+          <span className="flex-1"><span className="flex justify-between text-[11px]"><strong>{rk(p.rank - 1).name}</strong><span className="text-muted-foreground">{rp.next ? `→ ${rp.next.name} ${Math.round(rp.ratio * 100)} %` : 'Max'}</span></span>
             <span className="rank-meter block"><span style={{ width: `${rp.ratio * 100}%` }} /></span></span>
         </button>
       </div>

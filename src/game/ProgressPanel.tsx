@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { useGame, eur } from './GameContext';
 import { ACHIEVEMENTS, RANK_LABEL, nextHint, progressOf, rankProgress, setSettings, type EventFrequency } from '@/engine/progression';
-import { RANKS, openCityIds } from '@/engine/unlocks';
+import { RANKS, rk, openCityIds } from '@/engine/unlocks';
 import { PROGRESS_ICONS, rankArt } from './sheetArt';
 
 const TUTORIAL = ['Willkommen! Tippe auf der Karte auf deine erste Filiale, um sie dir anzusehen.', 'Tippe unten rechts auf „Nächste Woche“, um eine Woche zu spielen.', 'Erfülle die Wochenziele – jedes Ziel bringt Bonusgeld.', 'Baue deine Filiale aus: Jede der 7 Stufen bringt mehr Umsatz.', 'Neue Ränge schalten Städte, Stufen und Spielhebel frei.'];
@@ -9,7 +9,7 @@ const fmt = (k: string, v: number) => k === 'valuation' || k === 'weeklyRevenue'
 
 export function ProgressPanel() {
   const { state, set } = useGame();
-  const p = progressOf(state), rp = rankProgress(state), rank = RANKS[p.rank - 1];
+  const p = progressOf(state), rp = rankProgress(state), rank = rk(p.rank - 1);
   const freq: [EventFrequency, string][] = [['rare', 'Selten'], ['normal', 'Normal'], ['often', 'Oft']];
   return <div className="grid gap-3 px-3">
     {p.tutorialStep < TUTORIAL.length && <div className="rounded-lg border border-primary bg-card p-3 text-sm" role="status"><strong>Einführung {p.tutorialStep + 1}/{TUTORIAL.length}:</strong> {TUTORIAL[p.tutorialStep]}
