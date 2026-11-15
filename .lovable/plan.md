@@ -1,5 +1,10 @@
 # Coffee Empire: gebündelte Fehlerkorrektur und stimmige Gestaltung
 
+## Visuelle Freigabe vor dem Spielumbau
+- Zuerst vier Bildentwürfe zeigen: Stufen 1–3, Stufen 4–5, Stufen 6–7 sowie Café-Editor mit Terrasse. Das sind Konzeptbilder, keine Screenshots bereits funktionierender Ansichten.
+- Stil, Stufenunterschiede und Gesamtbild vom Nutzer freigeben lassen; erst danach die entsprechenden Spielgrafiken und Bedienung umsetzen. Preise und Kennzahlen im Entwurf sind Beispielwerte, keine neuen Spielregeln.
+- Die Editor-Vorschau muss später denselben vollständigen Raum erhalten; der Bildentwurf ersetzt keine Prüfung echter Farb- und Ausstattungskombinationen.
+
 ## 1. Bedienung zuerst
 - Überlagerte Schaltflächen, Symbole, Szenenbeschriftungen und Fenster in Karte, Café und Terrasse entflechten. Wichtige Aktionen in einer eigenen Leiste statt über dem Bild anordnen.
 - Die Screenshots zeigen konkret: Ausstattungskarten verdecken Umsatz/Qualität, die Überschrift „Ausstattung“ kollidiert mit Kennzahlen und „Nächste Woche“ liegt über dem Filialbereich. Diese Bereiche getrennt anordnen und den Wochenknopf mit reserviertem Platz oberhalb der unteren Navigation verankern.
