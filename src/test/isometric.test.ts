@@ -26,7 +26,7 @@ describe('2:1-Isometrie für New York', () => {
     ];
     expect(sortIsometricObjects(objects).map(p => p.id)).toEqual(['back', 'middle', 'front']);
     expect(objects.map(p => p.id)).toEqual(['front', 'back', 'middle']);
-    expect(isometricDepth(objects[0])).toBe(9);
+    expect(isometricDepth({ x: 4, y: 5 })).toBe(9);
   });
   it('ordnet Boden, Gebäude, Verkehr und Pins in getrennte Schichten', () => {
     const objects = [

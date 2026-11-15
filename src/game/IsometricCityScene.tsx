@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import { useRef, type CSSProperties } from 'react';
 import { Button } from '@/components/ui/button';
 import { MASTER, type MasterBuilding } from '@/data/master';
 import type { City } from '@/engine/types';
@@ -14,6 +14,7 @@ type MotionStyle = CSSProperties & { '--travel-x': string; '--travel-y': string;
 
 export function IsometricCityScene({ city, buildings, offset, zone, people, labels, airportCode, onBuilding, onAirport }: Props) {
   const { state } = useGame();
+  const gesture = useRef({ x: 0, y: 0, dragged: false });
   const plots = buildings.map((building, index) => ({ ...cityGridPosition(index), id: building.id, layer: 'buildings' as const, building, index }));
   const objects = sortIsometricObjects([
     ...plots.map(p => ({ ...p, kind: 'property' as const })),
@@ -33,7 +34,10 @@ export function IsometricCityScene({ city, buildings, offset, zone, people, labe
     const end = across ? { x: 5.7, y: lane } : { x: lane, y: 6.9 };
     return { ...start, id: `life-${i}`, layer: 'life' as const, index: i, end, vehicle, across };
   }));
-  return <div className="city-plan city-plan-isometric" data-biome={city.biome} data-projection="2:1">
+  return <div className="city-plan city-plan-isometric" data-biome={city.biome} data-projection="2:1"
+    onPointerDownCapture={e => { gesture.current = { x: e.clientX, y: e.clientY, dragged: !e.isPrimary }; }}
+    onPointerMoveCapture={e => { if (Math.hypot(e.clientX - gesture.current.x, e.clientY - gesture.current.y) > 8) gesture.current.dragged = true; }}
+    onClickCapture={e => { if (e.detail !== 0 && gesture.current.dragged) { e.preventDefault(); e.stopPropagation(); } }}>
     <svg className="iso-ground" viewBox="0 0 1600 1120" aria-hidden="true" style={{ zIndex: ISO_LAYERS.ground }}>
       <polygon className="iso-water" points={gridRectangle(-1.6, -1.6, 8.4, 9.9)} />
       <polygon className="iso-land" points={gridRectangle(-.9, -.9, 6.9, 8.2)} />
