@@ -9,11 +9,9 @@ import { eur, useGame } from '../GameContext';
 import { BIOME_SCENE } from '../sceneAssets';
 import { getCityArtwork } from '../artwork';
 import { CityMap } from '../CityMap';
-import { EmpireTab } from './EmpireTab';
 import { NeighborhoodPanel } from '../NeighborhoodPanel';
 import nycPanorama from '@/assets/nyc-landmarks-panorama.jpg';
-import { CafeCutaway } from '../CafeCutaway';
-import { SectionFilter, StoreFilter } from '../ui';
+import { CafeDetail } from '../CafeDetail';
 
 export function MapTab({ airportOnly = false }: { airportOnly?: boolean }) {
   const { state, perform } = useGame();
@@ -27,7 +25,7 @@ export function MapTab({ airportOnly = false }: { airportOnly?: boolean }) {
   const rival = MASTER.competitors.find(c => c.id === occupant);
   const district = city.districts.find(d => d.id === selected?.id);
   const cost = selected && district ? purchase ? selected.purchasePrice + GAME_CONFIG.STORE_OPENING_COST[tier] : storeOpeningCost(district, tier) : 0;
-  const choose = (b: MasterBuilding) => { setSelected(b); setTier(1); setPurchase(false); setManage(false); };
+  const choose = (b: MasterBuilding) => { setSelected(b); setTier(1); setPurchase(false); setManage(state.stores.some(s => s.districtId === b.id)); };
   return <>
     <div className="scene-heading"><div><p className="eyebrow">{hub ? `${city.name} · ${airport?.airportCode ?? ''}` : `${city.country} · ${airport?.airportCode ?? ''}`}</p><h1>{hub ? 'International Airport' : city.name}</h1></div><Button variant="secondary" size="icon" aria-label={hub ? 'Zur Stadtkarte' : 'Flughafen öffnen'} onClick={() => { setHub(!hub); setSelected(null); }}>{hub ? <ArrowLeft /> : <Plane />}</Button></div>
     {hub ? <>
@@ -45,8 +43,9 @@ export function MapTab({ airportOnly = false }: { airportOnly?: boolean }) {
       {selected && <section className="property-detail" aria-label="Standortdetails"><div className="flex items-start justify-between gap-2"><div><p className="eyebrow">{ZONES[selected.zoneType]} · {CLIENTELE[selected.clientele]}</p><h2>{selected.name}</h2></div><Button variant="ghost" size="icon" aria-label="Standort schließen" onClick={() => setSelected(null)}><ArrowLeft /></Button></div>
         <div className="property-metrics"><div><Users /><strong>{selected.footTraffic.toLocaleString('de-DE')}</strong><span>Laufkundschaft / Woche</span></div><div><MapPin /><strong>{eur(selected.weeklyRent)}</strong><span>Miete / Woche</span></div><div><Trophy /><strong>+{selected.locationBonus.valuePercent}%</strong><span>{selected.locationBonus.label}</span></div><div><Store /><strong>{eur(selected.purchasePrice)}</strong><span>Immobilienpreis</span></div></div>
         <NeighborhoodPanel buildingId={selected.id} />
-        {own ? <><CafeCutaway store={own} /><Button className="w-full" onClick={() => setManage(!manage)}><Store /> {own.name} verwalten</Button>{manage && <div className="mt-4"><SectionFilter.Provider value={['Filialen']}><StoreFilter.Provider value={own.id}><EmpireTab /></StoreFilter.Provider></SectionFilter.Provider></div>}</> : rival ? <div className="rival-profile" data-rival={rival.id}><h3>{rival.name}</h3><p>{rival.description}</p><dl><div><dt>Qualität</dt><dd>{rival.avgQuality}</dd></div><div><dt>Tassenpreis</dt><dd>{eur(rival.avgCupPrice)}</dd></div><div><dt>Expansion</dt><dd>{rival.aggressiveness}/100</dd></div></dl><p className="text-sm">Besetzter Standort · Unternehmensübernahme unter Finanzen → Aktien & M&A.</p></div> : <><div className="flex flex-wrap gap-2 my-3">{([1,2,3] as StoreTier[]).map(t => <Button key={t} variant={tier === t ? 'secondary' : 'outline'} onClick={() => setTier(t)}>{['','Kiosk','Café','Flagship'][t]}</Button>)}</div><div className="flex gap-2 mb-3"><Button variant={!purchase ? 'secondary' : 'ghost'} onClick={() => setPurchase(false)}>Mieten</Button><Button variant={purchase ? 'secondary' : 'ghost'} onClick={() => setPurchase(true)}>Immobilie kaufen</Button></div><Button className="w-full" disabled={state.cash < cost} onClick={() => perform(g => openStore(g, city.id, selected.id, tier, purchase))}><Store /> Eröffnen · {eur(cost)}</Button></>}
+        {own ? <Button className="w-full" onClick={() => setManage(true)}><Store /> {own.name} öffnen</Button> : rival ? <div className="rival-profile" data-rival={rival.id}><h3>{rival.name}</h3><p>{rival.description}</p><dl><div><dt>Qualität</dt><dd>{rival.avgQuality}</dd></div><div><dt>Tassenpreis</dt><dd>{eur(rival.avgCupPrice)}</dd></div><div><dt>Expansion</dt><dd>{rival.aggressiveness}/100</dd></div></dl><p className="text-sm">Besetzter Standort · Unternehmensübernahme unter Finanzen → Aktien & M&A.</p></div> : <><div className="flex flex-wrap gap-2 my-3">{([1,2,3] as StoreTier[]).map(t => <Button key={t} variant={tier === t ? 'secondary' : 'outline'} onClick={() => setTier(t)}>{['','Kiosk','Café','Flagship'][t]}</Button>)}</div><div className="flex gap-2 mb-3"><Button variant={!purchase ? 'secondary' : 'ghost'} onClick={() => setPurchase(false)}>Mieten</Button><Button variant={purchase ? 'secondary' : 'ghost'} onClick={() => setPurchase(true)}>Immobilie kaufen</Button></div><Button className="w-full" disabled={state.cash < cost} onClick={() => perform(g => openStore(g, city.id, selected.id, tier, purchase))}><Store /> Eröffnen · {eur(cost)}</Button></>}
       </section>}
+      {own && manage && selected && <CafeDetail store={own} address={`${selected.name}, ${city.name}`} onClose={() => setManage(false)} />}
       {state.world.news.length > 0 && <section className="city-news"><h2>Immobilien-Ticker</h2>{state.world.news.map((n,i) => <p key={i}>{n}</p>)}</section>}
       <details className="property-directory"><summary>Alle Standorte · 30</summary>{MASTER.cities.find(c => c.cityId === city.id)?.buildings.map(b => <Button variant="ghost" key={b.id} onClick={() => choose(b)}><span>{b.name}<small>{ZONES[b.zoneType]} · {b.footTraffic.toLocaleString('de-DE')} Passanten</small></span><span>{eur(b.weeklyRent)}</span></Button>)}</details>
     </>}

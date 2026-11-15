@@ -567,3 +567,31 @@ select, input { min-height:44px; }
 .cafe-photo-tags span[data-lvl="1"] { box-shadow: inset 0 0 0 1px var(--primary); }
 .cafe-photo-tags span[data-lvl="2"] { box-shadow: inset 0 0 0 1px var(--accent); font-weight: 700; }
 @media (prefers-reduced-motion: reduce) { .cafe-photo-img { animation: none; } }
+
+/* Coffee-Inc-style store detail overlay */
+.cafe-detail { position: fixed; inset: 0; z-index: 60; display: flex; flex-direction: column; background: var(--background); color: var(--foreground); }
+.cafe-detail-head { display: flex; align-items: center; gap: .75rem; padding: .75rem 1rem; padding-top: max(.75rem, env(safe-area-inset-top)); border-bottom: 1px solid var(--border); }
+.cafe-detail-head > div { flex: 1; text-align: center; display: flex; flex-direction: column; }
+.cafe-detail-head small { color: var(--muted-foreground); }
+.cafe-detail-logo { font-size: 1.75rem; }
+.cafe-detail-body { flex: 1; overflow-y: auto; padding-bottom: 1rem; }
+.cafe-detail-greeting { display: flex; justify-content: space-between; gap: .5rem; padding: .75rem 1rem; background: var(--card); font-weight: 600; }
+.cafe-detail-greeting small { color: var(--muted-foreground); font-weight: 400; }
+.cafe-detail-scene { position: relative; }
+.cafe-detail-scene .cafe-photo, .cafe-detail-scene .cafe-cutaway { margin: 0; border-radius: 0; }
+.cafe-scene-btn { position: absolute; bottom: 3.25rem; width: 3rem; height: 3rem; z-index: 3; }
+.cafe-scene-btn.left { left: .75rem; } .cafe-scene-btn.right { right: .75rem; }
+.cafe-detail-panel { margin: .75rem; padding: .75rem; border-radius: var(--radius); background: var(--card); }
+.cafe-reviews { padding: 1rem; }
+.cafe-reviews h2 { font-weight: 700; letter-spacing: .05em; margin-bottom: .75rem; }
+.cafe-reviews-grid { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.cafe-reviews-grid > div { display: flex; flex-direction: column; }
+.cafe-reviews-grid dl > div { display: flex; justify-content: flex-end; gap: .5rem; font-size: .85rem; }
+.ci-stars span[data-on="full"] { color: var(--accent); }
+.ci-stars span[data-on="half"] { color: color-mix(in oklab, var(--accent) 55%, var(--muted)); }
+.ci-stars span[data-on="off"] { color: var(--muted); }
+.cafe-comments { display: flex; gap: .75rem; overflow-x: auto; margin-top: 1rem; padding-bottom: .25rem; }
+.cafe-comments article { min-width: 70%; padding: .75rem; border-radius: var(--radius); background: var(--card); }
+.cafe-finance > div { display: flex; justify-content: space-between; padding: .4rem 0; border-bottom: 1px solid var(--border); }
+.cafe-detail-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: .25rem; padding: .5rem; padding-bottom: max(.5rem, env(safe-area-inset-bottom)); border-top: 1px solid var(--border); background: var(--card); }
+.cafe-detail-tabs button { height: auto; min-height: 3.5rem; flex-direction: column; gap: .2rem; font-size: .75rem; }
