@@ -757,3 +757,7 @@ html[data-contrast="high"] { --muted-foreground: var(--foreground); --border: va
 .nyc-photo-content > img { width: 100% !important; height: auto !important; display: block; }
 /* Reserve room so the week button never covers content */
 .game-main { padding-bottom: calc(9rem + env(safe-area-inset-bottom)); }
+/* Map always fills its frame edge to edge */
+.nyc-photo-viewport { overflow: hidden !important; touch-action: none; }
+.nyc-photo-content, .nyc-photo-content > img { width: 100% !important; min-width: 100% !important; max-width: none !important; }
+.departure-row > img { width: 3.5rem; height: 3.5rem; object-fit: cover; border-radius: .75rem; border: 1px solid var(--border); }
