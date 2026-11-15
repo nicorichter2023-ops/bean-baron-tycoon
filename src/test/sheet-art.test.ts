@@ -9,7 +9,7 @@ describe("Sheet-Grafiken", () => {
   });
   it("trennt Startups (10–21) und Börsen-Rivalen (22–33)", () => {
     expect(startupArt(0)).toBe("/assets/sheets/partners/10.webp");
-    expect(rivalArt(0)).toBe("/assets/sheets/partners/22.webp");
+    expect(rivalArt(0)).toBe("/assets/sheets/portraits/1.webp");
   });
   it("zeigt bei Frost die Frost-Ereigniskarte", () => {
     expect(eventArt("Frost in Brasilien")).toBe("/assets/sheets/people/12.webp");
