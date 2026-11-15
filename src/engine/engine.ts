@@ -349,14 +349,16 @@ function processRoastery(
   roastery: Roastery,
   market: CoffeeMarket,
   cash: number,
+  game?: GameState,
 ): { roastery: Roastery; autoBuyCost: number } {
   if (!roastery.owned) return { roastery, autoBuyCost: 0 };
 
   let rawBeanStockKg = Math.max(0, roastery.rawBeanStockKg);
   let beanLots = roastery.beanLots.map((lot) => ({ ...lot }));
   const roastedStockKg = Math.max(0, roastery.roastedStockKg);
-  const capacity = Math.max(0, roastery.capacityKgPerWeek);
-  const yieldFactor = 1 - clamp(roastery.roastLossPercent, 0, 60) / 100;
+  const productionBoost = game?.tycoon ? 2 ** (game.empire?.supply.roaster ?? 0) : 1;
+  const capacity = Math.max(0, roastery.capacityKgPerWeek) * productionBoost;
+  const yieldFactor = 1 - clamp(roastery.roastLossPercent * (game?.tycoon?.patents.includes('drum') ? .75 : 1), 0, 60) / 100;
 
   const roasterBoost = 1 + average(roastery.employees.map((e) => e.skill)) / 500;
   const maxInput = capacity * roasterBoost;
@@ -1081,7 +1083,7 @@ export function processTurn(state: GameState): GameState {
   let roastery = state.roastery;
   const ownRoasteryActive = isModule('roastery') && roastery.owned;
   if (ownRoasteryActive) {
-    const r = processRoastery(state.world.technologies.includes('tech_logistics_t2') ? { ...roastery, autoRestock: true } : roastery, market, cash);
+    const r = processRoastery(state.world.technologies.includes('tech_logistics_t2') ? { ...roastery, autoRestock: true } : roastery, market, cash, state);
     roastery = r.roastery;
     costBeans += r.autoBuyCost;
   }

@@ -28,8 +28,6 @@ export function FinanceTab() {
           <label className="mt-3 block text-xs text-muted-foreground">Betrag in Euro<input aria-label="Kreditbetrag" type="number" min="1" step="1000" className={`${inputClass} mt-1`} value={loanAmount} onChange={(event) => setLoanAmount(event.target.value)} /></label>
           <div className="mt-2 grid grid-cols-2 gap-2"><Button onClick={() => perform((current) => takeLoan(current, amount))}>Aufnehmen</Button><Button variant="outline" onClick={() => perform((current) => repayLoan(current, amount))}>Tilgen</Button></div>
         </Panel>
-        <label className="master-form">Aktien pro Auftrag<input aria-label="Aktien pro Auftrag" type="number" min={1} step={1} value={shareCount} onChange={e => setShareCount(Math.max(1, Math.floor(Number(e.target.value) || 1)))} /></label>
-        {state.capitalMarkets.isPublic && <div className="flex flex-wrap gap-2 py-3">{([0, .1, .25] as const).map(rate => <Button key={rate} variant={tycoonOf(state).dividendRate === rate ? 'secondary' : 'outline'} onClick={() => perform(g => setDividend(g, rate))}>{rate * 100} % Gewinn als Dividende</Button>)}</div>}
       </Section>
 
       <Section title={`Aktienmarkt · ${state.capitalMarkets.rivals.length} Firmen`}>
@@ -39,6 +37,8 @@ export function FinanceTab() {
             <div className="text-sm"><div className="font-semibold">Börse & Beteiligungen</div><div className="mt-1 text-xs text-muted-foreground">Handle Aktien, übernimm Konkurrenten und baue deine Holding aus.</div></div>
           </div>
         </Panel>
+        <label className="master-form">Aktien pro Auftrag<input aria-label="Aktien pro Auftrag" type="number" min={1} step={1} value={shareCount} onChange={e => setShareCount(Math.max(1, Math.floor(Number(e.target.value) || 1)))} /></label>
+        {state.capitalMarkets.isPublic && <div className="flex flex-wrap gap-2 py-3">{([0, .1, .25] as const).map(rate => <Button key={rate} variant={tycoonOf(state).dividendRate === rate ? 'secondary' : 'outline'} onClick={() => perform(g => setDividend(g, rate))}>{rate * 100} % Gewinn als Dividende</Button>)}</div>}
         {!marketsUnlocked && <Empty><Lock className="mx-auto mb-1 h-4 w-4" />Handel und Übernahmen ab Firmenwert {eur(15_000_000)}. Alle Kurse sind bereits sichtbar.</Empty>}
         {state.capitalMarkets.rivals.map((company) => {
           const holding = state.capitalMarkets.holdings.find((item) => item.companyId === company.id);
