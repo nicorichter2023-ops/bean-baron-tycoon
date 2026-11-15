@@ -79,7 +79,7 @@ export function makeGoals(g: GameState): WeeklyGoal[] {
     { kind: 'upgrade', target: 1, label: '', done: false },
   ];
   const offset = g.week % 3;
-  return [pool[0], pool[1 + (offset % 2)], pool[3 + (g.week % 2)]].map(x => ({ ...x, label: goalLabel(x) }));
+  return [pool[0], pool[1 + (offset % 2)], pool[3 + (g.week % 2)]].filter((x): x is WeeklyGoal => Boolean(x)).map(x => ({ ...x, label: goalLabel(x) }));
 }
 const goalLabel = (x: WeeklyGoal) => x.kind === 'guests' ? `${x.target.toLocaleString('de-DE')} Gäste bedienen` : x.kind === 'profit' ? `${x.target.toLocaleString('de-DE')} € Wochengewinn` : x.kind === 'reputation' ? `Ruf auf ${x.target} steigern` : x.kind === 'openStore' ? 'Eine Filiale eröffnen' : 'Eine Filiale ausbauen';
 
@@ -153,7 +153,7 @@ export function gateEvent(g: GameState, p: ProgressState): { game: GameState; p:
   const np = { ...p, lastEventWeek: g.week, eventHistory: [...p.eventHistory, { id: e.id, week: g.week }].slice(-40) };
   if (isMajorEvent(e)) return { game: g, p: np, note: null };
   const r = applyEventChoice(g, 0);
-  return { game: r.state, p: np, note: `${e.title}: ${e.choices[0].text}` };
+  return { game: r.state, p: np, note: `${e.title}: ${e.choices[0]?.text ?? ''}` };
 }
 
 // ---------- weekly loop ----------
@@ -197,7 +197,7 @@ export function processProgressWeek(state: GameState, exp: ExpansionState) {
   // achievements & badges
   const earned = earnedAchievements(g, g.lastReport?.netIncome ?? 0).filter(id => !p.achievements.includes(id));
   p.achievements = [...p.achievements, ...earned];
-  const badges = g.stores.flatMap(s => [100, 1000, 10000].filter(t => (p0.stores[s.id]?.guestsTotal ?? 0) < t && p.stores[s.id].guestsTotal >= t).map(t => `${s.name}: ${t.toLocaleString('de-DE')} Gäste`));
+  const badges = g.stores.flatMap(s => [100, 1000, 10000].filter(t => (p0.stores[s.id]?.guestsTotal ?? 0) < t && (p.stores[s.id]?.guestsTotal ?? 0) >= t).map(t => `${s.name}: ${t.toLocaleString('de-DE')} Gäste`));
   // events
   const gated = gateEvent(g, p); g = gated.game; p = gated.p;
   p.goalStreak = streak; p.goals = makeGoals(g); p.goalBaseline = { stores: g.stores.length, upgrades: p.upgradesDone };

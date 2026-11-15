@@ -9,7 +9,7 @@ import { travelToCity } from '@/engine/world';
 import type { GameState } from '@/engine/types';
 
 const run = (g: GameState, weeks: number) => { let exp = createExpansion(); for (let i = 0; i < weeks; i++) { if (g.pendingEvent) g = { ...g, pendingEvent: null }; const r = processProgressWeek(g, exp); g = r.game; exp = r.exp; } return g; };
-const staffed = () => { const g = createInitialState(); const r = hireEmployee(g, g.stores[0].id, 'barista'); return r.ok ? r.state : g; };
+const staffed = () => { const g = createInitialState(); const r = hireEmployee(g, g.stores[0]!.id, 'barista'); return r.ok ? r.state : g; };
 
 describe('Fortschritt', () => {
   it('es gibt 10 Ränge, 7 Stufen und 40 Erfolge', () => { expect(RANKS).toHaveLength(10); expect(ACHIEVEMENTS).toHaveLength(40); });
