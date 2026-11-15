@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { TransformWrapper, TransformComponent, type ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 import { MASTER, type MasterBuilding } from '@/data/master';
 import { CITY_SPOTS, cityMapImage } from '@/data/cityMaps';
@@ -18,6 +18,11 @@ export function PhotoCityMap({ cityId, cityName, airportCode, buildings, onBuild
     if (status !== 'own') { const b = buildings.find(x => x.id === el.dataset['id']); if (b) onBuilding(b); }
   };
   const count = (st: string) => buildings.slice(0, 30).filter(b => { const own = state.stores.some(s => s.districtId === b.id); const rival = Boolean(state.world.occupants[b.id]); return st === 'own' ? own : st === 'rival' ? !own && rival : !own && !rival; }).length;
+  useEffect(() => {
+    const reset = () => zoom.current?.resetTransform(0);
+    window.addEventListener('resize', reset);
+    return () => window.removeEventListener('resize', reset);
+  }, []);
   const src = cityMapImage(cityId);
   const spots = CITY_SPOTS[cityId] ?? [];
   if (!src) { onError(); return null; }
@@ -31,9 +36,9 @@ export function PhotoCityMap({ cityId, cityName, airportCode, buildings, onBuild
       <button onClick={onAirport} aria-label="Flughafen öffnen">✈</button>
       <button aria-pressed={labels} onClick={() => setLabels(!labels)}>{labels ? 'Aa' : 'Aa̶'}</button>
     </div>
-    <TransformWrapper ref={zoom} initialScale={1} minScale={1} maxScale={3} limitToBounds centerZoomedOut={false} doubleClick={{ disabled: true }}>
+    <TransformWrapper key={cityId} ref={zoom} initialScale={1} minScale={1} maxScale={3} limitToBounds centerZoomedOut={false} disablePadding pinch={{ step: 5 }} panning={{ velocityDisabled: true }} doubleClick={{ disabled: true }} onTransform={(r: { resetTransform: (t?: number) => void }, st: { scale: number }) => { if (st.scale < 0.999) r.resetTransform(0); }} onPinchStop={(r: { resetTransform: (t?: number) => void; state: { scale: number } }) => { if (r.state.scale < 1) r.resetTransform(150); }}>
       <TransformComponent wrapperClass="nyc-photo-viewport" contentClass="nyc-photo-content">
-        <img src={src} alt={`Stadtkarte ${cityName}`} width={1088} height={1920} draggable={false} onError={onError} />
+        <img src={src} alt={`Stadtkarte ${cityName}`} width={1088} height={1920} draggable={false} onError={onError} onLoad={() => zoom.current?.resetTransform(0)} />
         {buildings.slice(0, 30).map((b, i) => {
           const own = state.stores.some(s => s.districtId === b.id);
           const rival = MASTER.competitors.find(c => c.id === state.world.occupants[b.id]);

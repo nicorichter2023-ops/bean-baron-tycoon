@@ -7,6 +7,7 @@ import { MASTER, ZONES, CLIENTELE, type MasterBuilding } from '@/data/master';
 import { travelToCity } from '@/engine/world';
 import { eur, useGame } from '../GameContext';
 import { getCityArtwork } from '../artwork';
+import { cityMapImage } from '@/data/cityMaps';
 import { CityMap } from '../CityMap';
 import { NeighborhoodPanel } from '../NeighborhoodPanel';
 import airportHub from '@/assets/airport-hub.jpg';
@@ -34,7 +35,7 @@ export function MapTab({ airportOnly = false }: { airportOnly?: boolean }) {
       <div className="departure-board"><div className="departure-head"><span>Destination</span><span>Ticket</span></div>{MASTER.airports.filter(a => region === 'all' || a.region === region).map(a => {
         const target = state.cities.find(c => c.id === a.cityId); if (!target) return null;
         const ticket = cabin === 'business' ? a.baseTicketBusiness : a.baseTicketEconomy, current = a.cityId === city.id;
-        return <div className="departure-row" key={a.cityId}><img src={getCityArtwork(target).src} alt="" /><div><strong>{a.cityName}</strong><span>{a.airportCode} · {target.country}</span><small>{state.stores.filter(s => s.cityId === a.cityId).length} eigene Filialen · 30 Standorte</small></div><Button variant={current ? 'ghost' : 'secondary'} disabled={current || state.cash < ticket} aria-label={`Nach ${a.cityName} reisen`} onClick={() => { perform(g => travelToCity(g, a.cityId, cabin)); setHub(airportOnly); setSelected(null); }}>{current ? 'Vor Ort' : eur(ticket)}{!current && <Plane size={14} />}</Button></div>;
+        return <div className="departure-row" key={a.cityId}><img src={cityMapImage(a.cityId) ?? getCityArtwork(target).src} alt="" /><div><strong>{a.cityName}</strong><span>{a.airportCode} · {target.country}</span><small>{state.stores.filter(s => s.cityId === a.cityId).length} eigene Filialen · 30 Standorte</small></div><Button variant={current ? 'ghost' : 'secondary'} disabled={current || state.cash < ticket} aria-label={`Nach ${a.cityName} reisen`} onClick={() => { perform(g => travelToCity(g, a.cityId, cabin)); setHub(airportOnly); setSelected(null); }}>{current ? 'Vor Ort' : eur(ticket)}{!current && <Plane size={14} />}</Button></div>;
       })}</div>
       {state.world.travelHistory.length > 0 && <section className="travel-history"><h2>Letzte Reisen</h2>{state.world.travelHistory.slice(-5).reverse().map((t, i) => <p key={i}>Woche {t.week} · {MASTER.airports.find(a => a.cityId === t.from)?.airportCode ?? t.from} → {MASTER.airports.find(a => a.cityId === t.to)?.airportCode ?? t.to} · {eur(t.cost)}</p>)}</section>}
     </> : <>
