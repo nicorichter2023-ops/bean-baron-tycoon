@@ -695,3 +695,16 @@ html[data-contrast="high"] { --muted-foreground: var(--foreground); --border: va
 .room-seating { right: 40%; } .room-seating img { width: 42%; }
 .room-counter { bottom: 14%; }
 .room-machine { width: 50%; right: 2%; } .room-grinder { width: 30%; right: 44%; } .room-seating img { width: 48%; }
+
+/* Edge-to-edge map in natural aspect ratio; pan vertically */
+.nyc-photo-viewport { height: calc(100dvh - 15.5rem) !important; }
+.nyc-photo-content { width: 100% !important; height: auto !important; aspect-ratio: auto; }
+.nyc-photo-content img { width: 100%; height: auto; object-fit: contain; display: block; }
+/* High-contrast rating stars */
+.ci-stars span[data-on="full"] { color: oklch(0.8 0.17 75); -webkit-text-stroke: .6px oklch(0.3 0.06 60); text-shadow: 0 1px 1px oklch(0 0 0 / .45); }
+.ci-stars span[data-on="half"] { color: oklch(0.8 0.17 75 / .7); -webkit-text-stroke: .6px oklch(0.3 0.06 60); }
+.ci-stars span[data-on="off"] { color: oklch(0.42 0.01 60); -webkit-text-stroke: .4px oklch(0.2 0 0); }
+/* Lease/rival context window as bottom sheet over the map */
+.property-sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; max-height: 72dvh; overflow-y: auto; background: var(--card); border-top: 1px solid var(--border); border-radius: 1.25rem 1.25rem 0 0; padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom)); box-shadow: 0 -12px 32px oklch(0 0 0 / .35); animation: sheet-up .22s ease-out; }
+@keyframes sheet-up { from { transform: translateY(100%); } }
+@media (prefers-reduced-motion: reduce) { .property-sheet { animation: none; } }
