@@ -18,7 +18,7 @@ describe('Fortschritt', () => {
     const g = createInitialState(); const { progress: _, ...old } = g;
     const m = migrateV5ToV6({ ...old, schemaVersion: 5 } as GameState);
     expect(m.schemaVersion).toBe(6); expect(m.stores).toHaveLength(g.stores.length);
-    expect(leversOf(m, m.stores[0]).stage).toBe(legacyStage(g.stores[0].tier));
+    expect(leversOf(m, m.stores[0]!).stage).toBe(legacyStage(g.stores[0]!.tier));
   });
   it('Abhängigkeiten sind ohne Kreise erreichbar', () => {
     const seen = new Set<string>(); const visit = (n: string, path: string[]): void => { expect(path).not.toContain(n); seen.add(n); UNLOCK_GRAPH[n]!.forEach(d => visit(d, [...path, n])); };
