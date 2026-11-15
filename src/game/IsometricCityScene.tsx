@@ -1,75 +1,74 @@
-import { useRef, type CSSProperties } from 'react';
+import { useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { MASTER, type MasterBuilding } from '@/data/master';
 import type { City } from '@/engine/types';
 import { useGame } from './GameContext';
 import { getCityArtwork, getStoreArtwork } from './artwork';
-import { airportArt, art, cityBuildingArt, MAP_PEOPLE } from './sheetArt';
+import { airportArt, cityBuildingArt } from './sheetArt';
 import { NeonSign, SceneAsset } from './VisualEffects';
 import { newYorkSlot } from './visualAssets';
-import { cityGridPosition, gridRectangle, gridToScreen, ISO_LAYERS, sortIsometricObjects } from './isometric';
+import { cityGridPosition, gridRectangle, gridToScreen, ISO_LAYERS, sortIsometricObjects, type GridPoint } from './isometric';
 
-interface Props { city: City; buildings: MasterBuilding[]; offset: number; zone: string; people: boolean; labels: boolean; airportCode: string; onBuilding: (b: MasterBuilding) => void; onAirport: () => void }
-type MotionStyle = CSSProperties & { '--travel-x': string; '--travel-y': string; '--depth-start': number; '--depth-end': number };
+const PROJECTION = { tileWidth: 256, tileHeight: 128, offsetX: 1050, offsetY: 340 };
+const project = (p: GridPoint) => gridToScreen(p, PROJECTION);
+const rect = (x: number, y: number, w: number, h: number) => gridRectangle(x, y, w, h, PROJECTION);
+const polygon = (points: GridPoint[]) => points.map(p => { const s = project(p); return `${s.screenX},${s.screenY}`; }).join(' ');
+const grounded = (src: string) => src.replace('.webp', '-grounded.webp');
 
-export function IsometricCityScene({ city, buildings, offset, zone, people, labels, airportCode, onBuilding, onAirport }: Props) {
+interface Props { city: City; buildings: MasterBuilding[]; offset: number; zone: string; labels: boolean; airportCode: string; onBuilding: (b: MasterBuilding) => void; onAirport: () => void }
+export function IsometricCityScene({ city, buildings, offset, zone, labels, airportCode, onBuilding, onAirport }: Props) {
   const { state } = useGame();
   const gesture = useRef({ x: 0, y: 0, dragged: false });
   const plots = buildings.map((building, index) => ({ ...cityGridPosition(index), id: building.id, layer: 'buildings' as const, building, index }));
   const objects = sortIsometricObjects([
     ...plots.map(p => ({ ...p, kind: 'property' as const })),
-    { id: 'landmark', x: 5.9, y: -.8, layer: 'buildings' as const, kind: 'landmark' as const },
-    { id: 'airport', x: -.8, y: 6.9, layer: 'buildings' as const, kind: 'airport' as const },
+    { id: 'landmark', x: 6.3, y: 8.25, layer: 'buildings' as const, kind: 'landmark' as const },
+    { id: 'airport', x: -.15, y: 7.15, layer: 'buildings' as const, kind: 'airport' as const },
   ]);
   const roads = [
-    ...Array.from({ length: 6 }, (_, i) => gridRectangle(-.7, i * 1.25 - .625, 6.5, .32)),
-    ...Array.from({ length: 5 }, (_, i) => gridRectangle(i * 1.25 - .625, -.7, .32, 7.5)),
-    gridRectangle(-.7, 6.875, 6.5, .32), gridRectangle(5.625, -.7, .32, 7.9),
+    ...Array.from({ length: 7 }, (_, i) => rect(-.7, i * 1.25 - .625, 6.35, .36)),
+    ...Array.from({ length: 6 }, (_, i) => rect(i * 1.25 - .625, -.8, .36, 8.5)),
   ];
-  const life = sortIsometricObjects(Array.from({ length: people ? 24 : 6 }, (_, i) => {
-    const vehicle = i < 6;
-    const across = i % 2 === 0;
-    const lane = ((i % 5) * 1.25) - .49;
-    const start = across ? { x: -.6, y: lane } : { x: lane, y: -.6 };
-    const end = across ? { x: 5.7, y: lane } : { x: lane, y: 6.9 };
-    return { ...start, id: `life-${i}`, layer: 'life' as const, index: i, end, vehicle, across };
-  }));
+  const avenueLines = Array.from({ length: 6 }, (_, i) => [project({ x: i * 1.25 - .445, y: -.8 }), project({ x: i * 1.25 - .445, y: 7.7 })]);
+  const island = polygon([{x:-.9,y:-2.6},{x:5.9,y:-2.6},{x:5.9,y:6.8},{x:4.9,y:8.2},{x:2.1,y:8.3},{x:-.9,y:7.5}]);
   return <div className="city-plan city-plan-isometric" data-biome={city.biome} data-projection="2:1"
     onPointerDownCapture={e => { gesture.current = { x: e.clientX, y: e.clientY, dragged: !e.isPrimary }; }}
     onPointerMoveCapture={e => { if (Math.hypot(e.clientX - gesture.current.x, e.clientY - gesture.current.y) > 8) gesture.current.dragged = true; }}
     onClickCapture={e => { if (e.detail !== 0 && gesture.current.dragged) { e.preventDefault(); e.stopPropagation(); } }}>
-    <svg className="iso-ground" viewBox="0 0 1600 1120" aria-hidden="true" style={{ zIndex: ISO_LAYERS.ground }}>
-      <polygon className="iso-water" points={gridRectangle(-1.6, -1.6, 8.4, 9.9)} />
-      <polygon className="iso-land" points={gridRectangle(-.9, -.9, 6.9, 8.2)} />
+    <svg className="iso-ground" viewBox="0 0 2100 1600" aria-hidden="true" style={{ zIndex: ISO_LAYERS.ground }}>
+      <polygon className="iso-land" points={island} />
       {roads.map((points, i) => <polygon key={i} className="iso-road" points={points} />)}
-      {plots.map(p => <polygon key={p.id} className="iso-pavement" data-zone={p.building.zoneType} points={gridRectangle(p.x - .45, p.y - .45, .9, .9)} />)}
+      {avenueLines.map((line, i) => <line key={i} className="iso-lane-line" x1={line[0]?.screenX} y1={line[0]?.screenY} x2={line[1]?.screenX} y2={line[1]?.screenY} />)}
+      <polygon className="iso-park" points={rect(.15, -2.25, 4.75, 1.2)} />
+      <polygon className="iso-park-path" points={rect(.25, -1.72, 4.55, .13)} />
+      {Array.from({length: 16}, (_,i) => { const p=project({x:.4+(i%8)*.57,y:-2.06+Math.floor(i/8)*.7}); return <g key={i}><ellipse className="iso-tree-shadow" cx={p.screenX+4} cy={p.screenY+5} rx="15" ry="6"/><ellipse className="iso-tree" cx={p.screenX} cy={p.screenY-8} rx="12" ry="16"/></g>; })}
+      <polygon className="iso-liberty-island" points={rect(5.65, 7.65, 1.3, 1.2)} />
+      <text className="iso-map-label" x="1320" y="205">CENTRAL PARK</text>
+      <text className="iso-water-label" x="205" y="700" transform="rotate(27 205 700)">HUDSON RIVER</text>
+      <text className="iso-water-label" x="1700" y="760" transform="rotate(-27 1700 760)">EAST RIVER</text>
+      <text className="iso-map-label" x="805" y="1375">LIBERTY ISLAND</text>
+      {[{x:2.05,y:6.98},{x:3.1,y:6.98},{x:5.48,y:2.3}].map((p,i)=>{ const point=project(p); return <image key={i} href="/assets/sheets/traffic/30-map-grounded.webp" x={point.screenX-22} y={point.screenY-15} width="44" height="30"/>; })}
     </svg>
-    <div className="city-nameplate">{city.name}<small>{city.landmarkName}</small></div>
+    <div className="city-nameplate">NEW YORK<small>Manhattan · Hudson &amp; East River</small></div>
     <div className="iso-layer iso-buildings" style={{ zIndex: ISO_LAYERS.buildings }}>
       {objects.map((object, depthOrder) => {
-        const { screenX, screenY } = gridToScreen(object);
+        const { screenX, screenY } = project(object);
         const style = { left: screenX, top: screenY, zIndex: depthOrder };
         if (object.kind === 'airport') return <Button key={object.id} variant="ghost" className="city-airport iso-airport" style={style} onClick={onAirport} aria-label="Flughafen öffnen"><img src={airportArt} alt="" /><span>✈ {airportCode}</span></Button>;
-        if (object.kind === 'landmark') return <img key={object.id} className="city-landmark iso-landmark" style={style} src={getCityArtwork(city).src} alt={city.landmarkName} />;
+        if (object.kind === 'landmark') return <img key={object.id} className="city-landmark iso-landmark" style={style} src={grounded(getCityArtwork(city).src)} alt={city.landmarkName} />;
         const b = object.building, own = state.stores.find(s => s.districtId === b.id);
         const occupant = state.world.occupants[b.id], rival = MASTER.competitors.find(c => c.id === occupant);
         return <Button variant="ghost" key={b.id} className="city-property iso-property" data-grid-x={object.x} data-grid-y={object.y} data-zone={b.zoneType} data-status={own ? 'own' : occupant ?? 'free'} data-dim={zone !== 'all' && zone !== b.zoneType || undefined} aria-label={`${b.name} · ${own ? 'Deine Filiale' : rival?.name ?? 'Zu vermieten'}`} style={style} onClick={() => onBuilding(b)}>
-          <SceneAsset slot={newYorkSlot(city.id, object.index + offset)} draggable={false} fallback={own ? getStoreArtwork(city.biome, own.tier) : cityBuildingArt(b.zoneType, object.index + offset)} alt="" />
+          <svg className="iso-foundation" viewBox="0 0 180 104" aria-hidden="true"><polygon className="iso-foundation-shadow" points="0,54 90,12 180,54 90,102"/><polygon className="iso-foundation-curb" points="0,44 90,86 180,44 180,54 90,96 0,54"/><polygon className="iso-foundation-top" points="0,44 90,0 180,44 90,88"/></svg>
+          <SceneAsset slot={newYorkSlot(city.id, object.index + offset)} draggable={false} fallback={grounded(own ? getStoreArtwork(city.biome, own.tier) : cityBuildingArt(b.zoneType, object.index + offset))} alt="" />
           {own && <NeonSign shop />}
         </Button>;
-      })}
-    </div>
-    <div className="iso-layer iso-life" style={{ zIndex: ISO_LAYERS.life }} aria-hidden="true">
-      {life.map(p => {
-        const start = gridToScreen(p), end = gridToScreen(p.end);
-        const style: MotionStyle = { left: start.screenX, top: start.screenY, '--travel-x': `${end.screenX - start.screenX}px`, '--travel-y': `${end.screenY - start.screenY}px`, '--depth-start': Math.round((p.x + p.y) * 100), '--depth-end': Math.round((p.end.x + p.end.y) * 100), animationDuration: `${p.vehicle ? 26 + p.index : 40 + p.index}s`, animationDelay: `${-p.index * 3.7}s` };
-        return <span key={p.id} className={`iso-traveller ${p.vehicle ? 'iso-vehicle' : 'iso-person'}`} style={style}><img draggable={false} src={p.vehicle ? art('traffic', p.index % 2 ? 34 : 30).replace('.webp', '-map.webp') : MAP_PEOPLE[p.index % MAP_PEOPLE.length]} alt="" className={p.across ? 'iso-heading-right' : 'iso-heading-left'} /></span>;
       })}
     </div>
     {labels && <div className="iso-layer iso-pins" style={{ zIndex: ISO_LAYERS.pins }} aria-hidden="true">
       {sortIsometricObjects(plots).map((p, depthOrder) => {
         const own = state.stores.some(s => s.districtId === p.id), occupant = state.world.occupants[p.id];
-        const rival = MASTER.competitors.find(c => c.id === occupant), anchor = gridToScreen(p);
+        const rival = MASTER.competitors.find(c => c.id === occupant), anchor = project(p);
         return <span key={p.id} className="iso-pin property-pin-anchor" data-status={own ? 'own' : occupant ?? 'free'} data-dim={zone !== 'all' && zone !== p.building.zoneType || undefined} style={{ left: anchor.screenX, top: anchor.screenY, zIndex: depthOrder }}><span className="pin-shadow" /><span className="property-status float-pin">{own ? '☕' : rival ? rival.name.split(' ')[0] : '＋'}<small>{p.id.split('-').at(-1)}</small></span></span>;
       })}
     </div>}

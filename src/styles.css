@@ -378,23 +378,33 @@ select, input { min-height:44px; }
 .city-plan[data-biome=asian_zen] { --city-ground:oklch(.91 .035 150); }
 .city-plan[data-biome=tropical_colonial] { --city-ground:oklch(.9 .065 145); }
 /* Isolated New York projection: all positions are ground-centred anchors. */
-.city-plan-isometric { width:1600px; height:1120px; background:var(--city-water); }
+.city-plan-isometric { --city-road:oklch(.39 .014 240); --ny-curb:oklch(.61 .016 235); --ny-park:oklch(.64 .11 145); --ny-tree:oklch(.43 .11 150); width:2100px; height:1600px; background:var(--city-water); }
 .city-map-viewport:has(.city-plan-isometric) { background:var(--city-water); }
 .iso-ground { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
 .iso-water { fill:var(--city-water); }
 .iso-land { fill:var(--city-ground); stroke:var(--city-pavement); stroke-width:8px; }
-.iso-road { fill:var(--city-road); stroke:var(--city-pavement); stroke-width:3px; }
+.iso-road { fill:var(--city-road); stroke:var(--ny-curb); stroke-width:5px; }
+.iso-lane-line { stroke:var(--city-line); stroke-width:2px; stroke-dasharray:12 20; opacity:.7; }
+.iso-park { fill:var(--ny-park); stroke:var(--city-pavement); stroke-width:9px; }
+.iso-park-path { fill:var(--city-pavement); }
+.iso-tree { fill:var(--ny-tree); }.iso-tree-shadow { fill:var(--pin-shadow); }
+.iso-liberty-island { fill:var(--ny-park); stroke:var(--city-pavement); stroke-width:14px; }
+.iso-map-label { fill:var(--airport-board); font-family:var(--font-mono); font-size:18px; }
+.iso-water-label { fill:var(--airport-board); opacity:.7; font-family:var(--font-display); font-size:26px; }
 .iso-pavement { fill:var(--city-pavement); stroke:var(--city-ground); stroke-width:2px; }
 .iso-pavement[data-zone=pedestrian] { fill:color-mix(in oklab,var(--city-ground) 65%,var(--city-pavement)); }
 .iso-layer { position:absolute; inset:0; pointer-events:none; }
-.iso-buildings .iso-property { width:168px; height:164px; transform:translate(-50%,-100%); pointer-events:auto; overflow:visible; }
-.iso-buildings .iso-property > img { width:168px; height:164px; left:0; bottom:0; object-position:center bottom; }
+.iso-buildings .iso-property { width:180px; height:190px; transform:translate(-50%,-100%); pointer-events:auto; overflow:visible; }
+.iso-buildings .iso-property > img { width:148px; height:176px; left:16px; bottom:0; object-position:center bottom; mix-blend-mode:normal; }
+.iso-foundation { position:absolute; left:0; bottom:-9px; width:180px; height:104px; overflow:visible; pointer-events:none; }
+.iso-foundation-top { fill:var(--city-pavement); stroke:var(--ny-curb); stroke-width:2px; }
+.iso-foundation-curb { fill:var(--ny-curb); }.iso-foundation-shadow { fill:var(--pin-shadow); }
 .iso-buildings .iso-property:hover,.iso-buildings .iso-property:focus-visible { outline:none; }
 .iso-buildings .iso-property:hover > img,.iso-buildings .iso-property:focus-visible > img { filter:drop-shadow(0 0 3px var(--primary)); }
 .iso-buildings .iso-property:focus-visible::after { content:''; position:absolute; inset:0; border:2px solid var(--primary); pointer-events:none; }
 .iso-buildings .iso-airport { bottom:auto; width:168px; height:150px; transform:translate(-50%,-100%); pointer-events:auto; background:transparent; padding:0; }
 .iso-airport img { width:168px; height:124px; }.iso-airport span { font-size:13px; }
-.iso-buildings .iso-landmark { right:auto; width:160px; height:180px; transform:translate(-50%,-100%); pointer-events:none; }
+.iso-buildings .iso-landmark { right:auto; width:160px; height:250px; transform:translate(-50%,-100%); pointer-events:none; mix-blend-mode:normal; }
 .iso-pins .iso-pin { width:0; height:0; bottom:auto; pointer-events:none; }
 .iso-pin .property-status { left:0; bottom:15px; width:max-content; max-width:110px; transform:translateX(-50%); }
 .iso-pin .property-status::after { left:calc(50% - 4px); }
@@ -405,12 +415,6 @@ select, input { min-height:44px; }
 .iso-pin:nth-child(3n) .float-pin,.iso-pin:nth-child(3n) .pin-shadow { animation-delay:-1.2s; }
 .iso-pin:nth-child(3n + 1) .float-pin,.iso-pin:nth-child(3n + 1) .pin-shadow { animation-delay:-2.4s; }
 @keyframes iso-float-pin { 50% { transform:translate(-50%,-6px); } }
-.iso-traveller { position:absolute; width:18px; height:28px; animation:iso-travel 40s linear infinite; pointer-events:none; }
-.iso-traveller img { width:100%; height:100%; object-fit:contain; transform:translate(-50%,-100%); }
-.iso-vehicle { width:38px; height:30px; }
-.iso-vehicle .iso-heading-left { transform:translate(-50%,-100%) scaleX(-1); }
-@keyframes iso-travel { from { transform:translate(0,0); z-index:var(--depth-start); } to { transform:translate(var(--travel-x),var(--travel-y)); z-index:var(--depth-end); } }
-@media(prefers-reduced-motion:reduce) { .iso-traveller { transform:translate(calc(var(--travel-x) * .5),calc(var(--travel-y) * .5)); } }
 .city-river { position:absolute; right:-25px; width:85px; height:100%; transform:skewY(-20deg); background:var(--city-water); }
 .city-road { position:absolute; background:var(--city-road); border:6px solid var(--city-pavement); }
 .road-main { left:450px; width:42px; height:100%; }
