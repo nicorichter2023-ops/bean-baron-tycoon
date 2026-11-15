@@ -29,6 +29,39 @@ Zu Beginn sind 3 Städte offen. Weitere Städte öffnen sich über Firmenrang un
 ## 8. Bedienung
 Eine neue Übersicht „Fortschritt“ zeigt den nächsten Rang, die offenen Ziele und die nächsten Freischaltungen. Die Bereiche werden mit Reitern umgeschaltet statt lang gescrollt.
 
+## Der Spielablauf: so greift alles ineinander
+```text
+Gäste bedienen -> Geld + Bewertung + Erfahrung
+      |                         |
+      v                         v
+Ausbauen, Angebot, Personal   Ziele und Ränge erreichen
+      |                         |
+      +----> Freischaltungen <---+
+               (Städte, Geräte, Produkte, Forschung)
+                       |
+                       v
+          größere Ziele, stärkere Konkurrenz
+```
+- Kurz (jede Woche): Einnahmen ansehen, eine Entscheidung treffen, ein sichtbarer Fortschritt.
+- Mittel (alle 3 bis 8 Wochen): Ausbau abgeschlossen, Forschung fertig, Wochenziel geschafft, Belohnung.
+- Lang (Ränge): neue Stadt, neue Stufe, neuer Konkurrent.
+
+## Motivation und Belohnungen
+- 3 Wochenziele, zum Beispiel „Bewertung 4,0 in Berlin“ oder „500 Gäste“. Jedes Ziel bringt Geld oder Ruf.
+- Eine Serie für erfüllte Wochenziele erhöht die Belohnung.
+- Wenn ein Rang aufsteigt oder etwas freigeschaltet wird, erscheint eine Belohnungsanzeige mit Animation.
+- Ein Hinweis zeigt immer an, was als Nächstes sinnvoll ist, zum Beispiel „Mühle ausbauen: +8 % Bewertung“.
+- Meilensteine je Filiale: Wenn eine Filiale 100 oder 1.000 Gäste erreicht, bekommt sie ein Abzeichen.
+- Es gibt keine Bezahlmechaniken und keine Spielzeit-Tricks. Der Reiz kommt aus klarem Fortschritt.
+
+## Anzeige oben und Bedienung (komplett neu)
+- Die feste obere Leiste zeigt Geld, Woche, Rang mit Fortschrittsbalken und Bewertung. Ein großer Knopf „Nächste Woche“ sitzt unten in Daumenreichweite.
+- Nach jeder Woche erscheint eine Zusammenfassung auf einer Karte: Gewinn, Gäste, Zielfortschritt. Wichtiges ist hervorgehoben.
+- Jeder Bereich passt auf einen Bildschirm und wird mit Reitern umgeschaltet. Kaufen und Ausbauen geht mit einem Tipp, Bestätigung nur bei hohen Beträgen.
+- Barrierefreiheit: große Schrift wählbar, starke Kontraste, Tippflächen von mindestens 48 px, Farben nie als einziger Hinweis, ruhige Bewegungen, wenn das Handy das wünscht, Bildschirmleser-Beschriftungen.
+- Eine kurze Einführung in den ersten Wochen erklärt das Spiel Schritt für Schritt.
+- Einstellungen: Ereignishäufigkeit, Schriftgröße, Animationen, Ton für Rückmeldungen.
+
 ## 9. Ereignisse seltener und besser
 Bisher kommt jede Woche ein Ereignis, das man bestätigen muss. Künftig gilt:
 - Im Durchschnitt gibt es etwa alle 4 bis 6 Wochen ein Ereignis, danach mindestens 3 ruhige Wochen.
@@ -49,7 +82,7 @@ Bisher kommt jede Woche ein Ereignis, das man bestätigen muss. Künftig gilt:
 3. Forschung und Städte
 4. Ereignisse überarbeiten
 5. Grafiken erstellen und einbinden
-6. Bedienung und Fortschrittsübersicht
+6. Anzeige oben, Bedienung, Ziele, Belohnungen, Einführung und Barrierefreiheit
 7. Tests und Prüfung auf dem Handy
 
 ## Technische Details
