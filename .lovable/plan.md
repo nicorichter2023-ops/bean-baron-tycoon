@@ -1,7 +1,7 @@
 # Coffee Empire: Mehr Inhalt und längerer Fortschritt
 
 ## Ziel
-Mehr Stufen und mehr Freischaltungen, damit das Spiel nicht nach wenigen Stunden fertig ist. Spielstände bleiben erhalten (alte Spielstände werden automatisch übernommen).
+Coffee Empire soll ein zusammenhängendes, motivierendes Aufbauspiel im Stil von Coffee Inc 2 werden: mit klarem Spielablauf, langem Fortschritt über viele Stufen, mehr Inhalten und Entscheidungen, einer neuen Anzeige und Bedienung ohne langes Scrollen, Barrierefreiheit, stimmigen Grafiken und selteneren, sinnvolleren Ereignissen. Alle Inhalte werden auf Balance geprüft. Spielstände bleiben erhalten.
 
 ## 1. Filialen: von 3 auf 7 Stufen
 Wagen, Kiosk, Kaffeebar, Kiez-Café, Bistro, Rösterei-Café, Flagship. Jede Stufe hat eigene Kosten, Platz für Gäste, Personal und Ausstattung. Das Aussehen der Filiale wechselt bei jeder Stufe, beim Kiosk bleibt es schlicht.
@@ -62,6 +62,35 @@ Ausbauen, Angebot, Personal   Ziele und Ränge erreichen
 - Eine kurze Einführung in den ersten Wochen erklärt das Spiel Schritt für Schritt.
 - Einstellungen: Ereignishäufigkeit, Schriftgröße, Animationen, Ton für Rückmeldungen.
 
+## Neue Spielhebel (echte Entscheidungen)
+- Öffnungszeiten je Filiale: Früh, Standard oder Spät. Das verändert Gäste, Kosten und Müdigkeit des Personals.
+- Qualität oder Menge: Ein Regler pro Filiale verschiebt das Verhältnis zwischen Tempo und Bewertung.
+- Treueprogramm: Es kostet Marge und bringt dafür Stammgäste, die wiederkommen.
+- Lieferverträge für Bohnen: Festpreis über 12 Wochen oder Tagespreis mit Risiko.
+- Gegen die Konkurrenz: Preisaktion, Standort wegschnappen oder später einen Konkurrenten kaufen.
+- Filial-Spezialisierung ab Stufe 4: Business, Studenten, Touristen oder Kenner, jeweils mit eigenen Boni.
+- Jede Option hat Vor- und Nachteile. Es gibt keine eine beste Wahl.
+
+## Abhängigkeiten (was setzt was voraus)
+```text
+Rang 1-2: Wagen/Kiosk, Grundgetränke, 3 Städte
+Rang 3:   Kaffeebar, Snacks, Führungskraft für Betrieb, Forschung Stufe 1-2
+Rang 4:   Kiez-Café, Spezialisierung, Treueprogramm, Finanzchef
+Rang 5:   Bistro, Lieferverträge, Marketingchef, +4 Städte
+Rang 6:   Rösterei-Café, eigene Röstung, Technikchef, Börse
+Rang 7-8: Flagship, Übernahmen, Start-ups, +8 Städte
+Rang 9-10: alle Städte, Spitzengeräte, Endziele
+```
+- Die höchsten Gerätestufen brauchen zusätzlich die passende Forschung.
+- Ich prüfe, dass jede Freischaltung erreichbar ist, nichts im Kreis voneinander abhängt und kein Weg in eine Sackgasse führt.
+
+## Balance-Prüfung
+- Eine automatische Testsimulation spielt 3 Spielweisen über 300 Wochen: vorsichtig, normal und aggressiv.
+- Zielwerte: Rang 3 nach etwa 15 bis 25 Wochen, Rang 6 nach etwa 80 bis 120 Wochen und Rang 10 erst nach mehr als 250 Wochen.
+- Pleiten sollen möglich sein, aber nur bei klar riskantem Spiel.
+- Jede Investition muss sich in 8 bis 40 Wochen bezahlt machen, kein Gerät darf alles andere schlagen.
+- Alle bestehenden Inhalte werden geprüft: Städte, Bohnen, Ereignisse, Kredite, Aktien und Start-ups. Ausreißer werden angepasst.
+
 ## 9. Ereignisse seltener und besser
 Bisher kommt jede Woche ein Ereignis, das man bestätigen muss. Künftig gilt:
 - Im Durchschnitt gibt es etwa alle 4 bis 6 Wochen ein Ereignis, danach mindestens 3 ruhige Wochen.
@@ -77,18 +106,20 @@ Bisher kommt jede Woche ein Ereignis, das man bestätigen muss. Künftig gilt:
 - Kosten: etwa 8 bis 10 neue Bilder. Vorher prüfe ich das verbleibende Budget.
 
 ## Reihenfolge
-1. Regeln und Spielstand-Übernahme: Stufen, Ränge, Freischaltungen
-2. Ausstattung, Angebot und Personal
-3. Forschung und Städte
-4. Ereignisse überarbeiten
-5. Grafiken erstellen und einbinden
-6. Anzeige oben, Bedienung, Ziele, Belohnungen, Einführung und Barrierefreiheit
-7. Tests und Prüfung auf dem Handy
+1. Regeln, Abhängigkeiten und Spielstand-Übernahme: Stufen, Ränge, Freischaltungen
+2. Neue Spielhebel
+3. Ausstattung, Angebot und Personal
+4. Forschung und Städte
+5. Ereignisse überarbeiten
+6. Grafiken erstellen und einbinden
+7. Anzeige oben, Bedienung, Ziele, Belohnungen, Einführung und Barrierefreiheit
+8. Balance-Simulation, Tests und Prüfung auf dem Handy
 
 ## Technische Details
 - Neue reine Module in src/engine/: progression.ts (Ränge, Erfolge, Freischaltungen), menu.ts (Produkte, Preiselastizität) und staff.ts (Erfahrung). Inhalte kommen nach src/data/progression.ts.
 - Die Wochenwirkung läuft über processManagementWeek, damit Buchhaltung und Abrechnung stimmig bleiben.
 - Das Spielstand-Schema bekommt eine neue Version. Alte Filialstufen 1/2/3 werden auf die neuen Stufen 2/4/7 abgebildet, vorhandene Ausstattung bleibt erhalten, und alle bisher besuchten Städte bleiben offen.
+- Neue Module levers.ts für Spielhebel und unlocks.ts für den Abhängigkeitsgraphen, der in einem Test auf Erreichbarkeit und Zyklen geprüft wird. balance.test.ts simuliert die 3 Spielweisen deterministisch und prüft die Zielspannen.
 - Neue Tests für Rangbedingungen, Freischaltungen, Preiselastizität, Personal-Erfahrung und die Spielstand-Übernahme.
 - Ereignisse: In engine.ts wird aktuell jede Woche ein pendingEvent gezogen. Künftig entscheidet eine deterministische Wahrscheinlichkeit plus Abklingzeit, ob überhaupt ein Ereignis kommt. Die Einstufung in klein und wichtig steht in den Daten. Die gewählte Häufigkeit wird im Spielstand gespeichert.
 - Grafiken: Bildbögen werden nach public/assets/sheets/ geschnitten und nur über sheetArt.ts und visualAssets.ts eingebunden, jeweils mit Ersatzbild.
