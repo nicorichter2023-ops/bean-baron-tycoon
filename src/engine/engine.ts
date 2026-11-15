@@ -698,6 +698,7 @@ export function openStore(
   if (!city || !district) return rejected(state, 'DISTRICT_NOT_FOUND');
   if (state.world?.occupants[districtId]) return rejected(state, 'Dieser Standort gehört einem Konkurrenten.');
   if (state.stores.some((store) => store.districtId === districtId)) return rejected(state, 'DISTRICT_OCCUPIED');
+  if (state.tycoon?.franchises.some(f => f.districtId === districtId)) return rejected(state, 'Standort wird von einem Franchisenehmer genutzt.');
   if (tier > district.maxStoreTier) return rejected(state, 'TIER_NOT_ALLOWED');
   const building = buildingById(districtId);
   const purchasePrice = building ? Math.round(building.purchasePrice * propertyDiscount(state)) : 0;

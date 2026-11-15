@@ -20,7 +20,8 @@ function changed(g: GameState, t: TycoonState, reason: string, cost = 0): Action
 export function configureFarm(g: GameState, id: string, setup: FarmSetup): ActionResult {
   if (!g.world.assets.some(a => a.kind === 'plantation' && a.id === id)) return no(g, 'Diese Finca gehört dir noch nicht.');
   const t = tycoonOf(g);
-  return changed(g, { ...t, farms: { ...t.farms, [id]: { ...setup, leased: t.farms[id]?.leased } } }, 'Finca: Anbau, Aufbereitung und Fracht eingestellt.');
+  if (!FARM_METHODS.some(m => m.id === setup.method) || !['washed', 'natural', 'anaerobic'].includes(setup.process)) return no(g, 'Ungültige Anbaumethode oder Aufbereitung.');
+  return changed(g, { ...t, farms: { ...t.farms, [id]: { ...setup, leased: t.farms[id]?.leased ?? false } } }, 'Finca: Anbau, Aufbereitung und Fracht eingestellt.');
 }
 export function leaseFarm(g: GameState, id: string): ActionResult {
   const p = MASTER.plantations.find(p => p.id === id), t = tycoonOf(g);
@@ -207,7 +208,7 @@ export function processTycoonWeek(state: GameState, exp: ExpansionState) {
   if (state.pendingEvent) return { game: state, exp };
   const prepared = prepareSupply(state), r = processEmpireWeek(prepared, exp);
   if (r.game.week === state.week) return { game: state, exp };
-  let g: GameState = { ...r.game, tycoon: prepared.tycoon }, t = structuredClone(tycoonOf(g));
+  let g: GameState = { ...r.game, world: { ...r.game.world, occupants: { ...r.game.world.occupants } }, tycoon: tycoonOf(prepared) }, t = structuredClone(tycoonOf(g));
   let revenue = 0, cost = 0, financing = 0;
   const notes = [...t.news];
   const channels = { ...createTycoon().channels, b2b: g.lastReport?.revenueB2B ?? 0 };
