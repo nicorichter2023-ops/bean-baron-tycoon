@@ -384,6 +384,7 @@ select, input { min-height:44px; }
 .iso-water { fill:var(--city-water); }
 .iso-land { fill:var(--city-ground); stroke:var(--city-pavement); stroke-width:8px; }
 .iso-road { fill:var(--city-road); stroke:var(--ny-curb); stroke-width:5px; }
+.iso-bridge { fill:var(--city-road); stroke:var(--city-pavement); stroke-width:5px; }
 .iso-lane-line { stroke:var(--city-line); stroke-width:2px; stroke-dasharray:12 20; opacity:.7; }
 .iso-park { fill:var(--ny-park); stroke:var(--city-pavement); stroke-width:9px; }
 .iso-park-path { fill:var(--city-pavement); }
@@ -442,6 +443,28 @@ select, input { min-height:44px; }
 .pedestrian-1 { animation-name:city-walk-reverse; } .pedestrian-2 { width:14px; }
 @keyframes city-walk { to { transform:translate(120px,0); } } @keyframes city-walk-reverse { to { transform:translate(-100px,0); } }
 .city-map-legend { display:flex; flex-wrap:wrap; gap:8px 12px; padding:12px 0; font-size:10px; color:var(--muted-foreground); }
+.neighborhood-panel { border-block:1px solid var(--border); padding:16px 0; margin-bottom:16px; }
+.neighborhood-panel h3 { font-family:var(--font-display); font-size:19px; margin-bottom:12px; }
+.neighborhood-panel > div { padding:10px 0; }.neighborhood-panel span,.neighborhood-panel strong,.neighborhood-panel small { display:block; }
+.neighborhood-panel span,.neighborhood-panel small { font-size:11px; color:var(--muted-foreground); }.neighborhood-panel strong { font-size:13px; margin:4px 0; }
+.executive-select { width:100%; margin-top:12px; background:var(--card); border:1px solid var(--border); border-radius:4px; font-size:12px; padding:6px; }
+.cafe-cutaway { position:relative; width:100%; aspect-ratio:16/10; min-height:190px; overflow:hidden; isolation:isolate; background:var(--artwork); --cutaway-floor:oklch(.85 .028 100); --cutaway-wall:oklch(.96 .012 100); --cutaway-counter:oklch(.68 .035 170); }
+.cutaway-street { position:absolute; left:-10%; right:-10%; bottom:-12%; height:40%; background:var(--city-road); transform:skewY(-12deg); border-top:10px solid var(--city-pavement); }
+.cutaway-floor { position:absolute; left:10%; top:40%; width:80%; height:43%; transform:skewY(-12deg); background:repeating-linear-gradient(90deg,transparent 0 31px,var(--ny-curb,var(--border)) 32px 33px),var(--cutaway-floor); border-bottom:8px solid var(--border); }
+.cutaway-wall { position:absolute; background:var(--cutaway-wall); border:2px solid var(--border); }
+.wall-back { left:10%; top:16%; width:80%; height:27%; transform:skewY(-12deg); }
+.wall-side { left:10%; top:26%; width:15%; height:42%; transform:skewY(26deg); background:var(--secondary); }
+.cafe-cutaway > img,.cutaway-machine { position:absolute; object-fit:contain; pointer-events:none; }
+.cutaway-counter { width:33%; height:28%; left:29%; top:34%; z-index:2; }
+.cutaway-machine { left:34%; top:28%; width:16%; height:18%; z-index:3; }.cutaway-machine > img { width:100%; height:100%; object-fit:contain; }
+.cutaway-grinder { left:51%; top:29%; width:9%; height:16%; z-index:3; }.cutaway-till { left:25%; top:39%; width:9%; height:14%; z-index:3; }
+.cutaway-display { left:67%; top:32%; width:20%; height:24%; z-index:3; }
+.cutaway-seat { width:18%; height:24%; z-index:4; }.seat-0 { left:20%; top:60%; }.seat-1 { left:47%; top:56%; }.seat-2 { left:70%; top:58%; }.seat-3 { left:38%; top:69%; }.seat-4 { left:62%; top:70%; }
+.cutaway-decor { left:13%; top:29%; width:12%; height:24%; z-index:2; }.cutaway-menu { right:13%; top:14%; width:24%; height:15%; z-index:2; }
+.cafe-cutaway .bean-baron-neon { top:17%; left:41%; width:30%; font-size:14px; }
+.cafe-cutaway[data-tier="1"] .cutaway-floor { width:65%; }.cafe-cutaway[data-tier="3"] { --cutaway-floor:oklch(.8 .035 155); }
+.scene-stage:has(.cafe-cutaway) { aspect-ratio:16/10; }.scene-stage .cafe-cutaway { height:100%; }
+.nav-tab { min-width:0; overflow:hidden; }.nav-tab img { flex-shrink:0; }
 .legend-own { color:var(--success); }
 .property-detail { padding:18px 0; border-block:1px solid var(--border); }
 .property-detail h2 { font-family:var(--font-display); font-size:21px; overflow-wrap:anywhere; }
