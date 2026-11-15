@@ -10,6 +10,7 @@ import cartPhoto from '@/assets/cafe-interior-cart.jpg';
 import barPhoto from '@/assets/cafe-interior-espressobar.jpg';
 import roasteryPhoto from '@/assets/cafe-interior-roastery.jpg';
 import { useGame } from './GameContext';
+import { CafeRoom } from './CafeRoom';
 import { leversOf } from '@/engine/progression';
 import { stg } from '@/engine/unlocks';
 import { gearArt, sheet16 } from './sheetArt';
@@ -48,7 +49,7 @@ export function CafeCutaway({ store }: { store: Store }) {
   const parts: [string, string, number][] = GEAR_KEYS.filter(c => c !== 'terrace' || sc.gear.terrace > 0).map(c => [gearArt(c, sc.gear[c]), GEAR[c].levels[sc.gear[c]] ?? '', sc.gear[c]]);
   const deco = (slot: 'light' | 'art' | 'sign' | 'plant' | 'extra') => { const i = sc.decor[slot]; const o = i === undefined ? undefined : DECOR[slot].options[i]; return o ? <img className={`d-${slot}`} src={sheet16(DECOR[slot].sheet, o.art)} alt={o.name} loading="lazy" /> : null; };
   const wall = sc.decor.wall;
-  if (v) return <div className="cafe-photo" data-variant={v.label} data-stage={stage} aria-label={`Café-Innenansicht · ${v.label}`}><img key={v.src} className="cafe-photo-img" src={v.src} alt={`Isometrischer Innenraum · ${v.label}`} width={1088} height={1088} loading="lazy" />
+  if (v) return <CafeRoom store={store} />;
     <div className="cafe-decor-layer" aria-label="Eigene Gestaltung">{wall !== undefined && <span className="cafe-decor-tint" style={{ background: WALL_TINT[wall] }} />}{deco('light')}{deco('art')}{deco('sign')}{deco('plant')}{deco('extra')}</div>
     <span className="cafe-photo-title">{v.label} · Stufe {stage}/7</span><div className="cafe-loadout" aria-label="Sichtbare Ausstattung">{parts.map(([src, label, lvl], i) => <figure key={i} data-lvl={Math.min(2, lvl)}><img src={src} alt="" width={44} height={44} loading="lazy" /><figcaption>{label}</figcaption></figure>)}</div></div>;
   return <div className="cafe-cutaway" data-tier={store.tier} aria-label={`Café-Diorama · ${['','Kiosk','Café','Flagship'][store.tier]}`}>

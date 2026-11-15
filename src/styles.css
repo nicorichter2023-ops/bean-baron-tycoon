@@ -653,3 +653,30 @@ html[data-contrast="high"] { --muted-foreground: var(--foreground); --border: va
 @media (prefers-reduced-motion: no-preference) { .cafe-decor-layer .d-light { animation: float-pin 4s ease-in-out infinite; } }
 .airport-hub-img { width: 100%; height: 200px; object-fit: cover; border-radius: 1rem; }
 .cafe-next-upgrade { white-space: normal; height: auto; padding: .6rem 1rem; line-height: 1.2; }
+
+/* Modular café room: each layer reflects persisted stage, gear and decor */
+.cafe-room { position: relative; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 1rem; background: var(--muted); isolation: isolate; }
+.room-wall { position: absolute; inset: 0 0 38% 0; transition: background .4s; }
+.room-wall[data-brick='true'] { background-image: repeating-linear-gradient(0deg, transparent 0 14px, color-mix(in oklab, var(--background) 35%, transparent) 14px 16px), repeating-linear-gradient(90deg, transparent 0 30px, color-mix(in oklab, var(--background) 25%, transparent) 30px 32px) !important; background-color: oklch(0.5 0.1 35) !important; }
+.room-floor { position: absolute; inset: 62% 0 0 0; }
+.floor-oak { background: repeating-linear-gradient(100deg, oklch(0.55 0.08 60) 0 22px, oklch(0.5 0.08 55) 22px 24px); }
+.floor-checker { background: repeating-conic-gradient(oklch(0.95 0 0) 0 25%, oklch(0.2 0 0) 0 50%) 0 0 / 28px 28px; }
+.floor-concrete { background: linear-gradient(180deg, oklch(0.62 0.005 250), oklch(0.5 0.005 250)); }
+.floor-marble { background: linear-gradient(135deg, oklch(0.94 0.01 90), oklch(0.85 0.01 90) 40%, oklch(0.95 0.005 90) 60%, oklch(0.88 0.01 90)); }
+.room-window { position: absolute; left: 4%; top: 10%; width: 26%; height: 40%; border: 5px solid oklch(0.3 0.03 60); border-radius: 6px; background: linear-gradient(180deg, oklch(0.85 0.06 230), oklch(0.75 0.05 160)); overflow: hidden; }
+.room-window img { position: absolute; inset: auto 0 0 0; width: 100%; height: 75%; object-fit: contain; }
+.room-counter { position: absolute; right: 3%; bottom: 20%; height: 22%; border-radius: 6px 6px 2px 2px; background: linear-gradient(180deg, oklch(0.45 0.06 50), oklch(0.32 0.05 45)); box-shadow: 0 6px 12px color-mix(in oklab, var(--background) 50%, transparent); transition: width .4s; }
+.room-counter[data-lvl='4'], .room-counter[data-lvl='5'] { background: linear-gradient(180deg, oklch(0.35 0.03 60), oklch(0.22 0.02 60)); }
+.room-counter[data-lvl='6'], .room-counter[data-lvl='7'] { background: linear-gradient(180deg, oklch(0.95 0.01 90) 0 18%, oklch(0.3 0.02 60) 18%); }
+.room-counter > * { position: absolute; bottom: 92%; height: auto; transform: scale(var(--s, 1)); transform-origin: bottom center; filter: drop-shadow(0 3px 4px color-mix(in oklab, var(--background) 50%, transparent)); }
+.room-machine { right: 8%; width: 30%; } .room-machine img { width: 100%; }
+.room-grinder { right: 42%; width: 16%; }
+.room-vitrine { left: 4%; width: 28%; }
+.room-seating { position: absolute; left: 3%; right: 45%; bottom: 3%; display: flex; flex-wrap: wrap-reverse; gap: 2%; align-items: flex-end; }
+.room-seating img { width: 30%; height: auto; filter: drop-shadow(0 3px 4px color-mix(in oklab, var(--background) 50%, transparent)); }
+.room-art { position: absolute; top: 8%; left: 38%; width: 20%; border: 3px solid oklch(0.3 0.03 60); }
+.room-sign { position: absolute; top: 4%; right: 6%; width: 22%; }
+.room-extra { position: absolute; top: 18%; left: 62%; width: 14%; }
+.room-plant { position: absolute; bottom: 16%; right: 0; width: 16%; z-index: 2; }
+.room-light { position: absolute; inset: 0; mix-blend-mode: screen; pointer-events: none; z-index: 3; }
+.cafe-room .cafe-photo-title { z-index: 4; }
