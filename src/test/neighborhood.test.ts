@@ -33,7 +33,7 @@ describe('Drei Nachbarschaftsslots', () => {
   it('Rivalennachbarn verändern tatsächlich den wöchentlichen Filialumsatz',()=>{
     const g=createInitialState(),s=g.stores[0];if(!s)throw Error('Filiale fehlt');
     const slots=neighborSlots(s.districtId);
-    const clear={...g,world:{...g.world,occupants:{}}};
+    const clear={...g,stores:g.stores.map(s=>({...s,pricePerCup:12})),world:{...g.world,occupants:{}}};
     const rival={...clear,world:{...clear.world,occupants:Object.fromEntries(slots.flatMap(s=>s.building?[[s.building.id,'beanstar']]:[]))}};
     expect(processTurn(rival).stores[0]?.weeklyRevenue).toBeLessThan(processTurn(clear).stores[0]?.weeklyRevenue ?? 0);
   });
