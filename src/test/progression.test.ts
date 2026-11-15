@@ -33,12 +33,12 @@ describe('Fortschritt', () => {
   });
   it('Stufe über dem Rang-Limit ist gesperrt', () => {
     let g = { ...staffed(), cash: 1e6 };
-    const a = stageUpgrade(g, g.stores[0].id); expect(a.ok).toBe(true); g = a.state; // stage 2 erlaubt
-    expect(stageUpgrade(g, g.stores[0].id).ok).toBe(false); // stage 3 erst ab Rang 3
+    const a = stageUpgrade(g, g.stores[0]!.id); expect(a.ok).toBe(true); g = a.state; // stage 2 erlaubt
+    expect(stageUpgrade(g, g.stores[0]!.id).ok).toBe(false); // stage 3 erst ab Rang 3
   });
   it('Hebel sind bis zum Rang gesperrt', () => { const g = createInitialState(); expect(setLever(g, g.stores[0].id, 'hours', 'late').ok).toBe(false); });
   it('kein Hebel ist in jeder Hinsicht besser', () => {
-    const s = { ...createInitialState().stores[0], weeklyRevenue: 10_000, employees: [] };
+    const s = { ...createInitialState().stores[0]!, weeklyRevenue: 10_000, employees: [] };
     const q = leverEffect({ ...defaultLevers(1), focus: 1 }, s, 1), m = leverEffect({ ...defaultLevers(1), focus: -1 }, s, 1);
     expect(q.revenue).toBeLessThan(m.revenue); expect(q.reputation).toBeGreaterThan(m.reputation);
   });
