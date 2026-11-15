@@ -23,7 +23,7 @@ export function cityGridPosition(index: number): GridPoint {
 }
 
 /** Four grid corners, projected by the same math as every building and marker. */
-export function gridRectangle(x: number, y: number, width: number, height: number): string {
+export function gridRectangle(x: number, y: number, width: number, height: number, projection: IsoProjection = NEW_YORK_ISOMETRY): string {
   return [{ x, y }, { x: x + width, y }, { x: x + width, y: y + height }, { x, y: y + height }]
-    .map(p => { const s = gridToScreen(p); return `${s.screenX},${s.screenY}`; }).join(' ');
+    .map(p => { const s = gridToScreen(p, projection); return `${s.screenX},${s.screenY}`; }).join(' ');
 }
