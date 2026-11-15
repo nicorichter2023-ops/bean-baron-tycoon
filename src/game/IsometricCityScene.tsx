@@ -1,3 +1,4 @@
+import { RegionalLandmark } from './RegionalLandmark';
 import { useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { CITY_GEOGRAPHY } from '@/data/cityGeography';
@@ -61,7 +62,7 @@ export function IsometricCityScene({ city, buildings, offset, zone, labels, airp
         const { screenX, screenY } = project(object);
         const style = { left: screenX, top: screenY, zIndex: depthOrder };
         if (object.kind === 'airport') return <Button key={object.id} variant="ghost" className="city-airport iso-airport" style={style} onClick={onAirport} aria-label="Flughafen öffnen"><img src={airportArt} alt="" /><span>✈ {airportCode}</span></Button>;
-        if (object.kind === 'landmark') return <img key={object.id} className="city-landmark iso-landmark" style={style} src={grounded(getCityArtwork(city).src)} alt={city.landmarkName} />;
+        if (object.kind === 'landmark') return getCityArtwork(city).isLandmark ? <img key={object.id} className="city-landmark iso-landmark" style={style} src={grounded(getCityArtwork(city).src)} alt={city.landmarkName} /> : <div key={object.id} className="city-landmark iso-landmark" style={style}><RegionalLandmark cityId={city.id} label={geography?.landmark ?? city.landmarkName} /></div>;
         const b = object.building, own = state.stores.find(s => s.districtId === b.id);
         const occupant = state.world.occupants[b.id], rival = MASTER.competitors.find(c => c.id === occupant);
         return <Button variant="ghost" key={b.id} className="city-property iso-property" data-grid-x={object.x} data-grid-y={object.y} data-zone={b.zoneType} data-status={own ? 'own' : occupant ?? 'free'} data-dim={zone !== 'all' && zone !== b.zoneType || undefined} aria-label={`${b.name} · ${own ? 'Deine Filiale' : rival?.name ?? 'Zu vermieten'}`} style={style} onClick={() => onBuilding(b)}>
