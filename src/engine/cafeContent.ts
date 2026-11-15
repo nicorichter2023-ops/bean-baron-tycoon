@@ -85,8 +85,8 @@ export const DESIGN_STYLES = [
 /** Colour moods re-tone the complete painted scene (no rectangle overlays). */
 export const PALETTES = [
   { name: 'Salbei', swatch: 'oklch(0.62 0.07 145)', filter: 'none' },
-  { name: 'Petrol', swatch: 'oklch(0.45 0.07 210)', filter: 'hue-rotate(40deg) saturate(1.05)' },
-  { name: 'Terrakotta', swatch: 'oklch(0.6 0.13 45)', filter: 'hue-rotate(-55deg) saturate(1.1)' },
+  { name: 'Petrol', swatch: 'oklch(0.45 0.07 210)', filter: 'hue-rotate(80deg) saturate(.85) brightness(.97)' },
+  { name: 'Terrakotta', swatch: 'oklch(0.6 0.13 45)', filter: 'hue-rotate(-75deg) saturate(1.05)' },
   { name: 'Kreideweiß', swatch: 'oklch(0.94 0.02 90)', filter: 'saturate(.5) brightness(1.08)' },
 ] as const;
 export const TERRACE_STYLES = [
