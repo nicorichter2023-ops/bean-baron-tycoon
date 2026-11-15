@@ -6,7 +6,7 @@ import { STAGES, stg, rk, leverUnlocked, maxStage, tierOfStage, RANKS, LEVER_RAN
 import { GAME_CONFIG } from '@/engine/engine';
 import { stageArt } from './sheetArt';
 
-const Lock = ({ id }: { id: LeverId }) => <p className="text-xs text-muted-foreground">🔒 Ab Rang „{rk(LEVER_RANK[id) - 1].name}“</p>;
+const Lock = ({ id }: { id: LeverId }) => <p className="text-xs text-muted-foreground">🔒 Ab Rang „{rk(LEVER_RANK[id] - 1).name}“</p>;
 export function StoreLeversPanel({ store }: { store: Store }) {
   const { state, perform } = useGame();
   const l = leversOf(state, store), next = l.stage < 7 ? stg(l.stage) : null;
