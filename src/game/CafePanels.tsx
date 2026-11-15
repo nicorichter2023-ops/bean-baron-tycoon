@@ -51,8 +51,8 @@ export function GearPanel({ store }: { store: Store }) {
   const sc = storeCafe(state, store), stage = leversOf(state, store).stage;
   return <div className="cafe-panel-block"><h3 className="cafe-panel-h">Ausstattung · 5 Stufen</h3>
     <div className="grid gap-2">{GEAR_KEYS.map(c => { const lvl = sc.gear[c], cost = gearUpgradeCost(state, store, c), need = gearStageNeed(lvl + 1), locked = lvl < 4 && stage < need;
-      return <div key={c} className="cafe-gear-row"><img src={gearArt(c, lvl)} alt="" width={56} height={56} loading="lazy" />
-        <div className="min-w-0 flex-1"><strong>{GEAR[c].label}</strong><small>{GEAR[c].levels[lvl]}</small><span className="cafe-pips">{[0, 1, 2, 3, 4].map(i => <i key={i} data-on={i <= lvl} />)}</span></div>
+      return <div key={c} className="cafe-gear-row"><span className="cafe-gear-lvl" aria-hidden="true">{lvl + (c === 'terrace' || c === 'vitrine' ? 0 : 1)}</span>
+        <div className="min-w-0 flex-1"><strong>{GEAR[c].label}</strong><small>{GEAR[c].levels[lvl]}{lvl < 4 ? ` → ${GEAR[c].levels[lvl + 1]}` : ''}</small><span className="cafe-pips">{[0, 1, 2, 3, 4].map(i => <i key={i} data-on={i <= lvl} />)}</span></div>
         {lvl >= 4 ? <span className="cafe-done">MAX</span> : <Button size="sm" className="min-h-11" disabled={locked || state.cash < cost} onClick={() => perform(g => upgradeGear(g, store.id, c))}>{locked ? `ab Stufe ${need}` : eur(cost)}</Button>}</div>; })}</div>
   </div>;
 }

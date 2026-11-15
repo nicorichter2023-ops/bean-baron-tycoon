@@ -726,3 +726,27 @@ html[data-contrast="high"] { --muted-foreground: var(--foreground); --border: va
 .cafe-room-painted .room-extra { left: 1%; bottom: 4%; width: 12%; right: auto; top: auto; z-index: 3; }
 .cafe-room-painted .room-terrace { right: 0; top: 0; width: 22%; z-index: 1; opacity: .95; }
 .cafe-room-painted .cafe-photo-title { z-index: 5; }
+
+/* Café scenes & editor (reference: Gestaltung und Terrasse) */
+.cafe-room-scene { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: var(--card); }
+.cafe-room-scene .room-base { width: 100%; height: 100%; object-fit: cover; display: block; transition: filter .3s ease; }
+.cafe-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: .25rem; padding: .6rem .75rem; background: var(--card); border-bottom: 1px solid var(--border); text-align: center; }
+.cafe-kpis dt { font-size: .7rem; color: var(--muted-foreground); }
+.cafe-kpis dd { font-weight: 700; font-size: .95rem; display: flex; justify-content: center; align-items: center; gap: .25rem; flex-wrap: wrap; }
+.cafe-gear-lvl { width: 2.75rem; height: 2.75rem; flex: none; display: grid; place-items: center; border-radius: 999px; background: var(--secondary); color: var(--secondary-foreground); font-weight: 800; }
+.cafe-editor { position: fixed; inset: 0; z-index: 70; display: flex; flex-direction: column; background: var(--background); color: var(--foreground); }
+.cafe-editor-preview { flex: none; }
+.cafe-editor-tabs { display: flex; gap: .25rem; padding: .5rem; border-bottom: 1px solid var(--border); background: var(--card); }
+.cafe-editor-tabs button { flex: 1; min-height: 2.75rem; border-radius: var(--radius); font-size: .85rem; font-weight: 600; color: var(--muted-foreground); }
+.cafe-editor-tabs button[aria-pressed="true"] { background: var(--secondary); color: var(--secondary-foreground); }
+.cafe-editor-body { flex: 1; overflow-y: auto; padding: .75rem; }
+.cafe-swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; }
+.cafe-swatches button { display: flex; flex-direction: column; align-items: center; gap: .35rem; min-height: 4.5rem; font-size: .75rem; border-radius: var(--radius); padding: .4rem; }
+.cafe-swatches span { width: 2.6rem; height: 2.6rem; border-radius: 999px; border: 2px solid var(--border); }
+.cafe-swatches button[aria-pressed="true"] span { outline: 3px solid var(--primary); outline-offset: 2px; }
+.cafe-style-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; }
+.cafe-style-grid button { display: flex; flex-direction: column; gap: .2rem; text-align: left; padding: .3rem; border-radius: var(--radius); border: 2px solid var(--border); background: var(--card); font-size: .75rem; }
+.cafe-style-grid button[aria-pressed="true"] { border-color: var(--primary); }
+.cafe-style-grid img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: calc(var(--radius) - 2px); }
+.cafe-style-grid small { color: var(--muted-foreground); font-size: .68rem; }
+.cafe-editor-foot { padding: .75rem; padding-bottom: max(.75rem, env(safe-area-inset-bottom)); border-top: 1px solid var(--border); background: var(--card); display: grid; gap: .5rem; text-align: center; }
