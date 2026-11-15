@@ -26,3 +26,9 @@
 - [x] Visuelle Freigabe der Entwürfe vor Spielumbau – wartet auf Nutzerentscheidung
 
 - [x] Sitzmöglichkeiten, Farben und je 3 Deko-Konzepte pro Stufe im Editor
+- [x] Mietkauf/Sale-and-Lease-Back, Rivalen-Ablöse auf der Karte, Firmenkauf übernimmt alle Rivalen-Cafés, Erst-Barista bei Eröffnung
+- [x] Einheitliche Café-Ansicht (Karte = Filialliste), Ketten-Aktionen ab 5 Filialen
+- [x] Endlose Startups mit Runden-Entscheidungen bis IPO/Pleite/Klage
+- [x] Rösterei-/Plantagen-Upgrades mit spürbarer Wirkung; Forschung 96 Projekte in einem Menü; 12 Kampagnen mit Auto-Verlängerung in einem Menü; C-Level-Automatik
+- [x] Editor-Farbe nur auf Wandflächen
+- [ ] Balance: Mieten großer Standorte sind hoch (23 Kioske ≈ −58 Tsd €/Woche ohne Gebäudekauf) – Wunschwerte vom Nutzer

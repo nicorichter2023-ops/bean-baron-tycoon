@@ -30,7 +30,7 @@ export const MENU_ITEMS = [...DRINKS, ...SNACKS];
 export const DEFAULT_MENU = ['espresso', 'americano', 'cappuccino', 'croissant'];
 export const MENU_LIMIT = { drink: 8, snack: 6 } as const;
 
-export type Branch = 'bean' | 'drink' | 'ops' | 'brand';
+export type Branch = 'bean' | 'drink' | 'ops' | 'brand' | 'roast' | 'chain' | 'digital' | 'green' | 'logistic' | 'finance';
 export interface ResearchNode { id: string; branch: Branch; tier: number; name: string; effect: string; sheet: 'research-a' | 'research-b'; art: number }
 const node = (branch: Branch, prefix: string, sheet: ResearchNode['sheet'], items: [string, string, number][]): ResearchNode[] =>
   items.map(([name, effect, art], i) => ({ id: `${prefix}${i + 1}`, branch, tier: i + 1, name, effect, sheet, art }));
@@ -40,13 +40,29 @@ export const RESEARCH: ResearchNode[] = [
   ...node('ops', 'o', 'research-b', [['Stoppuhr-Abläufe', '+1,5 % Umsatz', 1], ['Back-Partner', 'Zimtschnecke & Bagel', 2], ['Kassensystem', '−3 % Personalkosten', 3], ['Mobile Order', 'Sandwich · +2 % Umsatz', 4], ['Lieferdienst', '+2 % Umsatz', 5], ['Wartungsplan', '−3 % Personalkosten', 6], ['Barista-Akademie', 'Baristas lernen doppelt', 7], ['Lager-Software', '+2,5 % Umsatz', 8]]),
   ...node('brand', 'm', 'research-b', [['Werbekampagne', '+0,2 Ruf/Woche', 9], ['Treuekarte', 'Cheesecake · +1,5 %', 10], ['Social Media', 'Avocado-Toast · +2 %', 11], ['Markendesign', '+0,2 Ruf/Woche', 12], ['Öko-Zertifikat', 'Obstbecher · +2 %', 13], ['Lieferanten-Netz', '+2,5 % Umsatz', 14], ['Promi-Kooperation', '+0,3 Ruf/Woche', 15], ['Franchise-Handbuch', '+3 % Umsatz', 16]]),
 ];
-export const BRANCH_LABEL: Record<Branch, string> = { bean: 'Bohne & Röstung', drink: 'Getränke', ops: 'Betrieb', brand: 'Marke' };
+// Expanded tree: six corporate branches triple the research choices; effects are typed so UI text and rules stay in sync.
+type FxKind = 'rev' | 'wage' | 'rep';
+const FX: Record<string, [FxKind, number]> = {};
+const fxNode = (branch: Branch, prefix: string, sheet: ResearchNode['sheet'], items: [string, FxKind, number][]): ResearchNode[] => items.map(([name, kind, v], i) => {
+  const id = `${prefix}${i + 1}`; FX[id] = [kind, v];
+  const effect = kind === 'rev' ? `+${String(+(v * 100).toFixed(1)).replace('.', ',')} % Umsatz` : kind === 'wage' ? `−${Math.round(v * 100)} % Personalkosten` : `+${String(v).replace('.', ',')} Ruf/Woche`;
+  return { id, branch, tier: i + 1, name, effect, sheet, art: ((i * 3 + prefix.charCodeAt(0)) % 16) + 1 };
+});
+RESEARCH.push(
+  ...fxNode('roast', 'r', 'research-a', [['Röstkurven-Logger', 'rev', .01], ['Luftröster', 'rev', .01], ['Infrarot-Röstung', 'rev', .012], ['Röstmeister-Schule', 'rev', .012], ['Aroma-Versiegelung', 'rev', .015], ['Single-Origin-Linie', 'rev', .015], ['Fermentations-Labor', 'rev', .02], ['Reserve-Röstung', 'rev', .025]]),
+  ...fxNode('chain', 'c', 'research-b', [['Schichtplan-Tool', 'wage', .02], ['Filial-Handbuch', 'rev', .01], ['Zentraleinkauf', 'wage', .02], ['Regionalleiter', 'rev', .012], ['Benchmarking', 'rev', .012], ['Lean-Abläufe', 'wage', .03], ['Ketten-Akademie', 'rev', .015], ['Konzern-Leitstand', 'rev', .02]]),
+  ...fxNode('digital', 'g', 'research-b', [['Website-Bestellung', 'rev', .01], ['Kunden-App', 'rev', .012], ['Push-Angebote', 'rev', .012], ['Abo-Kaffee', 'rev', .015], ['KI-Nachfrageprognose', 'wage', .02], ['Digitale Menütafeln', 'rev', .012], ['Self-Order-Kioske', 'wage', .03], ['Datenplattform', 'rev', .02]]),
+  ...fxNode('green', 's', 'research-a', [['Mehrwegbecher', 'rep', .1], ['Ökostrom', 'rep', .1], ['Kompost-Kreislauf', 'rep', .15], ['Fairtrade-Siegel', 'rev', .01], ['CO2-Bilanz', 'rep', .15], ['Regenwald-Projekt', 'rep', .2], ['Zero-Waste-Filialen', 'rev', .015], ['B-Corp-Zertifikat', 'rep', .25]]),
+  ...fxNode('logistic', 'l', 'research-b', [['Lagerzonen', 'wage', .01], ['Kühlkette', 'rev', .01], ['Routenplanung', 'wage', .02], ['Frischlieferung', 'rev', .012], ['Containerfracht', 'rev', .012], ['Hafenlager', 'wage', .02], ['Just-in-Time', 'rev', .015], ['Globale Lieferkette', 'rev', .02]]),
+  ...fxNode('finance', 'f', 'research-a', [['Kostenstellen', 'wage', .01], ['Preispsychologie', 'rev', .01], ['Dynamische Preise', 'rev', .015], ['Steuerplanung', 'rev', .01], ['Treasury', 'rev', .01], ['Investor Relations', 'rep', .15], ['Konzern-Controlling', 'wage', .02], ['Holding-Struktur', 'rev', .02]]),
+);
+export const BRANCH_LABEL: Record<Branch, string> = { bean: 'Bohne & Röstung', drink: 'Getränke', ops: 'Betrieb', brand: 'Marke', roast: 'Rösttechnik', chain: 'Kettenführung', digital: 'Digital', green: 'Nachhaltigkeit', logistic: 'Logistik', finance: 'Finanzen' };
 export const researchCost = (tier: number) => Math.round(1500 * Math.pow(1.55, tier - 1) / 100) * 100;
 export const researchWeeks = (tier: number) => 1 + Math.ceil(tier / 2);
 const BONUS: Record<string, number> = { b1: .015, b2: .015, b3: .015, b4: .02, b5: .02, b6: .02, b7: .025, b8: .03, d7: .02, d8: .03, o1: .015, o4: .02, o5: .02, o8: .025, m2: .015, m3: .02, m5: .02, m6: .025, m8: .03 };
-export const researchRevenueBonus = (done: string[]) => done.reduce((n, id) => n + (BONUS[id] ?? 0), 0);
-export const researchRepBonus = (done: string[]) => (done.includes('m1') ? .2 : 0) + (done.includes('m4') ? .2 : 0) + (done.includes('m7') ? .3 : 0);
-export const researchWageFactor = (done: string[]) => 1 - (done.includes('o3') ? .03 : 0) - (done.includes('o6') ? .03 : 0);
+export const researchRevenueBonus = (done: string[]) => done.reduce((n, id) => n + (BONUS[id] ?? (FX[id]?.[0] === 'rev' ? FX[id][1] : 0)), 0);
+export const researchRepBonus = (done: string[]) => done.reduce((n, id) => n + (FX[id]?.[0] === 'rep' ? FX[id][1] : 0), 0) + (done.includes('m1') ? .2 : 0) + (done.includes('m4') ? .2 : 0) + (done.includes('m7') ? .3 : 0);
+export const researchWageFactor = (done: string[]) => Math.max(0.7, 1 - done.reduce((n, id) => n + (FX[id]?.[0] === 'wage' ? FX[id][1] : 0), 0) - (done.includes('o3') ? .03 : 0) - (done.includes('o6') ? .03 : 0));
 
 export type GearCategory = 'espresso' | 'grinder' | 'seating' | 'vitrine' | 'terrace';
 export const GEAR: Record<GearCategory, { label: string; levels: string[]; base: number; bonus: number }> = {
@@ -82,7 +98,7 @@ export const DESIGN_STYLES = [
   { id: 'lounge', name: 'Lounge', seats: 'Polsterbänke & Sessel' },
   { id: 'botanic', name: 'Botanisch', seats: 'Rattanstühle & Pflanzen' },
 ] as const;
-/** Colour moods re-tone the complete painted scene (no rectangle overlays). */
+/** Wall colours: the swatch tints only the upper wall band of the painted scene; `filter` is kept for old callers. */
 export const PALETTES = [
   { name: 'Salbei', swatch: 'oklch(0.62 0.07 145)', filter: 'none' },
   { name: 'Petrol', swatch: 'oklch(0.45 0.07 210)', filter: 'hue-rotate(80deg) saturate(.85) brightness(.97)' },

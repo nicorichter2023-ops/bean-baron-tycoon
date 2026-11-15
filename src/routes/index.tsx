@@ -19,6 +19,11 @@ import { MasterCatalog } from '@/game/MasterCatalog';
 import { ProgressPanel } from '@/game/ProgressPanel';
 import { SplashScreen } from "@/game/Intro";
 import { WeekSummary } from '@/game/WeekSummary';
+import { ResearchHub } from '@/game/ResearchHub';
+import { MarketingHub } from '@/game/MarketingHub';
+import { VentureHub } from '@/game/VentureHub';
+import { SupplyPanel } from '@/game/SupplyPanel';
+import { ChainPanel, ExecEffects } from '@/game/ChainPanel';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 
 export const Route = createFileRoute("/")({
@@ -43,8 +48,8 @@ const TABS = [
   { id: "airport", label: "Flughafen", icon: undefined },
 ] as const;
 const SECTIONS = {
-  empire: [['stores', 'Filialen'], ['new', 'Eröffnen'], ['cafe', 'Café'], ['roastery', 'Rösterei']],
-  hq: [['progress', 'Fortschritt'], ['hq', 'HQ & Leitung'], ['development', 'Entwicklung'], ['lab', 'Labor & Marketing'], ['holding', 'Holding']],
+  empire: [['stores', 'Filialen'], ['chain', 'Kette'], ['roastery', 'Rösterei & Plantagen']],
+  hq: [['progress', 'Fortschritt'], ['hq', 'HQ & Leitung'], ['research', 'Forschung'], ['marketing', 'Marketing'], ['lab', 'Rezepte'], ['development', 'Entwicklung'], ['holding', 'Holding']],
   finance: [['accounting', 'Accounting'], ['bank', 'Bank'], ['stocks', 'Aktien & M&A'], ['market', 'Bohnenmarkt'], ['b2b', 'B2B'], ['startups', 'Startups']],
 } as const;
 
@@ -60,8 +65,9 @@ function GameWorld() {
   const [splash, setSplash] = useState(true);
   useEffect(() => { if ('serviceWorker' in navigator && import.meta.env.PROD) navigator.serviceWorker.register('/sw.js').catch(() => undefined); }, []);
   const destinations: Place[] = section === 'roastery' ? ['roastery', 'port', 'exchange', 'farm'] : ['cafe', 'terrace'];
-  const content = section === 'progress' ? <ProgressPanel /> : section === 'development' ? <MasterCatalog /> : section === 'hq' ? <HQPanel /> : section === 'accounting' ? <AccountingPanel /> : section === 'lab' ? <LabPanel />
-    : section === 'cafe' || section === 'roastery' ? <SceneView place={place} onPlace={setPlace} destinations={destinations} />
+  const content = section === 'progress' ? <ProgressPanel /> : section === 'development' ? <MasterCatalog /> : section === 'hq' ? <><HQPanel /><ExecEffects /></> : section === 'accounting' ? <AccountingPanel /> : section === 'lab' ? <LabPanel />
+    : section === 'research' ? <ResearchHub /> : section === 'marketing' ? <MarketingHub /> : section === 'startups' ? <VentureHub /> : section === 'chain' ? <ChainPanel />
+    : section === 'roastery' ? <><SupplyPanel /><div className="mt-5"><SceneView place={place} onPlace={setPlace} destinations={destinations} /></div></>
     : <SectionFilter.Provider value={section === 'stores' ? ['Filialen'] : section === 'new' ? ['Neue Filiale'] : section === 'holding' ? ['Holding', 'Letzte Woche'] : section === 'startups' ? ['VC-Startups'] : section === 'bank' ? ['Bankkredit'] : section === 'stocks' ? ['Aktienmarkt'] : section === 'market' ? ['Kaffee-Futures', 'Bohnen einkaufen'] : ['B2B-Vertrag', 'Aktive Lieferverträge']}>
       {tab === 'empire' || section === 'holding' ? <EmpireTab /> : section === 'market' || section === 'b2b' ? <MarketTab /> : <FinanceTab />}
     </SectionFilter.Provider>;

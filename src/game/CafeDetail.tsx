@@ -5,7 +5,8 @@ import type { GameState, Store } from '@/engine/types';
 import { CafeRoom } from './CafeRoom';
 import { CafeEditor } from './CafeEditor';
 import { StoreLeversPanel } from './StoreLeversPanel';
-import { CafeBonusSummary, GearPanel, MenuPanel, ResearchPanel, StaffPanel } from './CafePanels';
+import { CafeBonusSummary, GearPanel, MenuPanel, StaffPanel } from './CafePanels';
+import { buyProperty, propertyPrice, sellProperty } from '@/engine/empire';
 import { cafeComments, cafeReviews } from './cafeReviews';
 import { eur, useGame } from './GameContext';
 import { leversOf, stageUpgrade } from '@/engine/progression';
@@ -44,9 +45,11 @@ export function CafeDetail({ store, address, onClose }: { store: Store; address:
       <nav className="cafe-detail-tabs" style={{ position: 'static' }}>{tabs.map(([id,label]) => <Button key={id} variant={tab === id ? 'secondary' : 'ghost'} aria-pressed={tab === id} onClick={() => setTab(id)}><span>{label}</span></Button>)}</nav>
       <section className="grid gap-3">
         {tab === 'service' && <><StaffPanel store={store} /><StoreLeversPanel store={store} /></>}
-        {tab === 'product' && <><MenuPanel store={store} /><ResearchPanel /></>}
+        {tab === 'product' && <><MenuPanel store={store} /><p className="text-xs text-muted-foreground">Neue Getränke & Snacks schaltest du unter HQ → Forschung frei.</p></>}
         {tab === 'gear' && <><Button variant="secondary" className="min-h-11 w-full" onClick={() => setEdit(true)}>Farben, Sitze & Deko gestalten</Button><GearPanel store={store} /></>}
-        {tab === 'finance' && <><CafeBonusSummary store={store} /><dl className="cafe-finance"><div><dt>Umsatz letzte Woche</dt><dd>{eur(store.weeklyRevenue)}</dd></div><div><dt>Gäste letzte Woche</dt><dd>{store.customersServedLastWeek}</dd></div><div><dt>Tassenpreis</dt><dd>{eur(store.pricePerCup)}</dd></div><div><dt>Personalkosten / Woche</dt><dd>{eur(store.employees.reduce((s,e) => s + e.salaryWeekly, 0))}</dd></div><div><dt>Anlagenwert</dt><dd>{eur(store.equipment?.bookValue ?? 0)}</dd></div></dl></>}
+        {tab === 'finance' && <><CafeBonusSummary store={store} /><dl className="cafe-finance"><div><dt>Umsatz letzte Woche</dt><dd>{eur(store.weeklyRevenue)}</dd></div><div><dt>Gäste letzte Woche</dt><dd>{store.customersServedLastWeek}</dd></div><div><dt>Tassenpreis</dt><dd>{eur(store.pricePerCup)}</dd></div><div><dt>Personalkosten / Woche</dt><dd>{eur(store.employees.reduce((s,e) => s + e.salaryWeekly, 0))}</dd></div><div><dt>Anlagenwert</dt><dd>{eur(store.equipment?.bookValue ?? 0)}</dd></div><div><dt>Immobilie</dt><dd>{store.propertyBookValue ? `Eigentum · ${eur(store.propertyBookValue)}` : 'gemietet'}</dd></div></dl>
+          {store.propertyBookValue ? <Button variant="outline" className="min-h-11 w-full" onClick={() => perform(g => sellProperty(g, store.id))}>Sale-and-Lease-Back · +{eur(store.propertyBookValue * 0.9)}</Button>
+            : propertyPrice(store.districtId) > 0 && <Button className="min-h-11 w-full" disabled={state.cash < propertyPrice(store.districtId)} onClick={() => perform(g => buyProperty(g, store.id))}>Gebäude kaufen · {eur(propertyPrice(store.districtId))} (keine Miete mehr)</Button>}</>}
       </section>
       <section className="cafe-reviews"><h2>KUNDENBEWERTUNGEN</h2><div className="cafe-reviews-grid">
         <div><strong className="text-4xl">{r.overall.toFixed(1)}</strong><Stars v={r.overall} /><small>{r.count} Bewertungen</small></div>

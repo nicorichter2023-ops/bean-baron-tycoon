@@ -1,16 +1,16 @@
 import { useState } from "react";
-import { Banknote, Building, Lock, RotateCcw, Rocket } from "lucide-react";
+import { Banknote, Building, Lock, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { acquireRival, acquireStartup, buyShares, investInStartup, repayLoan, resetGame, sellShares, takeLoan } from "@/engine";
+import { buyShares, repayLoan, resetGame, sellShares, takeLoan } from "@/engine";
 import { createInitialState } from "@/data";
 import { eur, useGame } from "../GameContext";
 import { Empty, Panel, Section } from "../ui";
 import { COMPANY_ARTWORK } from "../artwork";
-import { rivalArt, startupArt } from '../sheetArt';
+import { rivalArt } from '../sheetArt';
 import { effectiveInterestRate } from '@/engine/management';
+import { acquireRivalWithStores } from '@/engine/empire';
 
 const inputClass = "h-9 w-full rounded-md border border-input bg-background px-3 font-mono text-sm text-foreground";
-const RISK = { low: "Niedrig", medium: "Mittel", high: "Hoch", moonshot: "Moonshot" } as const;
 
 export function FinanceTab() {
   const { state, set, perform } = useGame();
@@ -43,19 +43,10 @@ export function FinanceTab() {
             <p className="mt-1 text-xs text-muted-foreground">{company.description}</p>
             {company.acquired ? <p className="mt-2 text-xs font-semibold text-success">Zum Imperium gehörig</p> : <>
               <div className="mt-2 grid grid-cols-2 gap-2"><Button size="sm" variant="outline" disabled={!marketsUnlocked} onClick={() => perform((current) => buyShares(current, company.id, 1))}>1 Aktie kaufen</Button><Button size="sm" variant="outline" disabled={!marketsUnlocked || !holding} onClick={() => perform((current) => sellShares(current, company.id, 1))}>1 Aktie verkaufen</Button></div>
-              <Button size="sm" variant="ghost" className="mt-1 w-full text-xs" disabled={!marketsUnlocked} onClick={() => perform((current) => acquireRival(current, company.id, Math.round(company.valuation * 1.45)))}><Building /> Übernehmen · {eur(company.valuation * 1.45)}</Button>
+              <Button size="sm" variant="ghost" className="mt-1 w-full text-xs" disabled={!marketsUnlocked} onClick={() => perform((current) => acquireRivalWithStores(current, company.id, Math.round(company.valuation * 1.45)))}><Building /> Firma samt Cafés übernehmen · {eur(company.valuation * 1.45)}</Button>
             </>}
           </Panel>;
         })}
-      </Section>
-
-      <Section title={`VC-Startups · ${state.capitalMarkets.startups.length}`}>
-        {state.capitalMarkets.startups.map((startup) => <Panel key={startup.id}>
-          <div className="flex items-start gap-3"><img src={startupArt(state.capitalMarkets.startups.indexOf(startup))} alt="" className="h-16 w-16 shrink-0 object-contain" /><div className="min-w-0 flex-1 text-sm"><div className="font-semibold">{startup.name}</div><div className="text-xs text-muted-foreground">{startup.sector} · Risiko {RISK[startup.riskClass]} · Chance {startup.successChance}%</div></div></div>
-          <div className="mt-1 text-xs text-muted-foreground">Bewertung {eur(startup.valuation)} · Finanzierung {eur(startup.requiredFunding)} · Auszahlung ×{startup.payoutMultiple}</div>
-          {startup.investedAmount > 0 && <div className="mt-1 text-xs text-primary">Investiert: {eur(startup.investedAmount)} · {startup.status === "active" ? "aktiv" : startup.status === "succeeded" ? "erfolgreich" : "gescheitert"}</div>}
-          {startup.acquired ? <p className="mt-2 text-xs font-semibold text-success">Vollständig übernommen</p> : <div className="mt-2 grid grid-cols-2 gap-2"><Button size="sm" variant="outline" disabled={!marketsUnlocked || startup.status !== "active"} onClick={() => perform((current) => investInStartup(current, startup.id, startup.requiredFunding))}>Finanzieren</Button><Button size="sm" variant="outline" disabled={!marketsUnlocked} onClick={() => perform((current) => acquireStartup(current, startup.id))}>Übernehmen</Button></div>}
-        </Panel>)}
       </Section>
 
       <Section title="Spielstand"><Button variant="ghost" className="w-full text-muted-foreground" onClick={() => { if (confirm("Spielstand wirklich löschen?")) { resetGame(); set(() => createInitialState()); } }}><RotateCcw /> Neues Spiel</Button></Section>
