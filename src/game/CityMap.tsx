@@ -6,14 +6,14 @@ import { MASTER, ZONES, type MasterBuilding } from '@/data/master';
 import type { City } from '@/engine/types';
 import { cityPlacementHash, orderedCityBuildings } from '@/engine/neighborhood';
 import { IsometricCityScene } from './IsometricCityScene';
-import { NewYorkPhotoMap } from './NewYorkPhotoMap';
+import { PhotoCityMap } from './PhotoCityMap';
 
 export function CityMap({ city, onBuilding, onAirport }: { city: City; onBuilding: (b: MasterBuilding) => void; onAirport: () => void }) {
-  const [zone, setZone] = useState('all'), [labels, setLabels] = useState(true);
+  const [zone, setZone] = useState('all'), [labels, setLabels] = useState(true), [photoFailed, setPhotoFailed] = useState(false);
   const source = MASTER.cities.find(c => c.cityId === city.id); if (!source) return <p>Bestehende Filialen in {city.name} bleiben erhalten.</p>;
   const offset = cityPlacementHash(city.id) % 30;
   const ordered = orderedCityBuildings(city.id);
-  if (city.id === 'new_york') return <section className="city-map-section"><NewYorkPhotoMap buildings={ordered} onBuilding={onBuilding} onAirport={onAirport} /></section>;
+  if (!photoFailed) return <section className="city-map-section"><PhotoCityMap cityId={city.id} cityName={city.name} airportCode={source.airportCode} buildings={ordered} onBuilding={onBuilding} onAirport={onAirport} onError={() => setPhotoFailed(true)} /><div className="city-map-legend"><span className="legend-own">● Deine Filialen</span><span>FOR LEASE / SALE frei</span>{MASTER.competitors.map(c => <span key={c.id} data-rival={c.id}>● {c.name.split(' ')[0]}</span>)}</div></section>;
   return <section className="city-map-section">
     <div className="city-zone-filter" aria-label="Stadtzonen"><Button variant={zone === 'all' ? 'secondary' : 'ghost'} onClick={() => setZone('all')}>Alle · 30</Button>{Object.entries(ZONES).map(([id, name]) => <Button key={id} variant={zone === id ? 'secondary' : 'ghost'} onClick={() => setZone(id)}>{name}</Button>)}</div>
     <TransformWrapper initialScale={.65} minScale={.45} maxScale={1.8} centerOnInit wheel={{ step: .06 }} doubleClick={{ disabled: true }} panning={{ velocityDisabled: false }}>

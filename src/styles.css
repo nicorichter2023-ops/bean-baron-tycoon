@@ -613,3 +613,7 @@ select, input { min-height:44px; }
 html[data-reduce-motion="true"] *, html[data-reduce-motion="true"] *::before, html[data-reduce-motion="true"] *::after { animation:none !important; transition:none !important; }
 html[data-contrast="high"] { --muted-foreground: var(--foreground); --border: var(--foreground); }
 .game-world button, .game-world [role="button"] { min-height: 44px; }
+.nyc-photo-map { position: relative; }
+.photo-map-toggle { position: absolute; z-index: 5; top: .5rem; right: .5rem; min-height: 44px; padding: 0 .9rem; border-radius: 999px; font: 700 12px/1 system-ui; background: color-mix(in oklab, var(--card) 88%, transparent); color: var(--foreground); border: 1px solid var(--border); }
+.nyc-photo-map[data-labels='false'] .ci-pin:not([data-status='own']):not(.ci-pin-airport) span { opacity: .18; }
+.ci-pin[data-rival] span { border-color: var(--foreground); }
