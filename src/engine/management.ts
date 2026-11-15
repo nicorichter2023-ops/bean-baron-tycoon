@@ -58,7 +58,9 @@ export function recordManagementAction(before: GameState, after: GameState): Gam
   const debtDelta = money(after.debt - before.debt);
   const investment = before.stores.length !== after.stores.length || before.stores.some((s, i) => s.tier !== after.stores[i]?.tier || equipmentOf(s).bookValue !== (after.stores[i] ? equipmentOf(after.stores[i]).bookValue : 0))
     || before.roastery.owned !== after.roastery.owned || JSON.stringify(before.capitalMarkets) !== JSON.stringify(after.capitalMarkets)
-    || (before.world?.assets.reduce((n, a) => n + a.bookValue, 0) ?? 0) !== (after.world?.assets.reduce((n, a) => n + a.bookValue, 0) ?? 0);
+    || (before.world?.assets.reduce((n, a) => n + a.bookValue, 0) ?? 0) !== (after.world?.assets.reduce((n, a) => n + a.bookValue, 0) ?? 0)
+    || JSON.stringify(before.tycoon?.landlords) !== JSON.stringify(after.tycoon?.landlords)
+    || JSON.stringify(before.tycoon?.microloans) !== JSON.stringify(after.tycoon?.microloans);
   const inventoryPurchase = after.roastery.rawBeanStockKg > before.roastery.rawBeanStockKg;
   const category = debtDelta ? 'financing' : investment ? 'investing' : 'operating';
   return { ...after, management: { ...m, journal: { ...m.journal, [category]: money(m.journal[category] + delta) }, beanPurchases: money(m.beanPurchases + (inventoryPurchase ? -delta : 0)), oneOff: money(m.oneOff + (category === 'operating' && !inventoryPurchase ? -delta : 0)) } };

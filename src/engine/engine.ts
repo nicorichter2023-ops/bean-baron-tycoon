@@ -602,6 +602,8 @@ export function calculateAssetValuation(state: GameState): number {
       stockValue +
       acquiredRivalValue +
       (state.world?.assets.reduce((n, a) => n + a.bookValue, 0) ?? 0) +
+      (state.tycoon?.landlords.reduce((n, l) => n + l.value, 0) ?? 0) +
+      (state.tycoon?.microloans.reduce((n, l) => n + l.amount, 0) ?? 0) +
       b2bValue +
       brandValue -
       state.debt - (state.tycoon?.beanpay.balance ?? 0),
@@ -834,6 +836,8 @@ export function buyShares(state: GameState, companyId: string, shares: number): 
   if (!company || company.acquired) return rejected(state, 'COMPANY_NOT_AVAILABLE');
   if (!Number.isFinite(count) || count <= 0) return rejected(state, 'INVALID_AMOUNT');
   const cost = round2(count * company.sharePrice);
+  const ownedShares = state.capitalMarkets.holdings.find(h => h.companyId === companyId)?.shares ?? 0;
+  if (ownedShares + count > company.sharesOutstanding) return rejected(state, 'Nicht genug frei handelbare Aktien.');
   if (cost > state.cash) return rejected(state, 'INSUFFICIENT_CASH');
   const existing = state.capitalMarkets.holdings.find((holding) => holding.companyId === companyId);
   const holdings = existing

@@ -64,14 +64,14 @@ export function demandEffects(g: GameState, s: Store) {
   if (!g.tycoon) return { demand: 1, capacity: 1, beans: 1 };
   const t = tycoonOf(g), weather = weatherAt(g.week + 1, s.cityId), menu = g.cafe?.stores[s.id]?.menu ?? [];
   const cold = menu.some(id => ['iced', 'coldbrew', 'nitro'].includes(id));
-  const temperature = weather.heat ? (cold ? 1.45 : .6) : weather.seasonIndex === 0 ? 1.08 : 1;
+  const temperature = weather.heat ? (cold ? 2.5 : .6) : weather.seasonIndex === 0 ? 1.08 : 1;
   const trend = trendAt(g.week + 1), adopted = t.trends[trend.id];
   const hype = adopted && adopted.adoptedWeek <= trend.startWeek + 2 && g.week + 1 <= trend.until ? 1.4 : 1;
   const review = t.reviews.find(r => r.storeId === s.id), rating = review ? .9 + review.stars * .04 : 1;
   const rivals = t.rivals.filter(r => !r.resolved && r.cityId === s.cityId && r.until >= g.week + 1);
   const profile = buildingById(s.districtId)?.clientele === 'creatives' && t.roastProfile === 'light' ? 1.06 : 1;
   return { demand: temperature * (weather.rain ? .7 : 1) * hype * rating * (.85 + vibeScore(g, s) / 300) * profile * (rivals.some(r => r.kind === 'price') ? .88 : 1) * (t.scandalUntil >= g.week + 1 ? .65 : 1),
-    capacity: t.patents.includes('brew') ? 1.25 : 1, beans: t.patents.includes('energy') ? .75 : 1 };
+    capacity: t.patents.includes('brew') ? 1 / .75 : 1, beans: t.patents.includes('energy') ? .75 : 1 };
 }
 export function esgScore(g: GameState) {
   const t = tycoonOf(g);

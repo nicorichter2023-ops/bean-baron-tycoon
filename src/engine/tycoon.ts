@@ -26,7 +26,7 @@ export function configureFarm(g: GameState, id: string, setup: FarmSetup): Actio
 export function leaseFarm(g: GameState, id: string): ActionResult {
   const p = MASTER.plantations.find(p => p.id === id), t = tycoonOf(g);
   if (!p || g.world.assets.some(a => a.kind === 'plantation' && a.id === id)) return no(g, 'Finca nicht verfügbar.');
-  const cost = p.purchasePrice * .08;
+  const cost = p.purchasePrice * .08 / 52;
   const r = changed(g, { ...t, farms: { ...t.farms, [id]: { method: 'shade', process: 'washed', freight: 'sea', leased: true } } }, 'Finca gepachtet · jährliche Pacht 8 % des Kaufwerts.', cost);
   return r.ok ? { ...r, state: { ...r.state, world: { ...r.state.world, assets: [...r.state.world.assets, { kind: 'plantation', id, cityId: g.city.id, startWeek: g.week, endWeek: 100000, bookValue: 0, remainingKg: 0 }] } } } : r;
 }
@@ -337,6 +337,8 @@ export function takeoverMajority(g: GameState, id: string): ActionResult {
   const company = g.capitalMarkets.rivals.find(r => r.id === id), holding = g.capitalMarkets.holdings.find(h => h.companyId === id);
   if (!company || !holding || holding.shares < Math.ceil(company.sharesOutstanding * .51)) return no(g, '51 % der Aktien benötigt.');
   const r = acquireRivalWithStores({ ...g, cash: g.cash + company.valuation * 1.45 }, id, company.valuation * 1.45);
-  return r.ok ? { ...r, state: { ...r.state, cash: g.cash } } : no(g, r.reason);
+  if (!r.ok) return no(g, r.reason);
+  const inherited = { ...r.state, cash: g.cash, roastery: { ...r.state.roastery, owned: true, capacityKgPerWeek: r.state.roastery.capacityKgPerWeek + 1500 }, b2b: { ...r.state.b2b, contracts: [...r.state.b2b.contracts, { id: `ma-${id}-${g.week}`, partnerName: `${company.name} Bestandskunden`, volumeKgPerWeek: 500, pricePerKg: 18, weeksRemaining: 52, reliability: 95, minimumScore: 84, penaltyRate: .2 }] } };
+  return { ...r, state: { ...inherited, companyValuation: calculateCompanyValuation(inherited) } };
 }
 export const newDynastyExpansion = createExpansion;

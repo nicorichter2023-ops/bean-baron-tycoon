@@ -9,12 +9,14 @@ import { COMPANY_ARTWORK } from "../artwork";
 import { rivalArt } from '../sheetArt';
 import { effectiveInterestRate } from '@/engine/management';
 import { acquireRivalWithStores } from '@/engine/empire';
+import { takeoverMajority, tycoonOf, setDividend } from '@/engine/tycoon';
 
 const inputClass = "h-9 w-full rounded-md border border-input bg-background px-3 font-mono text-sm text-foreground";
 
 export function FinanceTab() {
   const { state, set, perform } = useGame();
   const [loanAmount, setLoanAmount] = useState("10000");
+  const [shareCount, setShareCount] = useState(1000);
   const marketsUnlocked = state.unlockedModules.includes("capital_markets");
   const amount = Number(loanAmount);
 
@@ -26,6 +28,8 @@ export function FinanceTab() {
           <label className="mt-3 block text-xs text-muted-foreground">Betrag in Euro<input aria-label="Kreditbetrag" type="number" min="1" step="1000" className={`${inputClass} mt-1`} value={loanAmount} onChange={(event) => setLoanAmount(event.target.value)} /></label>
           <div className="mt-2 grid grid-cols-2 gap-2"><Button onClick={() => perform((current) => takeLoan(current, amount))}>Aufnehmen</Button><Button variant="outline" onClick={() => perform((current) => repayLoan(current, amount))}>Tilgen</Button></div>
         </Panel>
+        <label className="master-form">Aktien pro Auftrag<input aria-label="Aktien pro Auftrag" type="number" min={1} step={1} value={shareCount} onChange={e => setShareCount(Math.max(1, Math.floor(Number(e.target.value) || 1)))} /></label>
+        {state.capitalMarkets.isPublic && <div className="flex flex-wrap gap-2 py-3">{([0, .1, .25] as const).map(rate => <Button key={rate} variant={tycoonOf(state).dividendRate === rate ? 'secondary' : 'outline'} onClick={() => perform(g => setDividend(g, rate))}>{rate * 100} % Gewinn als Dividende</Button>)}</div>}
       </Section>
 
       <Section title={`Aktienmarkt · ${state.capitalMarkets.rivals.length} Firmen`}>
@@ -42,7 +46,9 @@ export function FinanceTab() {
             <div className="flex items-start gap-3"><img src={rivalArt(state.capitalMarkets.rivals.indexOf(company))} alt="" className="h-12 w-12 shrink-0 object-contain" /><div className="min-w-0 flex-1 text-sm"><div className="font-semibold">{company.name}</div><div className="text-xs text-muted-foreground">{company.ticker} · {company.sharePrice.toFixed(2)} € · Dividende {(company.dividendYield * 100).toFixed(1)}% p.a.</div></div>{holding && <span className="text-xs font-mono">{holding.shares} Stk.</span>}</div>
             <p className="mt-1 text-xs text-muted-foreground">{company.description}</p>
             {company.acquired ? <p className="mt-2 text-xs font-semibold text-success">Zum Imperium gehörig</p> : <>
-              <div className="mt-2 grid grid-cols-2 gap-2"><Button size="sm" variant="outline" disabled={!marketsUnlocked} onClick={() => perform((current) => buyShares(current, company.id, 1))}>1 Aktie kaufen</Button><Button size="sm" variant="outline" disabled={!marketsUnlocked || !holding} onClick={() => perform((current) => sellShares(current, company.id, 1))}>1 Aktie verkaufen</Button></div>
+              <div className="mt-2 grid grid-cols-2 gap-2"><Button size="sm" variant="outline" disabled={!marketsUnlocked} onClick={() => perform((current) => buyShares(current, company.id, shareCount))}>{shareCount.toLocaleString('de-DE')} kaufen</Button><Button size="sm" variant="outline" disabled={!marketsUnlocked || !holding} onClick={() => perform((current) => sellShares(current, company.id, shareCount))}>{shareCount.toLocaleString('de-DE')} verkaufen</Button></div>
+              <p className="text-xs text-muted-foreground mt-2">Beteiligung {((holding?.shares ?? 0) / company.sharesOutstanding * 100).toFixed(2)} %</p>
+              <Button variant="outline" className="mt-2 w-full" disabled={!holding || holding.shares < Math.ceil(company.sharesOutstanding * .51)} onClick={() => perform(g => takeoverMajority(g, company.id))}>51 %-Übernahme · Netz, Rösterei & Verträge</Button>
               <Button size="sm" variant="ghost" className="mt-1 w-full text-xs" disabled={!marketsUnlocked} onClick={() => perform((current) => acquireRivalWithStores(current, company.id, Math.round(company.valuation * 1.45)))}><Building /> Firma samt Cafés übernehmen · {eur(company.valuation * 1.45)}</Button>
             </>}
           </Panel>;
