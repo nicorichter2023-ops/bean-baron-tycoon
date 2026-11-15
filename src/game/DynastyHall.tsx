@@ -1,0 +1,13 @@
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { PERKS, type HeritagePerk } from '@/data/tycoonContent';
+import { tycoonOf, heritagePoints, dynastyExit, esgScore, masterEra, newDynastyExpansion } from '@/engine/tycoon';
+import { useGame, eur } from './GameContext';
+import { MasterHeading } from './MasterArt';
+export function DynastyHall() {
+  const { state, setBoth } = useGame(), t = tycoonOf(state);
+  const [selected, setSelected] = useState<HeritagePerk[]>([]), [confirming, setConfirming] = useState(false);
+  return <div className="space-y-5"><MasterHeading kind="dynasty" title="Dynastie & Vermächtnis" detail={`Generation ${t.dynasty.generation} · ${t.dynasty.points.toLocaleString('de-DE')} geerbte Heritage-Punkte`} /><div className="master-kpis"><div><strong>{heritagePoints(state)}</strong><small>Heritage-Punkte dieses Imperiums</small></div><div><strong>{eur(state.companyValuation - t.beanpay.balance)}</strong><small>Bewertung ohne Kundenguthaben</small></div><div><strong>{esgScore(state)}/100</strong><small>Nachhaltigkeit</small></div></div><h2 className="master-title">Zwei Vermächtnisse für den Erben</h2><div className="master-grid">{PERKS.map(p => <Button key={p.id} variant={selected.includes(p.id) ? 'secondary' : 'outline'} className="dynasty-perk" aria-pressed={selected.includes(p.id)} onClick={() => setSelected(old => old.includes(p.id) ? old.filter(id => id !== p.id) : old.length < 2 ? [...old, p.id] : old)}><span><strong>{p.name}</strong><small>{p.effect}</small></span></Button>)}</div>{masterEra(state) < 4 && <p className="text-sm text-muted-foreground">Generationenwechsel ab Ära 4: mehr als 60 eigene Filialen.</p>}
+    {!confirming ? <Button disabled={masterEra(state) < 4 || selected.length !== 2} onClick={() => setConfirming(true)}>Generationenwechsel vorbereiten</Button> : <section className="master-band"><h2>Dieses Imperium an den Erben übergeben?</h2><p>Filialen und Geld werden durch ein neues Spiel ersetzt. Heritage-Punkte und zwei gewählte Vorteile bleiben.</p><div className="flex flex-wrap gap-2"><Button variant="destructive" onClick={() => setBoth(g => { const r = dynastyExit(g, selected); return r.ok ? { game: r.state, exp: newDynastyExpansion() } : r.reason; })}>Generationenwechsel bestätigen</Button><Button variant="outline" onClick={() => setConfirming(false)}>Im Imperium bleiben</Button></div></section>}
+  </div>;
+}
