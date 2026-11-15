@@ -21,7 +21,7 @@ export function TopBar({ onProgress }: { onProgress?: () => void }) {
   const price = state.market.futuresPricePerKg;
   const up = price >= (h.at(-2) ?? price);
   const rp = rankProgress(state);
-  return (
+  return (<>
     <header className="fixed inset-x-0 top-0 z-30 border-b border-border bg-card/95 backdrop-blur pt-[env(safe-area-inset-top)]">
       <div className={`hud mx-auto grid max-w-5xl gap-1 px-3 py-1.5 ${flash ? 'hud-flash' : ''}`}>
         <div className="grid grid-cols-4 gap-x-2 text-[11px]">
@@ -39,11 +39,11 @@ export function TopBar({ onProgress }: { onProgress?: () => void }) {
             <span className="rank-meter block"><span style={{ width: `${rp.ratio * 100}%` }} /></span></span>
         </button>
       </div>
+    </header>
       <Button aria-label="Nächste Woche" onClick={nextWeek} disabled={Boolean(state.pendingEvent)} className="next-week-fab flex items-center gap-1 bg-primary px-4 font-display text-sm font-bold text-primary-foreground shadow-glow active:scale-95 transition disabled:opacity-60">
         {state.pendingEvent ? 'Ereignis wählen' : 'Nächste Woche'} <img src={HUD.nextWeek} alt="" className="h-7 w-7 object-contain" />
       </Button>
-    </header>
-  );
+  </>);
 }
 function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return <div className="flex items-center gap-1 whitespace-nowrap"><span className="text-primary">{icon}</span>{label && <span className="text-muted-foreground">{label}</span>}<span className="font-mono font-semibold">{value}</span></div>;
