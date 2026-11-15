@@ -83,6 +83,12 @@ export function signEnterprise(g: GameState, id: string): ActionResult {
   const r = signB2BContract(g, c.name, c.kg, c.weeks, c.price);
   return r.ok ? { ...r, state: { ...r.state, b2b: { ...r.state.b2b, contracts: r.state.b2b.contracts.map(x => x.partnerName === c.name ? { ...x, minimumScore: c.score, penaltyRate: .2, fulfillment: 1, breaches: 0 } : x) } } } : r;
 }
+export function captureRivalContract(g: GameState, rivalId: string): ActionResult {
+  if (!tycoonOf(g).intel.includes(`${rivalId}:contract`)) return no(g, 'Zuerst die B2B-Konditionen aufdecken.');
+  const company = g.capitalMarkets.rivals.find(r => r.id === rivalId);
+  if (!company || g.b2b.contracts.some(c => c.partnerName === `${company.name} Wechselkunden` && c.weeksRemaining > 0)) return no(g, 'Keine neue Wechselkunden-Anfrage.');
+  return signB2BContract(g, `${company.name} Wechselkunden`, 500, 52, 17.95);
+}
 export function listRetail(g: GameState, id: string, chain: string): ActionResult {
   const p = RETAIL.find(p => p.id === id), t = tycoonOf(g);
   if (!p || !['Edeka', 'Rewe', 'Whole Foods', 'Carrefour'].includes(chain)) return no(g, 'Produkt oder Handelspartner nicht verfügbar.');

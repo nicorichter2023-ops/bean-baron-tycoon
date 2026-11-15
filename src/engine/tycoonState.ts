@@ -45,12 +45,19 @@ export function weatherAt(week: number, cityId = 'berlin') {
   return { season: seasons[seasonIndex] ?? 'Winter', rain, heat, temp: [4, 15, 26, 12][seasonIndex] ?? 14, label: rain ? 'Regen' : heat ? 'Hitzewelle' : 'Heiter', seasonIndex };
 }
 export function trendAt(week: number) {
-  const startWeek = Math.floor((week - 1) / 8) * 8 + 1, index = Math.floor((week - 1) / 8) % TREND_DRINKS.length;
+  const startWeek = Math.floor((week - 1) / 8) * 8 + 1, index = hash(`social-${startWeek}`) % TREND_DRINKS.length;
   return { id: `trend-${startWeek}`, name: TREND_DRINKS[index] ?? 'Pistachio Cloud Foam', startWeek, until: startWeek + 5 };
 }
 export const masterEra = (g: GameState) => g.stores.length > 60 ? 4 : g.stores.length > 20 ? 3 : g.stores.length > 5 ? 2 : 1;
 export const franchiseReady = (g: GameState) => masterEra(g) >= 3 || g.stores.filter(s => s.weeklyRevenue > 0).length >= 15;
 export const propertyDiscount = (g: GameState) => tycoonOf(g).dynasty.perks.includes('property') ? .8 : 1;
+export function propertyMarketFactor(g: GameState, cityId: string) {
+  if (!g.tycoon) return 1;
+  const stylish = g.stores.filter(s => s.cityId === cityId && vibeScore(g, s) >= 70);
+  if (stylish.length < 3) return 1;
+  const age = Math.max(0, g.week - Math.max(...stylish.map(s => s.openedAtWeek)));
+  return 1 + Math.min(1.5, age / 260 * 1.5);
+}
 export function farmScore(g: GameState, id: string) {
   const p = MASTER.plantations.find(x => x.id === id), setup = tycoonOf(g).farms[id];
   return Math.min(100, Math.max(80, (p?.cupQualityScore ?? 84) + (FARM_METHODS.find(m => m.id === setup?.method)?.quality ?? 0) + (PROCESSES.find(m => m.id === setup?.process)?.quality ?? 0) + (tycoonOf(g).dynasty.perks.includes('roast') ? 5 : 0)));

@@ -5,7 +5,11 @@ import { createExpansion } from '@/engine/expansion';
 import type { GameState } from '@/engine/types';
 import { configureTreasury, dynastyExit, enableBeanPay, grantFranchise, lobbyBill, processTycoonWeek, signEnterprise, startPatent, tycoonOf } from '@/engine/tycoon';
 import { balanceSheet } from '@/engine/management';
-import { openStaffedStore } from '@/engine/empire';
+import { openStaffedStore, upgradeSupply } from '@/engine/empire';
+import { demandEffects, weatherAt, propertyMarketFactor } from '@/engine/tycoonState';
+import { processTurn, buyShares, openStore } from '@/engine/engine';
+import { saveBlend, takeoverMajority } from '@/engine/tycoon';
+import { MENU_LIMIT } from '@/engine/cafeContent';
 const rich = (): GameState => ({ ...createInitialState(), cash: 50_000_000, unlockedModules: ['core_cafe', 'roastery', 'b2b_trade', 'capital_markets'], roastery: { ...createInitialState().roastery, owned: true, roastedStockKg: 10_000 } });
 const stores = (n: number) => { let g = rich(); for (const c of g.cities) for (const d of c.districts) { if (g.stores.length >= n) return g; const r = openStaffedStore(g, c.id, d.id, 1); if (r.ok) g = r.state; } return g; };
 
@@ -38,5 +42,31 @@ describe('Konsolidierte Master-Mechaniken', () => {
   });
   it('Hardware-Patente starten erst ab Ära 2', () => {
     expect(startPatent(rich(), 'brew').ok).toBe(false); expect(startPatent(stores(6), 'brew').ok).toBe(true);
+  });
+  it('Sommerhitze steigert Kaltgetränke um 150 % und senkt Heißgetränke um 40 %', () => {
+    const g = rich(), store = g.stores[0]; if (!store) throw new Error('Filiale fehlt');
+    const week = Array.from({ length: 52 }, (_, i) => i + 1).find(w => weatherAt(w, store.cityId).heat); if (!week) throw new Error('Keine Hitzewelle');
+    const hot = { ...g, week: week - 1 }, cold = { ...hot, cafe: { ...g.cafe, stores: { ...g.cafe?.stores, [store.id]: { menu: ['iced'], decor: {}, xp: 0, gear: { espresso: 0, grinder: 0, seating: 0, vitrine: 0, terrace: 0 } } }, research: g.cafe?.research ?? { done: [], active: null, points: 0 } } };
+    expect(demandEffects(cold, store).demand / demandEffects(hot, store).demand).toBeCloseTo(2.5 / .6);
+  });
+  it('Signature Blend verbraucht genau 70 % und 30 % der gewählten Rohbohnen', () => {
+    const g = rich(), a = g.market.beanVarieties[0], b = g.market.beanVarieties[1]; if (!a || !b) throw new Error('Bohnen fehlen');
+    const r = saveBlend({ ...g, stores: [], roastery: { ...g.roastery, autoRestock: false, roastedStockKg: 0, rawBeanStockKg: 1000, capacityKgPerWeek: 100, employees: [], beanLots: [{ beanId: a.id, quantityKg: 500, averagePricePerKg: 5 }, { beanId: b.id, quantityKg: 500, averagePricePerKg: 5 }] } }, '70/30', a.id, b.id, 70, 'medium');
+    const n = processTurn(r.state); expect(n.roastery.beanLots.find(l => l.beanId === a.id)?.quantityKg).toBe(430); expect(n.roastery.beanLots.find(l => l.beanId === b.id)?.quantityKg).toBe(470);
+  });
+  it('Menü hat höchstens sechs Getränke', () => { expect(MENU_LIMIT.drink).toBe(6); });
+  it('Rösterei-Upgrade verdoppelt den tatsächlichen Ausstoß', () => {
+    const g = { ...rich(), stores: [], roastery: { ...rich().roastery, rawBeanStockKg: 10000, roastedStockKg: 0, autoRestock: false, employees: [] } }, upgraded = upgradeSupply(g, 'roaster').state;
+    expect(processTurn(upgraded).roastery.roastedStockKg).toBe(processTurn(g).roastery.roastedStockKg * 2);
+  });
+  it('51 % übertragen Filialen, Röstkapazität und Verträge ohne erneuten Firmenpreis', () => {
+    const g = { ...rich(), cash: 10_000_000_000 }, company = g.capitalMarkets.rivals[0]; if (!company) throw new Error('Firma fehlt');
+    const bought = buyShares(g, company.id, Math.ceil(company.sharesOutstanding * .51)); expect(bought.ok).toBe(true);
+    const r = takeoverMajority(bought.state, company.id); expect(r.ok).toBe(true); expect(r.state.cash).toBe(bought.state.cash); expect(r.state.stores.length).toBeGreaterThan(g.stores.length); expect(r.state.roastery.capacityKgPerWeek).toBe(g.roastery.capacityKgPerWeek + 1500); expect(r.state.b2b.contracts.at(-1)?.weeksRemaining).toBe(52);
+  });
+  it('Franchise-Standorte sind nicht als eigene Cafés doppelt eröffnungsfähig', () => {
+    const g = rich(), site = g.city.districts.find(d => !g.world.occupants[d.id] && !g.stores.some(s => s.districtId === d.id)); if (!site) throw new Error('Standort fehlt');
+    const occupied = { ...g, tycoon: { ...tycoonOf(g), franchises: [{ id: 'fr', districtId: site.id, cityId: g.city.id, quality: 85, royalty: .06, revenue: 0, supplied: 0, violations: 0 }] } };
+    expect(openStore(occupied, g.city.id, site.id, 1).ok).toBe(false);
   });
 });

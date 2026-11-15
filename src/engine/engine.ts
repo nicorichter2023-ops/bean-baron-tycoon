@@ -6,7 +6,7 @@
 import { createEquipment, equipmentEffects, equipmentOf } from './equipment';
 import { MASTER, buildingById } from '@/data/master';
 import { locationEffects, worldEffects } from './world';
-import { demandEffects, propertyDiscount, tycoonOf } from './tycoonState';
+import { demandEffects, propertyDiscount, propertyMarketFactor, tycoonOf } from './tycoonState';
 
 import type {
   ActionResult,
@@ -324,7 +324,7 @@ function processStore(
   const revenue = round2(served * Math.max(0, store.pricePerCup) * location.margin);
   const salaries = round2(staff.reduce((sum, e) => sum + Math.max(0, e.salaryWeekly), 0));
   const rent = round2(
-    Math.max(0, district.rentWeekly) * (store.propertyBookValue ? 0 : buildingById(district.id) ? 1 : (GAME_CONFIG.TIER_RENT_FACTOR[tier] ?? 1)),
+    Math.max(0, district.rentWeekly) * propertyMarketFactor(game, city.id) * (store.propertyBookValue ? 0 : buildingById(district.id) ? 1 : (GAME_CONFIG.TIER_RENT_FACTOR[tier] ?? 1)),
   );
 
   return {
