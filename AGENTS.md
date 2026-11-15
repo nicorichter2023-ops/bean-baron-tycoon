@@ -42,3 +42,5 @@ use the editor.
 - Neighborhood simulation and inspector share src/engine/neighborhood.ts slot placement and bounded effects; map ordering uses that same pure layout so shown neighbors match weekly economic rules.
 - Café cutaways derive every visual piece from persisted store tier and equipment; CMO perks multiply campaigns and CTO points accelerate research, with no presentation-side charges.
 - Visual replacement slots live in src/game/visualAssets.ts with image-error fallbacks; CSS effects animate separate presentation layers and respect reduced motion so art swaps never alter gameplay or hit targets.
+- Long-term progression (ranks, 7 store stages, levers, weekly goals, achievements, event gating) lives in src/engine/progression.ts with pure content in src/engine/unlocks.ts; weekly play runs through processProgressWeek, which wraps processManagementWeek and patches the same accounting row so lever/goal cash reconciles.
+- Store stages refine engine tiers (stages map onto tiers 1/2/3) instead of replacing them, so the base engine and old saves stay valid.

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import type { Store } from '@/engine/types';
 import { CafeCutaway } from './CafeCutaway';
 import { StoreEquipmentPanel } from './StoreEquipmentPanel';
+import { StoreLeversPanel } from './StoreLeversPanel';
 import { EmpireTab } from './tabs/EmpireTab';
 import { LabPanel } from './LabPanel';
 import { SectionFilter, StoreFilter } from './ui';
@@ -26,7 +27,7 @@ export function CafeDetail({ store, address, onClose }: { store: Store; address:
         <Button className="cafe-scene-btn left" aria-label="Personal" onClick={() => setTab('service')}><Users /></Button>
         <Button className="cafe-scene-btn right" aria-label="Ausbau & Upgrades" aria-pressed={upgrades} onClick={() => setUpgrades(!upgrades)}><Box /></Button>
       </div>
-      {upgrades && <section className="cafe-detail-panel"><StoreEquipmentPanel store={store} /></section>}
+      {upgrades && <section className="cafe-detail-panel grid gap-4"><StoreLeversPanel store={store} /><StoreEquipmentPanel store={store} /></section>}
       <section className="cafe-reviews"><h2>KUNDENBEWERTUNGEN</h2><div className="cafe-reviews-grid">
         <div><strong className="text-4xl">{r.overall.toFixed(1)}</strong><Stars v={r.overall} /><small>{r.count} Bewertungen</small></div>
         <dl>{([['Preis',r.price],['Produkt',r.product],['Service',r.service],['Atmosphäre',r.atmosphere]] as const).map(([l,v]) => <div key={l}><dt>{l}</dt><dd><Stars v={v} /> {v.toFixed(1)}</dd></div>)}</dl>

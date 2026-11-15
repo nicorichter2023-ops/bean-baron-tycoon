@@ -59,3 +59,16 @@ export const cityBuildingArt = (zone: string, index: number) => {
 };
 export const airportArt = art('districts', 32).replace('.webp', '-map.webp');
 export const MAP_PEOPLE = STREET_LIFE.map(src => src.replace('.webp', '-map.webp'));
+
+// Progression sheets (4×4, 1-based files): equipment tiers, store stages + furniture, rank emblems + UI icons.
+const prog = (sheet: 'equipment-tiers' | 'store-stages' | 'rank-icons', i: number) => `/assets/sheets/${sheet}/${i}.webp`;
+export const stageArt = (stage: number) => prog('store-stages', Math.max(1, Math.min(7, stage)));
+export const rankArt = (rank: number) => prog('rank-icons', Math.max(1, Math.min(10, rank)));
+export const PROGRESS_ICONS = { trophy: prog('rank-icons', 11), goal: prog('rank-icons', 12), streak: prog('rank-icons', 13), gift: prog('rank-icons', 14), medal: prog('rank-icons', 15), lock: prog('rank-icons', 16) };
+/** Visible upgrade parts: espresso 1-5, grinder 6-9, vitrine 10-13, terrace 14-16; furniture/decor from the stage sheet. */
+export const espressoTierArt = (level: number) => prog('equipment-tiers', [1, 3, 5][Math.min(2, level)] ?? 1);
+export const grinderTierArt = (level: number) => prog('equipment-tiers', [7, 8][Math.min(1, level)] ?? 7);
+export const vitrineArt = (stage: number) => prog('equipment-tiers', stage <= 2 ? 10 : stage <= 4 ? 11 : stage <= 6 ? 12 : 13);
+export const terraceArt = (stage: number) => prog('equipment-tiers', stage <= 3 ? 14 : stage <= 5 ? 15 : 16);
+export const seatingArt = (interior: number, stage: number) => prog('store-stages', interior >= 2 ? 12 : interior === 1 ? 10 : stage >= 3 ? 9 : 8);
+export const decorArt = (stage: number) => prog('store-stages', [13, 14, 15, 16][Math.min(3, Math.floor(stage / 2))] ?? 13);

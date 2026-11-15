@@ -4,6 +4,7 @@ import { BEAN_VARIETIES, CITIES, GAME_EVENTS, PUBLIC_COMPANIES, STARTUPS } from 
 import { createManagement } from '@/engine/management';
 import { createEquipment } from '@/engine/equipment';
 import { createWorld } from '@/engine/world';
+import { createProgress, makeGoals } from '@/engine/progression';
 
 export function createInitialState(): GameState {
   const city = CITIES.find((candidate) => candidate.id === "berlin") ?? CITIES[0];
@@ -77,5 +78,6 @@ export function createInitialState(): GameState {
     resolvedEventIds: [],
     lastReport: null,
   };
-  return { ...state, companyValuation: calculateCompanyValuation(state) };
+  const ready = { ...state, companyValuation: calculateCompanyValuation(state) };
+  return { ...ready, progress: { ...createProgress(ready), goals: makeGoals(ready) } };
 }

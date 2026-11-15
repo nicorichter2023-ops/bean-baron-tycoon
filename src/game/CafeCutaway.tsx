@@ -6,6 +6,21 @@ import cafePhoto from '@/assets/cafe-interior-ci.jpg';
 import kioskPhoto from '@/assets/cafe-interior-kiosk.jpg';
 import bistroPhoto from '@/assets/cafe-interior-bistro.jpg';
 import flagshipPhoto from '@/assets/cafe-interior-flagship.jpg';
+import cartPhoto from '@/assets/cafe-interior-cart.jpg';
+import barPhoto from '@/assets/cafe-interior-espressobar.jpg';
+import roasteryPhoto from '@/assets/cafe-interior-roastery.jpg';
+import { useGame } from './GameContext';
+import { leversOf } from '@/engine/progression';
+import { stg } from '@/engine/unlocks';
+import { espressoTierArt, grinderTierArt, seatingArt, terraceArt, vitrineArt, decorArt } from './sheetArt';
+
+const STAGE_PHOTOS = [cartPhoto, kioskPhoto, barPhoto, cafePhoto, bistroPhoto, roasteryPhoto, flagshipPhoto];
+/** Each of the 7 stages has its own interior; interior upgrades lift the look one step within the same tier. */
+export function stageInteriorVariant(stage: number, interior: number) {
+  const s = Math.max(1, Math.min(7, stage));
+  const shown = interior >= 2 && (s === 4 || s === 5) ? s + 1 : interior >= 1 && s === 3 ? 4 : s;
+  return { src: STAGE_PHOTOS[shown - 1], label: stg(s - 1).label };
+}
 
 const ESPRESSO = ['Standard-Maschine','Multi-Boiler Commercial','High-End Handcraft'];
 const GRINDER = ['Standard-Mühle','Präzisions-Mahlwerk'];
@@ -24,8 +39,11 @@ export function CafeCutaway({ store }: { store: Store }) {
   const cutArt = (i: number) => art('interior', i).replace('.webp','-grounded.webp');
   const eqArt = (category: 'espresso' | 'grinder' | 'interior', level: number) => equipmentArt(category,level).replace('.webp','-grounded.webp');
   const seats = store.tier === 1 && e.interior === 0 ? 1 : store.tier + e.interior;
-  const v = cafeInteriorVariant(store.tier, e.interior);
-  if (v) return <div className="cafe-photo" data-variant={v.label} aria-label={`Café-Innenansicht · ${v.label}`}><img key={v.src} className="cafe-photo-img" src={v.src} alt={`Isometrischer Innenraum · ${v.label}`} width={1088} height={1088} loading="lazy" /><span className="cafe-photo-title">{v.label}</span><div className="cafe-photo-tags"><span data-lvl={e.espresso}>☕ {ESPRESSO[e.espresso]}</span><span data-lvl={e.grinder}>⚙ {GRINDER[e.grinder]}</span><span data-lvl={e.interior}>🛋 {INTERIOR[e.interior]}</span></div></div>;
+  const { state } = useGame();
+  const stage = leversOf(state, store).stage;
+  const v = stageInteriorVariant(stage, e.interior);
+  const parts: [string, string, number][] = [[espressoTierArt(e.espresso), ESPRESSO[e.espresso] ?? '', e.espresso], [grinderTierArt(e.grinder), GRINDER[e.grinder] ?? '', e.grinder], [seatingArt(e.interior, stage), INTERIOR[e.interior] ?? '', e.interior], [vitrineArt(stage), 'Vitrine', stage >= 3 ? 1 : 0], ...(stage >= 4 ? ([[terraceArt(stage), 'Terrasse', 1]] as [string, string, number][]) : []), [decorArt(stage), 'Deko', stage >= 5 ? 2 : 0]];
+  if (v) return <div className="cafe-photo" data-variant={v.label} data-stage={stage} aria-label={`Café-Innenansicht · ${v.label}`}><img key={v.src} className="cafe-photo-img" src={v.src} alt={`Isometrischer Innenraum · ${v.label}`} width={1088} height={1088} loading="lazy" /><span className="cafe-photo-title">{v.label} · Stufe {stage}/7</span><div className="cafe-loadout" aria-label="Sichtbare Ausstattung">{parts.map(([src, label, lvl]) => <figure key={label} data-lvl={lvl}><img src={src} alt="" width={44} height={44} loading="lazy" /><figcaption>{label}</figcaption></figure>)}</div></div>;
   return <div className="cafe-cutaway" data-tier={store.tier} aria-label={`Café-Diorama · ${['','Kiosk','Café','Flagship'][store.tier]}`}>
     <div className="cutaway-street" /><div className="cutaway-floor" /><div className="cutaway-wall wall-back" /><div className="cutaway-wall wall-side" />
     <NeonSign />

@@ -5,7 +5,8 @@
 import type { ManagementState } from './management';
 import type { StoreEquipment } from './equipment';
 import type { WorldState } from './world';
-export type SchemaVersion = 1 | 2 | 3 | 4 | 5;
+import type { ProgressState } from './progression';
+export type SchemaVersion = 1 | 2 | 3 | 4 | 5 | 6;
 
 export type ModuleId = 'core_cafe' | 'roastery' | 'b2b_trade' | 'capital_markets';
 export type Biome = 'european_classic' | 'modern_industrial' | 'asian_zen' | 'tropical_colonial';
@@ -235,6 +236,7 @@ export interface GameState {
   pendingEvent: GameEvent | null;
   resolvedEventIds: string[];
   lastReport: TurnReport | null;
+  progress?: ProgressState;
 }
 
 export interface ActionResult {

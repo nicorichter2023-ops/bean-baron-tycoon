@@ -1,3 +1,4 @@
+import { openCityIds } from './unlocks';
 import { MASTER, buildingById } from '@/data/master';
 import { neighborhoodEffects } from './neighborhood';
 import type { ActionResult, GameState } from './types';
@@ -19,6 +20,7 @@ export function travelToCity(g: GameState, cityId: string, cabin: 'economy' | 'b
   const cost = cabin === 'business' ? airport.baseTicketBusiness : airport.baseTicketEconomy;
   if (g.cash < cost) return outcome(g, 'Nicht genug Barvermögen für das Ticket.');
   if (g.pendingEvent) return outcome(g, 'Bitte zuerst das Wochenereignis entscheiden.');
+  if (!openCityIds(g).includes(cityId)) return outcome(g, `${city.name} wird mit einem höheren Firmenrang freigeschaltet.`);
   return outcome({ ...g, cash: g.cash - cost, city, world: { ...g.world, travelHistory: [...g.world.travelHistory, { from: g.city.id, to: cityId, cabin, cost, week: g.week }].slice(-52) } }, `Ankunft in ${city.name}.`, true);
 }
 export function locationEffects(g: GameState, id: string) {
