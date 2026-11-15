@@ -4,6 +4,7 @@ import { createInitialState } from "@/data/initialState";
 import { balanceSheet, createManagement } from './management';
 import { createEquipment } from './equipment';
 import { createWorld } from './world';
+import { createProgress } from './progression';
 import { MASTER_CITIES, MASTER_STOCKS, MASTER_STARTUPS } from '@/data/master';
 
 const KEY = "coffee-empire-save";
@@ -62,7 +63,13 @@ export function migrateV4ToV5(state: GameState): GameState {
       rivals: [...state.capitalMarkets.rivals, ...MASTER_STOCKS.filter(s => !state.capitalMarkets.rivals.some(x => x.id === s.id))],
       startups: [...state.capitalMarkets.startups, ...MASTER_STARTUPS.filter(s => !state.capitalMarkets.startups.some(x => x.id === s.id))] } };
 }
-const migrations: Record<number, (state: any) => GameState> = { 1: migrateV1ToV2, 2: migrateV2ToV3, 3: migrateV3ToV4, 4: migrateV4ToV5 };
+/** Adds progression: legacy tiers 1/2/3 become stages 2/4/7, visited cities stay open, tutorial skipped. */
+export function migrateV5ToV6(state: GameState): GameState {
+  const progress = state.progress ?? createProgress(state, true);
+  const visited = state.world?.travelHistory?.map(t => t.to) ?? [];
+  return { ...state, schemaVersion: 6, progress: { ...progress, extraCities: [...new Set([...progress.extraCities, ...visited, state.city.id])] } };
+}
+const migrations: Record<number, (state: any) => GameState> = { 1: migrateV1ToV2, 2: migrateV2ToV3, 3: migrateV3ToV4, 4: migrateV4ToV5, 5: migrateV5ToV6 };
 
 export function loadGame(): GameState {
   try {
