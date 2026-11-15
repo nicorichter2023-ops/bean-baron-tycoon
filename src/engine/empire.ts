@@ -65,7 +65,8 @@ export function investVenture(g: GameState, id: string): ActionResult {
   if (e.ventures.filter(x => x.status === 'active').length >= VENTURE_SLOTS) return no(g, `Maximal ${VENTURE_SLOTS} Beteiligungen gleichzeitig.`);
   if (g.cash < v.ticket) return no(g, 'Nicht genug Barvermögen.');
   const nextWeek = g.week + 6 + Math.floor(rand(g.week + v.ticket) * 8);
-  return ok(patchVenture({ ...g, cash: r2(g.cash - v.ticket) }, e, id, { status: 'active', invested: v.ticket, ownership: r2(v.ticket / (v.valuation + v.ticket) * 1000) / 1000, nextWeek }), `${v.name}: ${STAGES[0]}-Runde mitfinanziert.`);
+  const n = patchVenture({ ...g, cash: r2(g.cash - v.ticket) }, e, id, { status: 'active', invested: v.ticket, ownership: r2(v.ticket / (v.valuation + v.ticket) * 1000) / 1000, nextWeek });
+  return ok({ ...n, empire: seedPipeline(empireOf(n), g.week) }, `${v.name}: ${STAGES[0]}-Runde mitfinanziert.`);
 }
 export function passVenture(g: GameState, id: string): ActionResult {
   const e = empireOf(g); return ok({ ...g, empire: seedPipeline({ ...e, ventures: e.ventures.filter(v => v.id !== id) }, g.week) }, 'Startup abgelehnt – ein neues Pitch-Deck liegt bereit.');
