@@ -46,7 +46,7 @@ describe('Konsolidierte Master-Mechaniken', () => {
   it('Sommerhitze steigert Kaltgetränke um 150 % und senkt Heißgetränke um 40 %', () => {
     const g = rich(), store = g.stores[0]; if (!store) throw new Error('Filiale fehlt');
     const week = Array.from({ length: 52 }, (_, i) => i + 1).find(w => weatherAt(w, store.cityId).heat); if (!week) throw new Error('Keine Hitzewelle');
-    const hot = { ...g, week: week - 1 }, cold = { ...hot, cafe: { ...g.cafe, stores: { ...g.cafe?.stores, [store.id]: { menu: ['iced'], decor: {}, xp: 0, gear: { espresso: 0, grinder: 0, seating: 0, vitrine: 0, terrace: 0 } } }, research: g.cafe?.research ?? { done: [], active: null, points: 0 } } };
+    const hot = { ...g, week: week - 1 }, cold = { ...hot, cafe: { ...g.cafe, rivalPressure: g.cafe?.rivalPressure ?? {}, stores: { ...g.cafe?.stores, [store.id]: { menu: ['iced'], decor: {}, xp: 0, gear: { espresso: 0, grinder: 0, seating: 0, vitrine: 0, terrace: 0 } } }, research: g.cafe?.research ?? { done: [], active: null, points: 0 } } };
     expect(demandEffects(cold, store).demand / demandEffects(hot, store).demand).toBeCloseTo(2.5 / .6);
   });
   it('Signature Blend verbraucht genau 70 % und 30 % der gewählten Rohbohnen', () => {
@@ -60,9 +60,9 @@ describe('Konsolidierte Master-Mechaniken', () => {
     expect(processTurn(upgraded).roastery.roastedStockKg).toBe(processTurn(g).roastery.roastedStockKg * 2);
   });
   it('51 % übertragen Filialen, Röstkapazität und Verträge ohne erneuten Firmenpreis', () => {
-    const g = { ...rich(), cash: 10_000_000_000 }, company = g.capitalMarkets.rivals[0]; if (!company) throw new Error('Firma fehlt');
-    const bought = buyShares(g, company.id, Math.ceil(company.sharesOutstanding * .51)); expect(bought.ok).toBe(true);
-    const r = takeoverMajority(bought.state, company.id); expect(r.ok).toBe(true); expect(r.state.cash).toBe(bought.state.cash); expect(r.state.stores.length).toBeGreaterThan(g.stores.length); expect(r.state.roastery.capacityKgPerWeek).toBe(g.roastery.capacityKgPerWeek + 1500); expect(r.state.b2b.contracts.at(-1)?.weeksRemaining).toBe(52);
+    const g = { ...rich(), cash: 1_000_000_000_000_000 }, company = g.capitalMarkets.rivals[0]; if (!company) throw new Error('Firma fehlt');
+    const bought = buyShares(g, company.id, Math.ceil(company.sharesOutstanding * .51)); expect(bought.ok, bought.reason).toBe(true);
+    const r = takeoverMajority(bought.state, company.id); expect(r.ok, r.reason).toBe(true); expect(r.state.cash).toBe(bought.state.cash); expect(r.state.stores.length).toBeGreaterThan(g.stores.length); expect(r.state.roastery.capacityKgPerWeek).toBe(g.roastery.capacityKgPerWeek + 1500); expect(r.state.b2b.contracts.at(-1)?.weeksRemaining).toBe(52);
   });
   it('Franchise-Standorte sind nicht als eigene Cafés doppelt eröffnungsfähig', () => {
     const g = rich(), site = g.city.districts.find(d => !g.world.occupants[d.id] && !g.stores.some(s => s.districtId === d.id)); if (!site) throw new Error('Standort fehlt');
