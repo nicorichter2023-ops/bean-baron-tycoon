@@ -51,3 +51,5 @@ use the editor.
 - Research and marketing each have exactly one hub (ResearchHub, MarketingHub); MasterCatalog embeds subsets via `only`, and café views link there instead of duplicating panels.
 
 - Management sections switch by horizontal swipe on the content area; each master catalog group is embedded in its topical section via MasterCatalog `only` instead of a separate development menu.
+- The production weekly entry point is processTycoonWeek in src/engine/tycoon.ts, wrapping the existing empire/progression/management chain and patching its one accounting row; schema-versioned tycoon state and pure tycoonContent keep new channels, customer liabilities and legacy saves coherent.
+- Five primary navigation groups mount each economic hub once; store details are shared across maps, menus and store lists to prevent presentation-specific upgrade actions.

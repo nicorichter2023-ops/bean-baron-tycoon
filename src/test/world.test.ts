@@ -51,7 +51,8 @@ describe('Masterdaten und internationale Standorte', () => {
   it('Plantage kapitalisiert 480000 Euro und liefert 17000 kg nach 26 Wochen', () => {
     const g={...createInitialState(),cash:1000000},r=catalogAction(g,'plantation','farm_colombia_huila'); expect(r.state.cash).toBe(520000);
     expect(balanceSheet(r.state).investments).toBe(480000); expect(worldWeeklyFlows({...r.state,week:27})).toMatchObject({harvest:17000,upkeep:3200});
-    expect(applyWorldSupply({...r.state,week:27}).roastery.rawBeanStockKg).toBe(17000);
+    const legacy = { ...r.state }; delete legacy.tycoon;
+    expect(applyWorldSupply({...legacy,week:27}).roastery.rawBeanStockKg).toBe(17000);
   });
   it('Preisabsicherung kostet 12000 und verbraucht nur die tatsächlich geschützte Menge', () => {
     const r=catalogAction(createInitialState(),'future','future_arabica_santos_6m'); expect(r.state.cash).toBe(38000);

@@ -28,7 +28,7 @@ export const SNACKS: MenuItem[] = [
 ];
 export const MENU_ITEMS = [...DRINKS, ...SNACKS];
 export const DEFAULT_MENU = ['espresso', 'americano', 'cappuccino', 'croissant'];
-export const MENU_LIMIT = { drink: 8, snack: 6 } as const;
+export const MENU_LIMIT = { drink: 6, snack: 6 } as const;
 
 export type Branch = 'bean' | 'drink' | 'ops' | 'brand' | 'roast' | 'chain' | 'digital' | 'green' | 'logistic' | 'finance';
 export interface ResearchNode { id: string; branch: Branch; tier: number; name: string; effect: string; sheet: 'research-a' | 'research-b'; art: number }

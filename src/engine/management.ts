@@ -45,7 +45,9 @@ export function balanceSheet(game: GameState) {
     + game.capitalMarkets.rivals.filter(r => r.acquired).reduce((n, r) => n + r.valuation * 0.8, 0);
   const luxury = game.capitalMarkets.luxuryGoods.filter(l => l.owned).reduce((n, l) => n + l.purchaseCost, 0);
   const assets = money(game.cash + stores + inventory + roastery + investments + luxury);
-  return { cash: game.cash, stores: money(stores), equipment, inventory: money(inventory), roastery, investments: money(investments), luxury, assets, debt: game.debt, equity: money(assets - game.debt) };
+  const customerLiability = game.tycoon?.beanpay.balance ?? 0;
+  const masterAssets = game.tycoon ? game.tycoon.landlords.reduce((n, l) => n + l.value, 0) + game.tycoon.microloans.reduce((n, l) => n + l.amount, 0) : 0;
+  return { cash: game.cash, stores: money(stores), equipment, inventory: money(inventory), roastery, investments: money(investments + masterAssets), luxury, assets: money(assets + masterAssets), debt: game.debt, customerLiability, equity: money(assets + masterAssets - game.debt - customerLiability) };
 }
 /** Every successful action is journalled once, using the actual cash movement. */
 export function recordManagementAction(before: GameState, after: GameState): GameState {
@@ -56,7 +58,9 @@ export function recordManagementAction(before: GameState, after: GameState): Gam
   const debtDelta = money(after.debt - before.debt);
   const investment = before.stores.length !== after.stores.length || before.stores.some((s, i) => s.tier !== after.stores[i]?.tier || equipmentOf(s).bookValue !== (after.stores[i] ? equipmentOf(after.stores[i]).bookValue : 0))
     || before.roastery.owned !== after.roastery.owned || JSON.stringify(before.capitalMarkets) !== JSON.stringify(after.capitalMarkets)
-    || (before.world?.assets.reduce((n, a) => n + a.bookValue, 0) ?? 0) !== (after.world?.assets.reduce((n, a) => n + a.bookValue, 0) ?? 0);
+    || (before.world?.assets.reduce((n, a) => n + a.bookValue, 0) ?? 0) !== (after.world?.assets.reduce((n, a) => n + a.bookValue, 0) ?? 0)
+    || JSON.stringify(before.tycoon?.landlords) !== JSON.stringify(after.tycoon?.landlords)
+    || JSON.stringify(before.tycoon?.microloans) !== JSON.stringify(after.tycoon?.microloans);
   const inventoryPurchase = after.roastery.rawBeanStockKg > before.roastery.rawBeanStockKg;
   const category = debtDelta ? 'financing' : investment ? 'investing' : 'operating';
   return { ...after, management: { ...m, journal: { ...m.journal, [category]: money(m.journal[category] + delta) }, beanPurchases: money(m.beanPurchases + (inventoryPurchase ? -delta : 0)), oneOff: money(m.oneOff + (category === 'operating' && !inventoryPurchase ? -delta : 0)) } };

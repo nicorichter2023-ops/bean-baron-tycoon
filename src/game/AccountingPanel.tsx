@@ -11,7 +11,7 @@ export function AccountingPanel() {
   const row = history.find(r => r.week === week) ?? history.at(-1);
   const b = balanceSheet(state);
   const rows: [string, number, boolean?][] = view === 'balance' ? [
-    ['Barvermögen', b.cash], ['Filialwerte inkl. Ausstattung', b.stores], ['Davon Ausstattung (Buchwert)', b.equipment], ['Rösterei', b.roastery], ['Bohnenvorräte', b.inventory], ['Beteiligungen', b.investments], ['Luxusvermögen', b.luxury], ['Aktiva gesamt', b.assets, true], ['Schulden', b.debt], ['Eigenkapital', b.equity, true], ['Passiva gesamt', b.debt + b.equity, true],
+    ['Barvermögen', b.cash], ['Filialwerte inkl. Ausstattung', b.stores], ['Davon Ausstattung (Buchwert)', b.equipment], ['Rösterei', b.roastery], ['Bohnenvorräte', b.inventory], ['Beteiligungen & Immobilien', b.investments], ['Luxusvermögen', b.luxury], ['Aktiva gesamt', b.assets, true], ['Bankverbindlichkeiten', b.debt], ['BeanPay-Kundenguthaben', b.customerLiability], ['Eigenkapital', b.equity, true], ['Passiva gesamt', b.debt + b.customerLiability + b.equity, true],
   ] : !row ? [] : view === 'cash' ? [
     ['Anfangsbestand', row.cashStart], ['Operativer Cashflow', row.operating], ['Investitionen & Beteiligungen', row.investing], ['Kredite & Tilgungen', row.financing], ['Veränderung', row.operating + row.investing + row.financing, true], ['Endbestand', row.cashEnd, true],
   ] : [

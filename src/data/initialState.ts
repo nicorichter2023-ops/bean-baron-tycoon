@@ -5,6 +5,7 @@ import { createManagement } from '@/engine/management';
 import { createEquipment } from '@/engine/equipment';
 import { createWorld } from '@/engine/world';
 import { createProgress, makeGoals } from '@/engine/progression';
+import { createTycoon } from '@/engine/tycoonState';
 
 export function createInitialState(): GameState {
   const city = CITIES.find((candidate) => candidate.id === "berlin") ?? CITIES[0];
@@ -15,6 +16,7 @@ export function createInitialState(): GameState {
     schemaVersion: GAME_CONFIG.SCHEMA_VERSION,
     management: createManagement(GAME_CONFIG.START_CASH),
     world: createWorld(),
+    tycoon: createTycoon(),
     week: 1,
     dateIso: dateForWeek(1),
     cash: GAME_CONFIG.START_CASH,

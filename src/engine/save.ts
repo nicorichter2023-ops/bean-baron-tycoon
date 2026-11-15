@@ -7,6 +7,7 @@ import { createWorld } from './world';
 import { createProgress } from './progression';
 import { createCafeState, defaultStoreCafe } from './cafe';
 import { MASTER_CITIES, MASTER_STOCKS, MASTER_STARTUPS } from '@/data/master';
+import { createTycoon } from './tycoonState';
 
 const KEY = "coffee-empire-save";
 
@@ -75,7 +76,10 @@ export function migrateV6ToV7(state: GameState): GameState {
   const cafe = state.cafe ?? createCafeState();
   return { ...state, schemaVersion: 7, cafe: { ...cafe, stores: Object.fromEntries(state.stores.map(s => [s.id, cafe.stores[s.id] ?? defaultStoreCafe(s)])) } };
 }
-const migrations: Record<number, (state: any) => GameState> = { 1: migrateV1ToV2, 2: migrateV2ToV3, 3: migrateV3ToV4, 4: migrateV4ToV5, 5: migrateV5ToV6, 6: migrateV6ToV7 };
+export function migrateV7ToV8(state: GameState): GameState {
+  return { ...state, schemaVersion: 8, tycoon: state.tycoon ?? createTycoon() };
+}
+const migrations: Record<number, (state: any) => GameState> = { 1: migrateV1ToV2, 2: migrateV2ToV3, 3: migrateV3ToV4, 4: migrateV4ToV5, 5: migrateV5ToV6, 6: migrateV6ToV7, 7: migrateV7ToV8 };
 
 export function loadGame(): GameState {
   try {

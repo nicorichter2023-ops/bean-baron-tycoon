@@ -127,7 +127,7 @@ export function advanceWorld(g: GameState): GameState {
   for (const r of completed) { const t = MASTER.techTree.find(t => t.id === r.id); reputation += t?.effects.reputationBonus ?? 0; world.news.push(`${t?.name}: Forschung abgeschlossen.`); }
   for (const c of MASTER.cities) {
     const rival = MASTER.competitors[(g.week + stableHash(c.cityId)) % MASTER.competitors.length]; if (!rival || g.capitalMarkets.rivals.find(r => r.id === rival.id)?.acquired) continue;
-    const free = c.buildings.filter(b => !world.occupants[b.id] && !g.stores.some(s => s.districtId === b.id));
+    const free = c.buildings.filter(b => !world.occupants[b.id] && !g.stores.some(s => s.districtId === b.id) && !g.tycoon?.franchises.some(f => f.districtId === b.id));
     if (free.length < 4 || stableHash(`${c.cityId}-${g.week}`) % 100 >= rival.aggressiveness / 5) continue;
     const b = free.sort((a,b) => b.footTraffic - a.footTraffic)[0]; if (!b) continue;
     world.occupants[b.id] = rival.id; world.news.push(`${c.cityName}: ${rival.name} sichert sich ${b.name}.`);
@@ -135,7 +135,7 @@ export function advanceWorld(g: GameState): GameState {
   return { ...g, world, brandReputation: Math.min(100, reputation) };
 }
 export function worldWeeklyFlows(g: GameState) {
-  let income = MASTER.digitalEcosystem.appTiers.find(a => a.tier === g.world.appTier)?.weeklyFloatInterest ?? 0, upkeep = 0, salaries = 0, harvest = 0;
+  let income = g.tycoon ? 0 : MASTER.digitalEcosystem.appTiers.find(a => a.tier === g.world.appTier)?.weeklyFloatInterest ?? 0, upkeep = 0, salaries = 0, harvest = 0;
   for (const id of g.world.candidates) salaries += MASTER.cSuiteCandidates.find(c => c.id === id)?.weeklySalary ?? 0;
   for (const a of g.world.assets.filter(a => a.startWeek < g.week && a.endWeek >= g.week)) {
     if (a.kind === 'plantation') { const p = MASTER.plantations.find(p => p.id === a.id); if (p) { upkeep += p.weeklyOperatingCost; if ((g.week - a.startWeek) % p.harvestIntervalWeeks === 0) harvest += p.annualYieldKg * p.harvestIntervalWeeks / 52; } }
@@ -165,5 +165,5 @@ export function applyWorldSupply(g: GameState): GameState {
   const discount = Math.round(savings * 100) / 100;
   const report = r ? { ...r, costBeans: r.costBeans - discount, costTotal: r.costTotal - discount, netIncome: r.netIncome + discount,
     notes: [...r.notes, ...(discount ? [`Preisabsicherung: ${discount.toLocaleString('de-DE')} € Einkaufskosten gespart.`] : []), ...(flows.harvest ? [`Plantagen-Ernte: ${Math.round(flows.harvest)} kg.`] : [])] } : null;
-  return { ...g, cash: g.cash + discount, lastReport: report, world: { ...g.world, assets }, roastery: { ...g.roastery, rawBeanStockKg: g.roastery.rawBeanStockKg + flows.harvest } };
+  return { ...g, cash: g.cash + discount, lastReport: report, world: { ...g.world, assets }, roastery: { ...g.roastery, rawBeanStockKg: g.roastery.rawBeanStockKg + (g.tycoon ? 0 : flows.harvest) } };
 }

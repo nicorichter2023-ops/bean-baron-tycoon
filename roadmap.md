@@ -1,4 +1,10 @@
 # Roadmap
+- [x] Master-GDD: Saisons, Vibes, Trends, Reviews und Pop-ups integrieren
+- [x] Master-GDD: zentrale Supply mit Fracht, Auktionen, Agrarmethoden und Blends
+- [x] Master-GDD: bestehendes B2B mit SLA erweitern, Franchise und FMCG ergänzen
+- [x] Master-GDD: Rivalenreaktionen, Vermieterhebel, Politik und Spionage integrieren
+- [x] Master-GDD: BeanPay-Float, Patente, ESG/Mikrokredite und Dynastie integrieren
+- [x] Fünf Säulen, neue Grafiken/Icons/Karten, mobile und Desktop-Prüfung, Migration und Tests
 - [x] 7 Filialstufen, Firmenrang (10), Freischaltungen, Städte-Freigabe, Spielstand v6
 - [x] Spielhebel: Öffnungszeiten, Qualität/Menge, Treueprogramm, Spezialisierung, Bohnen-Festpreis
 - [x] Wochenziele mit Serie, 40 Erfolge, Filial-Abzeichen, Hinweis „Nächster Schritt“
@@ -15,11 +21,11 @@
 
 - [ ] Feintuning Balance nach echtem Spieltest (Rang-Ziele 15–25 / 80–120 / 250+ Wochen) – wartet auf dein Feedback
 - [x] Karte randlos, Kontextfenster für Frei/Rivalen, Goldsterne, gemalte Räume je Stufe (7) mit Editor-Ebenen
-- [ ] Schnellaktionen in Filialliste, weitere Schubladen, alte Grafiken ersetzen, 2 weitere Raumstile je Stufe
+- [x] Gemeinsame Café-Schublade für Karte, Filialliste, Menü und Bewertungen; 48 Raumdesigns und neue Konzern-Illustrationen integriert
 - [x] Gesammelte Kartenfehler: grauen Rand verhindern, alte eigene Standorte auf der Karte sichtbar machen, Frei/Rivalen-Kontext prüfen
 - [x] Erfolge kompakt darstellen; Wochenabschluss darf keine Weiter-Aktion verdecken
 - [x] Terrasse: alte Grafik ersetzen, passende Gestaltung samt Sonderboni; Ansicht und Gestaltung nur für Filialen mit Terrasse
-- [ ] Überlagerte Buttons und Icons auf Handygröße beseitigen und durch echte Touch-Klicks prüfen
+- [x] Wochenknopf in eigene feste Leiste versetzt; Hauptmenüs, Trendkauf, Wochenabschluss und Vorrat per Handy-Klick geprüft
 - [x] Café-Editor dauerhaft direkt im Café öffnen; vollständige belebte Stufenszenen mit harmonischen Farb-/Ausstattungskombinationen statt frei platzierten Bildern
 - [x] Ausstattungskäufe und Editor-Upgrades vereinheitlichen: gleiche Modelle, Stufen und sichtbare Ergebnisse in allen Ansichten
 - [x] Vier Bildentwürfe für alle sieben Ladenstufen, Café-Editor und Terrasse erstellt
