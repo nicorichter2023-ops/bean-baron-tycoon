@@ -7,3 +7,8 @@
 - [x] Obere Leiste mit Rang, Wochenzusammenfassung, Fortschritt-Tab, Einstellungen (Schrift, Bewegung), Einführung
 - [x] Balance-Simulation + Tests
 - [ ] Später: 12 Getränke/10 Snacks, Barista-Erfahrung, 32 Forschungsziele, Ausstattung 5×5
+- [ ] 19 Stadtkarten im NY-Stil + PhotoCityMap für alle Städte
+- [ ] Bildbögen: Getränke, Snacks, Forschung x2, Porträts, Flughafen
+- [ ] Icons/Upgrades einheitlich, Upgrades sichtbar im Café, Café-Gestaltung (Farbe, Boden, Licht, Deko, Schild)
+- [ ] 12 Getränke/10 Snacks, Barista-XP, 32 Forschungsziele, Ausstattung 5 Stufen, Rivalen-Eskalation
+- [ ] Bedienung vereinfachen, Balance 300 Wochen
