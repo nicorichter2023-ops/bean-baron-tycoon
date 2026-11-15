@@ -835,3 +835,4 @@ html[data-contrast="high"] { --muted-foreground: var(--foreground); --border: va
 .cafe-mood-row button { min-height: 44px; border-radius: .6rem; border: 1px solid var(--border); background: var(--card); color: var(--foreground); font-size: .8rem; font-weight: 600; }
 .cafe-mood-row button[aria-checked="true"] { background: var(--primary); color: var(--primary-foreground); border-color: var(--primary); }
 .cafe-style-grid small + small { display: block; }
+.swipe-hint { text-align: center; font-size: .7rem; color: var(--muted-foreground); margin-top: 1rem; }
