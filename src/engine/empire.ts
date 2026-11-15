@@ -8,6 +8,7 @@ import { GEAR, RESEARCH, researchCost, type GearCategory } from './cafeContent';
 import { processProgressWeek, stageUpgrade } from './progression';
 import { CAMPAIGNS, startCampaign, type CampaignKind, type ExpansionState } from './expansion';
 import { hasExecutive } from './management';
+import { catalogAction } from './world';
 
 const r2 = (n: number) => Math.round(n * 100) / 100;
 const ok = (state: GameState, reason: string): ActionResult => ({ state, ok: true, reason });
@@ -292,6 +293,10 @@ export function processEmpireWeek(state: GameState, exp: ExpansionState) {
   if (isExec(g, 'cto') && !cafeOf(g).research.active) {
     const next = RESEARCH.filter(n => researchAvailable(g, n.id)).sort((a, b) => a.tier - b.tier)[0];
     if (next && g.cash - campCost > researchCost(next.tier) * 3) { const s = startResearch({ ...g, cash: g.cash - campCost }, next.id); if (s.ok) { extra += (g.cash - campCost) - s.state.cash; g = { ...s.state, cash: g.cash }; execNotes.push(`CTO startet „${next.name}“.`); } }
+  }
+  if (isExec(g, 'cto') && g.world.research.length === 0) {
+    const t = MASTER.techTree.filter(t => !g.world.technologies.includes(t.id) && (!t.prerequisiteId || g.world.technologies.includes(t.prerequisiteId))).sort((a, b) => a.researchCost - b.researchCost)[0];
+    if (t && g.cash - campCost - extra > t.researchCost * 4) { const s = catalogAction({ ...g, cash: g.cash - campCost - extra, pendingEvent: null }, 'research', t.id); if (s.ok) { extra += (g.cash - campCost - extra) - s.state.cash; g = { ...s.state, cash: g.cash, pendingEvent: g.pendingEvent }; execNotes.push(`CTO startet Konzern-Technologie „${t.name}“.`); } }
   }
   if (campCost || extra) { if (renewed.length) execNotes.push(`Auto-Kampagnen verlängert: ${renewed.join(', ')}.`); g = patchWeek(g, 0, campCost + extra, execNotes); }
   if (isExec(g, 'cfo') && g.debt > 0 && g.cash > 150_000) { const pay = r2(Math.min(g.debt, (g.cash - 150_000) * 0.25)); const p = repayLoan(g, pay); if (p.ok) { const row = p.state.management.history.at(-1); g = { ...p.state, management: { ...p.state.management, openingCash: p.state.cash, history: row ? [...p.state.management.history.slice(0, -1), { ...row, cashEnd: p.state.cash, financing: r2(row.financing - pay) }] : p.state.management.history }, lastReport: p.state.lastReport ? { ...p.state.lastReport, notes: [...p.state.lastReport.notes, `CFO tilgt ${Math.round(pay).toLocaleString('de-DE')} € Kredit.`] } : null }; } }
