@@ -5,7 +5,7 @@ import { createInitialState } from "@/data";
 import { translateEngineNote } from "./logMessages";
 import { createExpansion, loadExpansion, saveExpansion, type ExpansionState } from "@/engine/expansion";
 import { recordManagementAction } from '@/engine/management';
-import { processEmpireWeek } from '@/engine/empire';
+import { processTycoonWeek } from '@/engine/tycoon';
 
 type Ctx = {
   state: GameState;
@@ -54,7 +54,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setState(game); setExp(result.exp);
   };
   const nextWeek = () => {
-    const result = processEmpireWeek(state, exp);
+    const result = processTycoonWeek(state, exp);
     const turned = result.game;
     saveGame(result.game); saveExpansion(result.exp);
     setState(result.game); setExp(result.exp);

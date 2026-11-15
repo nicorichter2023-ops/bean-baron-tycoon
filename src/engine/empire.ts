@@ -9,6 +9,7 @@ import { processProgressWeek, stageUpgrade } from './progression';
 import { CAMPAIGNS, startCampaign, type CampaignKind, type ExpansionState } from './expansion';
 import { hasExecutive } from './management';
 import { catalogAction } from './world';
+import { propertyDiscount } from './tycoonState';
 
 const r2 = (n: number) => Math.round(n * 100) / 100;
 const ok = (state: GameState, reason: string): ActionResult => ({ state, ok: true, reason });
@@ -210,7 +211,7 @@ export const propertyPrice = (districtId: string) => building(districtId)?.purch
 export function buyProperty(g: GameState, storeId: string): ActionResult {
   const s = g.stores.find(x => x.id === storeId); if (!s) return no(g, 'Filiale nicht gefunden.');
   if (s.propertyBookValue) return no(g, 'Das Gebäude gehört dir bereits.');
-  const price = propertyPrice(s.districtId); if (!price) return no(g, 'Für diesen Altstandort gibt es kein Kaufangebot.');
+  const price = Math.round(propertyPrice(s.districtId) * propertyDiscount(g)); if (!price) return no(g, 'Für diesen Altstandort gibt es kein Kaufangebot.');
   if (g.cash < price) return no(g, 'Nicht genug Barvermögen.');
   return ok({ ...g, cash: r2(g.cash - price), stores: g.stores.map(x => x.id === storeId ? { ...x, propertyBookValue: price } : x) }, `${s.name}: Gebäude gekauft – ab jetzt keine Miete mehr.`);
 }

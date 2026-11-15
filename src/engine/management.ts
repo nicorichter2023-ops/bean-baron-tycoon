@@ -45,7 +45,9 @@ export function balanceSheet(game: GameState) {
     + game.capitalMarkets.rivals.filter(r => r.acquired).reduce((n, r) => n + r.valuation * 0.8, 0);
   const luxury = game.capitalMarkets.luxuryGoods.filter(l => l.owned).reduce((n, l) => n + l.purchaseCost, 0);
   const assets = money(game.cash + stores + inventory + roastery + investments + luxury);
-  return { cash: game.cash, stores: money(stores), equipment, inventory: money(inventory), roastery, investments: money(investments), luxury, assets, debt: game.debt, equity: money(assets - game.debt) };
+  const customerLiability = game.tycoon?.beanpay.balance ?? 0;
+  const masterAssets = game.tycoon ? game.tycoon.landlords.reduce((n, l) => n + l.value, 0) + game.tycoon.microloans.reduce((n, l) => n + l.amount, 0) : 0;
+  return { cash: game.cash, stores: money(stores), equipment, inventory: money(inventory), roastery, investments: money(investments + masterAssets), luxury, assets: money(assets + masterAssets), debt: game.debt, customerLiability, equity: money(assets + masterAssets - game.debt - customerLiability) };
 }
 /** Every successful action is journalled once, using the actual cash movement. */
 export function recordManagementAction(before: GameState, after: GameState): GameState {

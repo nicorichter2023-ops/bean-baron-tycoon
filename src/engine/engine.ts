@@ -6,6 +6,7 @@
 import { createEquipment, equipmentEffects, equipmentOf } from './equipment';
 import { MASTER, buildingById } from '@/data/master';
 import { locationEffects, worldEffects } from './world';
+import { demandEffects, propertyDiscount, tycoonOf } from './tycoonState';
 
 import type {
   ActionResult,
@@ -33,7 +34,7 @@ import type {
 // -----------------------------------------------------------
 
 export const GAME_CONFIG = {
-  SCHEMA_VERSION: 7 as const,
+  SCHEMA_VERSION: 8 as const,
   START_CASH: 50_000,
   STORE_OPENING_COST: { 1: 12_000, 2: 55_000, 3: 180_000 } as Record<StoreTier, number>,
   STORE_UPGRADE_COST: { 2: 45_000, 3: 160_000 } as Record<2 | 3, number>,
@@ -290,6 +291,7 @@ function processStore(
   const managers = staff.filter((e) => e.role === 'manager').length;
   const equipment = equipmentEffects(store);
   const location = locationEffects(game, district.id), upgrades = worldEffects(game);
+  const master = demandEffects(game, store);
 
   // Qualitätsdrift Richtung Zielniveau (Personal, Management, Tier)
   const targetQuality = equipment.maxQuality ? 100 : clamp(35 + avgSkill * 0.5 + managers * 4 + tier * 4 + equipment.quality + equipment.satisfaction + location.quality + upgrades.quality, 0, 100);
@@ -306,15 +308,15 @@ function processStore(
   );
   const cultureBoost = 1 + clamp(city.coffeeCultureIndex, 0, 100) / 400;
   const capacity =
-    (GAME_CONFIG.TIER_CAPACITY[tier] ?? 0) * staffingRatio * (1 + avgSkill / 600) * cultureBoost * equipment.capacity * location.capacity * upgrades.capacity;
+    (GAME_CONFIG.TIER_CAPACITY[tier] ?? 0) * staffingRatio * (1 + avgSkill / 600) * cultureBoost * equipment.capacity * location.capacity * upgrades.capacity * master.capacity;
 
   const policyBoost = game.world.assets.filter(a => a.kind === 'policy' && a.cityId === city.id && a.endWeek > game.week).reduce((n, a) => n + ((MASTER.cityPolitics.find(p => p.id === a.id) as { revenueBuff?: number } | undefined)?.revenueBuff ?? 0), 0);
   const celebrityBoost = game.world.assets.filter(a => a.kind === 'celebrity' && a.endWeek > game.week).reduce((n, a) => n + (MASTER.celebrityEndorsements.find(p => p.id === a.id)?.clienteleBoost ?? 0), 0);
-  let served = Math.max(0, Math.min(Math.round(rawDemand * equipment.demand * location.demand * upgrades.demand * (1 + policyBoost + celebrityBoost)), Math.floor(capacity)));
+  let served = Math.max(0, Math.min(Math.round(rawDemand * equipment.demand * location.demand * upgrades.demand * master.demand * (1 + policyBoost + celebrityBoost)), Math.floor(capacity)));
   let stockLimited = false;
   if (availableRoastedKg !== null) {
     // Bohnen-Limit: 18 g Röstkaffee pro Tasse
-    const beanLimited = Math.floor(Math.max(0, availableRoastedKg) / (GAME_CONFIG.KG_PER_CUP * equipment.beanFactor * upgrades.beanFactor));
+    const beanLimited = Math.floor(Math.max(0, availableRoastedKg) / (GAME_CONFIG.KG_PER_CUP * equipment.beanFactor * upgrades.beanFactor * master.beans));
     if (beanLimited < served) stockLimited = true;
     served = Math.max(0, Math.min(served, beanLimited));
   }
@@ -337,7 +339,7 @@ function processStore(
       salaries,
       rent,
       servedCustomers: served,
-      beansConsumedKg: round2(served * GAME_CONFIG.KG_PER_CUP * equipment.beanFactor * upgrades.beanFactor),
+      beansConsumedKg: round2(served * GAME_CONFIG.KG_PER_CUP * equipment.beanFactor * upgrades.beanFactor * master.beans),
       stockLimited,
     },
   };
@@ -413,6 +415,7 @@ function processB2B(
   b2b: B2BState,
   roastedAvailableKg: number,
   rng: () => number,
+  roastScore = 84,
 ): { b2b: B2BState; revenue: number; roastedUsedKg: number; notes: string[] } {
   const startStock = Math.max(0, roastedAvailableKg);
   let stockLeft = startStock;
@@ -423,7 +426,8 @@ function processB2B(
   for (const c of b2b.contracts) {
     if (c.weeksRemaining <= 0) continue;
     const volume = Math.max(0, c.volumeKgPerWeek);
-    const delivered = Math.min(volume, stockLeft);
+    const qualityMet = roastScore >= (c.minimumScore ?? 0);
+    const delivered = qualityMet ? Math.min(volume, stockLeft) : 0;
     stockLeft -= delivered;
     if (delivered < volume) {
       notes.push(`UNDERDELIVERY:${c.partnerName}`);
@@ -435,8 +439,12 @@ function processB2B(
       multiplier = 0;
       notes.push(`PAYMENT_DEFAULT:${c.partnerName}`);
     }
-    revenue += delivered * Math.max(0, c.pricePerKg) * multiplier;
-    contracts.push({ ...c, weeksRemaining: c.weeksRemaining - 1 });
+    const fulfillment = volume > 0 ? delivered / volume : 1;
+    const penalty = (volume - delivered) * c.pricePerKg * (c.penaltyRate ?? 0);
+    revenue += delivered * Math.max(0, c.pricePerKg) * multiplier - penalty;
+    if (penalty > 0) notes.push(`SLA ${c.partnerName}: ${round2(penalty)} € Vertragsstrafe (${qualityMet ? 'Fehlmenge' : 'Qualität'}).`);
+    const breaches = (c.breaches ?? 0) + (fulfillment < 1 ? 1 : 0);
+    contracts.push({ ...c, fulfillment, breaches, weeksRemaining: c.penaltyRate && breaches >= 3 ? 0 : c.weeksRemaining - 1 });
   }
 
   const used = startStock - stockLeft;
@@ -596,7 +604,7 @@ export function calculateAssetValuation(state: GameState): number {
       (state.world?.assets.reduce((n, a) => n + a.bookValue, 0) ?? 0) +
       b2bValue +
       brandValue -
-      state.debt,
+      state.debt - (state.tycoon?.beanpay.balance ?? 0),
   );
 }
 
@@ -692,11 +700,12 @@ export function openStore(
   if (state.stores.some((store) => store.districtId === districtId)) return rejected(state, 'DISTRICT_OCCUPIED');
   if (tier > district.maxStoreTier) return rejected(state, 'TIER_NOT_ALLOWED');
   const building = buildingById(districtId);
-  const cost = purchase && building ? GAME_CONFIG.STORE_OPENING_COST[tier] + building.purchasePrice : storeOpeningCost(district, tier);
+  const purchasePrice = building ? Math.round(building.purchasePrice * propertyDiscount(state)) : 0;
+  const cost = purchase && building ? GAME_CONFIG.STORE_OPENING_COST[tier] + purchasePrice : storeOpeningCost(district, tier);
   if (state.cash < cost) return rejected(state, 'INSUFFICIENT_CASH');
   const store: Store = {
     equipment: createEquipment(),
-    propertyBookValue: purchase && building ? building.purchasePrice : 0,
+    propertyBookValue: purchase && building ? purchasePrice : 0,
     id: `store-${state.week}-${state.stores.length + 1}`,
     cityId,
     name: `${tier === 1 ? 'Kiosk' : tier === 2 ? 'Café' : 'Flagship'} ${district.name}`,
@@ -986,7 +995,7 @@ export function signB2BContract(
 ): ActionResult {
   if (!state.unlockedModules.includes('b2b_trade')) return rejected(state, 'MODULE_LOCKED');
   if (!state.roastery.owned) return rejected(state, 'ROASTERY_REQUIRED');
-  if (!partnerName.trim() || !Number.isFinite(volumeKgPerWeek) || volumeKgPerWeek <= 0 || volumeKgPerWeek > 1000) {
+  if (!partnerName.trim() || !Number.isFinite(volumeKgPerWeek) || volumeKgPerWeek <= 0 || volumeKgPerWeek > 10000) {
     return rejected(state, 'INVALID_CONTRACT');
   }
   if (!Number.isInteger(weeks) || weeks < 4 || weeks > 52 || !Number.isFinite(pricePerKg) || pricePerKg <= 0) {
@@ -1120,7 +1129,7 @@ export function processTurn(state: GameState): GameState {
   let revenueB2B = 0;
   let b2b = state.b2b;
   if (isModule('b2b_trade')) {
-    const b = processB2B(b2b, roastery.roastedStockKg, rngTurn);
+    const b = processB2B(b2b, roastery.roastedStockKg, rngTurn, tycoonOf(state).roastScore);
     b2b = b.b2b;
     revenueB2B = b.revenue;
     roastery = {
@@ -1239,6 +1248,7 @@ export function processTurn(state: GameState): GameState {
     : null;
 
   return {
+    ...state,
     schemaVersion: GAME_CONFIG.SCHEMA_VERSION,
     management: state.management,
     world: state.world,
