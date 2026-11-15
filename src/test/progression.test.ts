@@ -56,8 +56,8 @@ describe('Balance', () => {
     let g = staffed(), exp = createExpansion();
     for (let i = 0; i < 60; i++) {
       if (g.pendingEvent) g = { ...g, pendingEvent: null };
-      const free = g.city.districts.find(d => !g.stores.some(s => s.districtId === d.id) && !g.world.occupants[d.id]);
-      if (free && g.cash > 40_000) { const o = openStore(g, g.city.id, free.id, 1); if (o.ok) { g = o.state; const h = hireEmployee(g, g.stores.at(-1)!.id, 'barista'); if (h.ok) g = h.state; } }
+      const free = g.city.districts.filter(d => !g.stores.some(s => s.districtId === d.id) && !g.world.occupants[d.id]).sort((a, b) => a.rentWeekly - b.rentWeekly)[0];
+      if (free && g.cash > 70_000 && g.stores.length < 4) { const o = openStore(g, g.city.id, free.id, 1); if (o.ok) { g = o.state; const h = hireEmployee(g, g.stores.at(-1)!.id, 'barista'); if (h.ok) g = h.state; } }
       const r = processProgressWeek(g, exp); g = r.game; exp = r.exp;
     }
     expect(g.cash).toBeGreaterThan(-20_000);
