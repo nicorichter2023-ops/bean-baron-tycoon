@@ -45,7 +45,7 @@ export function PhotoCityMap({ cityId, cityName, airportCode, buildings, onBuild
       <TransformComponent wrapperClass="nyc-photo-viewport" contentClass="nyc-photo-content">
         <img src={src} alt={`Stadtkarte ${cityName}`} width={1088} height={1920} draggable={false} onError={onError} onLoad={() => zoom.current?.resetTransform(0)} />
         {buildings.slice(0, 30).map((b, i) => {
-          const own = state.stores.some(s => s.districtId === b.id);
+          const store = state.stores.find(s => s.districtId === b.id), own = !!store, fr = franchise.some(f => f.districtId === b.id);
           const rival = MASTER.competitors.find(c => c.id === state.world.occupants[b.id]);
           const [x, y] = spots[i] ?? [50, 50];
           const forSale = !own && !rival && (b.purchasePrice ?? 0) > 0 && i % 3 === 0;
