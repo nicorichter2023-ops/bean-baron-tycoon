@@ -14,7 +14,8 @@ export function PhotoCityMap({ cityId, cityName, airportCode, buildings, onBuild
     const els = Array.from(document.querySelectorAll<HTMLElement>(`.nyc-photo-content [data-status='${status}']`));
     if (!els.length) return;
     const n = (cycle.current[status] ?? -1) + 1; cycle.current[status] = n;
-    zoom.current?.zoomToElement(els[n % els.length]!, 2.2, 350);
+    const el = els[n % els.length]!; zoom.current?.zoomToElement(el, 2.2, 350);
+    if (status !== 'own') { const b = buildings.find(x => x.id === el.dataset['id']); if (b) onBuilding(b); }
   };
   const count = (st: string) => buildings.slice(0, 30).filter(b => { const own = state.stores.some(s => s.districtId === b.id); const rival = Boolean(state.world.occupants[b.id]); return st === 'own' ? own : st === 'rival' ? !own && rival : !own && !rival; }).length;
   const src = cityMapImage(cityId);
@@ -30,7 +31,7 @@ export function PhotoCityMap({ cityId, cityName, airportCode, buildings, onBuild
       <button onClick={() => { const a = document.querySelector<HTMLElement>('.ci-pin-airport'); if (a) zoom.current?.zoomToElement(a, 2.2, 350); }}>✈</button>
       <button aria-pressed={labels} onClick={() => setLabels(!labels)}>{labels ? 'Aa' : 'Aa̶'}</button>
     </div>
-    <TransformWrapper ref={zoom} initialScale={1} minScale={1} maxScale={3} centerOnInit doubleClick={{ disabled: true }}>
+    <TransformWrapper ref={zoom} initialScale={1} minScale={0.6} maxScale={3} centerOnInit doubleClick={{ disabled: true }}>
       <TransformComponent wrapperClass="nyc-photo-viewport" contentClass="nyc-photo-content">
         <img src={src} alt={`Stadtkarte ${cityName}`} width={1088} height={1920} draggable={false} onError={onError} />
         {buildings.slice(0, 30).map((b, i) => {
@@ -38,7 +39,7 @@ export function PhotoCityMap({ cityId, cityName, airportCode, buildings, onBuild
           const rival = MASTER.competitors.find(c => c.id === state.world.occupants[b.id]);
           const [x, y] = spots[i] ?? [50, 50];
           const forSale = !own && !rival && (b.purchasePrice ?? 0) > 0 && i % 3 === 0;
-          return <button key={b.id} className="ci-pin" data-status={own ? 'own' : rival ? 'rival' : 'free'} data-rival={rival?.id} style={{ left: `${x}%`, top: `${y}%` }} aria-label={`${b.name} · ${own ? 'Deine Filiale' : rival?.name ?? (forSale ? 'Zu verkaufen' : 'Zu vermieten')}`} onClick={() => onBuilding(b)}>
+          return <button key={b.id} className="ci-pin" data-status={own ? 'own' : rival ? 'rival' : 'free'} data-rival={rival?.id} data-id={b.id} style={{ left: `${x}%`, top: `${y}%` }} aria-label={`${b.name} · ${own ? 'Deine Filiale' : rival?.name ?? (forSale ? 'Zu verkaufen' : 'Zu vermieten')}`} onClick={() => onBuilding(b)}>
             <span>{own ? '☕' : rival ? rival.name.slice(0, 2).toUpperCase() : forSale ? <>FOR<br />SALE</> : <>FOR<br />LEASE</>}</span>
           </button>;
         })}
