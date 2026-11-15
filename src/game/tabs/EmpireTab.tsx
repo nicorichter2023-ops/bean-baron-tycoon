@@ -16,7 +16,7 @@ import { hasExecutive } from '@/engine/management';
 const ERA: Record<string, string> = { street_vendor: "Straßenverkäufer", local_chain: "Lokale Kette", national_brand: "Nationale Marke", global_empire: "Globales Imperium" };
 
 export function EmpireTab() {
-  const { state, set, perform } = useGame();
+  const { state, perform } = useGame();
   const selectedStore = useContext(StoreFilter);
   const [openId, setOpenId] = useState<string | null>(null);
   const open = state.stores.find((s) => s.id === openId);

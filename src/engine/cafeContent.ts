@@ -98,7 +98,7 @@ export const DESIGN_STYLES = [
   { id: 'lounge', name: 'Lounge', seats: 'Polsterbänke & Sessel' },
   { id: 'botanic', name: 'Botanisch', seats: 'Rattanstühle & Pflanzen' },
 ] as const;
-/** Colour moods re-tone the complete painted scene (no rectangle overlays). */
+/** Wall colours: the swatch tints only the upper wall band of the painted scene; `filter` is kept for old callers. */
 export const PALETTES = [
   { name: 'Salbei', swatch: 'oklch(0.62 0.07 145)', filter: 'none' },
   { name: 'Petrol', swatch: 'oklch(0.45 0.07 210)', filter: 'hue-rotate(80deg) saturate(.85) brightness(.97)' },
