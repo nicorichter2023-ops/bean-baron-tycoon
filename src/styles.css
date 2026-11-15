@@ -829,3 +829,5 @@ html[data-contrast="high"] { --muted-foreground: var(--foreground); --border: va
 .cafe-room { position: relative; }
 .room-wall-tint { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: color; opacity: .55;
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 38%, transparent 56%); mask-image: linear-gradient(to bottom, #000 0%, #000 38%, transparent 56%); }
+.campaign-auto { min-height: 44px; align-content: center; cursor: pointer; }
+.campaign-auto > button { min-height: 0 !important; min-width: 0 !important; height: 1.25rem; width: 2.25rem; }
