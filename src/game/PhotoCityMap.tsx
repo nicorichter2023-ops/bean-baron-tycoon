@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
+import { useRef, useState } from 'react';
+import { TransformWrapper, TransformComponent, type ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 import { MASTER, type MasterBuilding } from '@/data/master';
 import { CITY_SPOTS, cityMapImage } from '@/data/cityMaps';
 import { useGame } from './GameContext';
@@ -8,13 +8,29 @@ import { useGame } from './GameContext';
 export function PhotoCityMap({ cityId, cityName, airportCode, buildings, onBuilding, onAirport, onError }: { cityId: string; cityName: string; airportCode: string; buildings: MasterBuilding[]; onBuilding: (b: MasterBuilding) => void; onAirport: () => void; onError: () => void }) {
   const { state } = useGame();
   const [labels, setLabels] = useState(true);
+  const zoom = useRef<ReactZoomPanPinchRef>(null);
+  const cycle = useRef<Record<string, number>>({});
+  const focus = (status: string) => {
+    const els = Array.from(document.querySelectorAll<HTMLElement>(`.nyc-photo-content [data-status='${status}']`));
+    if (!els.length) return;
+    const n = (cycle.current[status] ?? -1) + 1; cycle.current[status] = n;
+    zoom.current?.zoomToElement(els[n % els.length]!, 2.2, 350);
+  };
+  const count = (st: string) => buildings.slice(0, 30).filter(b => { const own = state.stores.some(s => s.districtId === b.id); const rival = Boolean(state.world.occupants[b.id]); return st === 'own' ? own : st === 'rival' ? !own && rival : !own && !rival; }).length;
   const src = cityMapImage(cityId);
   const spots = CITY_SPOTS[cityId] ?? [];
   if (!src) { onError(); return null; }
   const airport = spots[30] ?? [12, 92];
   return <div className="nyc-photo-map" data-labels={labels}>
-    <button className="photo-map-toggle" aria-pressed={labels} onClick={() => setLabels(!labels)}>{labels ? 'Schilder aus' : 'Schilder an'}</button>
-    <TransformWrapper initialScale={1} minScale={1} maxScale={3} doubleClick={{ disabled: true }}>
+    <div className="map-focus-bar">
+      <button onClick={() => zoom.current?.resetTransform(300)}>Übersicht</button>
+      <button onClick={() => focus('own')}>Meine {count('own')}</button>
+      <button onClick={() => focus('free')}>Frei {count('free')}</button>
+      <button onClick={() => focus('rival')}>Rivalen {count('rival')}</button>
+      <button onClick={() => { const a = document.querySelector<HTMLElement>('.ci-pin-airport'); if (a) zoom.current?.zoomToElement(a, 2.2, 350); }}>✈</button>
+      <button aria-pressed={labels} onClick={() => setLabels(!labels)}>{labels ? 'Aa' : 'Aa̶'}</button>
+    </div>
+    <TransformWrapper ref={zoom} initialScale={1} minScale={1} maxScale={3} centerOnInit doubleClick={{ disabled: true }}>
       <TransformComponent wrapperClass="nyc-photo-viewport" contentClass="nyc-photo-content">
         <img src={src} alt={`Stadtkarte ${cityName}`} width={1088} height={1920} draggable={false} onError={onError} />
         {buildings.slice(0, 30).map((b, i) => {

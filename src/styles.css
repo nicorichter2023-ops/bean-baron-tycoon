@@ -680,3 +680,14 @@ html[data-contrast="high"] { --muted-foreground: var(--foreground); --border: va
 .room-plant { position: absolute; bottom: 16%; right: 0; width: 16%; z-index: 2; }
 .room-light { position: absolute; inset: 0; mix-blend-mode: screen; pointer-events: none; z-index: 3; }
 .cafe-room .cafe-photo-title { z-index: 4; }
+
+/* Fit-to-screen city map with focus jumps: whole city visible, no page scrolling inside the map */
+.nyc-photo-viewport { width: 100% !important; height: calc(100dvh - 15.5rem) !important; min-height: 320px; background: var(--muted); }
+.nyc-photo-content { width: auto !important; height: 100% !important; aspect-ratio: 1088 / 1920; }
+.nyc-photo-content img { width: 100%; height: 100%; object-fit: cover; }
+.photo-map-toggle { display: none; }
+.map-focus-bar { display: flex; gap: .3rem; overflow-x: auto; padding: .4rem; background: var(--card); border-bottom: 1px solid var(--border); }
+.map-focus-bar button { flex: 0 0 auto; min-height: 40px; padding: 0 .75rem; border-radius: 999px; font: 700 12px/1 system-ui; background: var(--secondary); color: var(--secondary-foreground); border: 1px solid var(--border); }
+.map-focus-bar button[aria-pressed='false'] { opacity: .6; }
+.ci-pin { min-width: 30px; min-height: 30px; padding-bottom: 7px; }
+.ci-pin span { min-width: 28px; height: 24px; font-size: 7px; }

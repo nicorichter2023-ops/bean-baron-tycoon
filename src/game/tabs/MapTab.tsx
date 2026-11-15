@@ -6,12 +6,9 @@ import type { StoreTier } from '@/engine/types';
 import { MASTER, ZONES, CLIENTELE, type MasterBuilding } from '@/data/master';
 import { travelToCity } from '@/engine/world';
 import { eur, useGame } from '../GameContext';
-import { BIOME_SCENE } from '../sceneAssets';
 import { getCityArtwork } from '../artwork';
 import { CityMap } from '../CityMap';
 import { NeighborhoodPanel } from '../NeighborhoodPanel';
-import nycPanorama from '@/assets/nyc-landmarks-panorama.jpg';
-import { cityMapImage } from '@/data/cityMaps';
 import airportHub from '@/assets/airport-hub.jpg';
 import { CafeDetail } from '../CafeDetail';
 
@@ -41,7 +38,6 @@ export function MapTab({ airportOnly = false }: { airportOnly?: boolean }) {
       })}</div>
       {state.world.travelHistory.length > 0 && <section className="travel-history"><h2>Letzte Reisen</h2>{state.world.travelHistory.slice(-5).reverse().map((t, i) => <p key={i}>Woche {t.week} · {MASTER.airports.find(a => a.cityId === t.from)?.airportCode ?? t.from} → {MASTER.airports.find(a => a.cityId === t.to)?.airportCode ?? t.to} · {eur(t.cost)}</p>)}</section>}
     </> : <>
-      <div className="city-summary"><img src={city.id === 'new_york' ? nycPanorama : cityMapImage(city.id) ?? BIOME_SCENE[city.biome]} alt={`${city.name} – Stadtpanorama`} /><div><strong>{city.name}</strong><span>Kaufkraft {city.purchasingPower.toFixed(2)}× · {state.stores.filter(s => s.cityId === city.id).length} eigene Filialen</span></div></div>
       <CityMap key={city.id} city={city} onBuilding={choose} onAirport={() => { setHub(true); setSelected(null); }} />
       {selected && <section className="property-detail" aria-label="Standortdetails"><div className="flex items-start justify-between gap-2"><div><p className="eyebrow">{ZONES[selected.zoneType]} · {CLIENTELE[selected.clientele]}</p><h2>{selected.name}</h2></div><Button variant="ghost" size="icon" aria-label="Standort schließen" onClick={() => setSelected(null)}><ArrowLeft /></Button></div>
         <div className="property-metrics"><div><Users /><strong>{selected.footTraffic.toLocaleString('de-DE')}</strong><span>Laufkundschaft / Woche</span></div><div><MapPin /><strong>{eur(selected.weeklyRent)}</strong><span>Miete / Woche</span></div><div><Trophy /><strong>+{selected.locationBonus.valuePercent}%</strong><span>{selected.locationBonus.label}</span></div><div><Store /><strong>{eur(selected.purchasePrice)}</strong><span>Immobilienpreis</span></div></div>
