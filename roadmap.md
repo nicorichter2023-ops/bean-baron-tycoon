@@ -22,3 +22,4 @@
 - [ ] Überlagerte Buttons und Icons auf Handygröße beseitigen und durch echte Touch-Klicks prüfen
 - [ ] Café-Editor dauerhaft direkt im Café öffnen; vollständige belebte Stufenszenen mit harmonischen Farb-/Ausstattungskombinationen statt frei platzierten Bildern
 - [ ] Ausstattungskäufe und Editor-Upgrades vereinheitlichen: gleiche Modelle, Stufen und sichtbare Ergebnisse in allen Ansichten
+- [ ] Vor Spielumbau: geplante Stufenszenen und Terrasse als Bildentwürfe zeigen und visuell freigeben lassen
