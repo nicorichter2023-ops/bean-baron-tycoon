@@ -38,4 +38,5 @@ use the editor.
 - Sheet artwork is cut into public/assets/sheets/<sheet>/<index>.webp and referenced only through src/game/sheetArt.ts index maps, so re-cutting a sheet needs edits in one place.
 - Preserve the complete uploaded master JSON in src/data; adapters expose engine units, while world.ts owns persisted travel, research, property occupancy and catalog actions so city UI never mutates economic rules.
 - City maps use existing indexed artwork with react-zoom-pan-pinch and deterministic per-city property placement; old owned locations remain in migrated saves instead of being reassigned to new leases.
+- New York alone uses the pure projection helpers in src/game/isometric.ts and isolated scene layers sorted by x+y; shared anchors keep buildings, ground and pins aligned without changing other cities or simulation coordinates.
 - Visual replacement slots live in src/game/visualAssets.ts with image-error fallbacks; CSS effects animate separate presentation layers and respect reduced motion so art swaps never alter gameplay or hit targets.

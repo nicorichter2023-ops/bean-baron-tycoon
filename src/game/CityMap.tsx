@@ -10,6 +10,7 @@ import { cityBuildingArt, MAP_PEOPLE, airportArt } from './sheetArt';
 import { getStoreArtwork, getCityArtwork } from './artwork';
 import { CityTraffic, NeonSign, SceneAsset } from './VisualEffects';
 import { newYorkSlot } from './visualAssets';
+import { IsometricCityScene } from './IsometricCityScene';
 
 export function CityMap({ city, onBuilding, onAirport }: { city: City; onBuilding: (b: MasterBuilding) => void; onAirport: () => void }) {
   const { state } = useGame(); const [zone, setZone] = useState('all'), [people, setPeople] = useState(true);
@@ -20,11 +21,11 @@ export function CityMap({ city, onBuilding, onAirport }: { city: City; onBuildin
   const ordered = [...source.buildings.slice(offset), ...source.buildings.slice(0, offset)];
   return <section className="city-map-section">
     <div className="city-zone-filter" aria-label="Stadtzonen"><Button variant={zone === 'all' ? 'secondary' : 'ghost'} onClick={() => setZone('all')}>Alle · 30</Button>{Object.entries(ZONES).map(([id, name]) => <Button key={id} variant={zone === id ? 'secondary' : 'ghost'} onClick={() => setZone(id)}>{name}</Button>)}</div>
-    <TransformWrapper initialScale={.65} minScale={.35} maxScale={1.8} centerOnInit wheel={{ step: .06 }} doubleClick={{ disabled: true }} panning={{ excluded: ['button'] }}>
+    <TransformWrapper initialScale={.65} minScale={city.id === 'new_york' ? .45 : .35} maxScale={1.8} centerOnInit wheel={{ step: .06 }} doubleClick={{ disabled: true }} panning={city.id === 'new_york' ? { velocityDisabled: false } : { excluded: ['button'] }}>
       {({ zoomIn, zoomOut, resetTransform }) => <>
         <div className="city-map-tools"><span>{city.name} · {source.airportCode}</span><div><Button variant="ghost" size="icon" aria-label="Passanten umschalten" aria-pressed={people} onClick={() => setPeople(!people)}><Users /></Button><Button variant="ghost" size="icon" aria-label="Markierungen umschalten" aria-pressed={labels} onClick={() => setLabels(!labels)}><Eye /></Button><Button variant="ghost" size="icon" aria-label="Stadtkarte verkleinern" onClick={() => zoomOut()}><Minus /></Button><Button variant="ghost" size="icon" aria-label="Stadtkarte vergrößern" onClick={() => zoomIn()}><Plus /></Button><Button variant="ghost" size="icon" aria-label="Stadtkarte zentrieren" onClick={() => resetTransform()}><LocateFixed /></Button></div></div>
         <TransformComponent wrapperClass="city-map-viewport" contentClass="city-map-transform">
-          <div className="city-plan" data-biome={city.biome}>
+          {city.id === 'new_york' ? <IsometricCityScene city={city} buildings={ordered} offset={offset} zone={zone} people={people} labels={labels} airportCode={source.airportCode} onBuilding={onBuilding} onAirport={onAirport} /> : <div className="city-plan" data-biome={city.biome}>
             <div className="city-river" /><div className="city-road road-main" /><div className="city-road road-cross" />
             {[0,1,2,3,4,5].map(i => <div key={i} className="city-side-street" style={{ top: `${160 + i * 122}px` }} />)}
             <img className="city-landmark" src={getCityArtwork(city).src} alt={city.landmarkName} />
@@ -42,7 +43,7 @@ export function CityMap({ city, onBuilding, onAirport }: { city: City; onBuildin
             <Button variant="ghost" className="city-airport" onClick={onAirport} aria-label="Flughafen öffnen"><img src={airportArt} alt="" /><span>✈ {source.airportCode}</span></Button>
             {people && Array.from({ length: 18 }, (_, i) => <img key={i} className={`city-pedestrian pedestrian-${i % 3}`} src={MAP_PEOPLE[i % MAP_PEOPLE.length]} alt="" style={{ left: `${80 + (i % 6) * 148}px`, top: `${214 + Math.floor(i / 6) * 244}px`, animationDelay: `${-i * 1.7}s`, animationDuration: `${12 + i % 7}s` }} />)}
             <CityTraffic />
-          </div>
+          </div>}
         </TransformComponent>
       </>}
     </TransformWrapper>
