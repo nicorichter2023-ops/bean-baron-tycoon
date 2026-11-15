@@ -750,3 +750,10 @@ html[data-contrast="high"] { --muted-foreground: var(--foreground); --border: va
 .cafe-style-grid img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: calc(var(--radius) - 2px); }
 .cafe-style-grid small { color: var(--muted-foreground); font-size: .68rem; }
 .cafe-editor-foot { padding: .75rem; padding-bottom: max(.75rem, env(safe-area-inset-bottom)); border-top: 1px solid var(--border); background: var(--card); display: grid; gap: .5rem; text-align: center; }
+
+/* Map: image fills viewport width, panning clamped to the picture (no grey edge) */
+.nyc-photo-viewport { background: var(--card) !important; }
+.nyc-photo-content { width: 100% !important; }
+.nyc-photo-content > img { width: 100% !important; height: auto !important; display: block; }
+/* Reserve room so the week button never covers content */
+main { padding-bottom: calc(9rem + env(safe-area-inset-bottom)); }
