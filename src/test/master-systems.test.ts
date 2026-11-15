@@ -4,7 +4,7 @@ import { MASTER } from '@/data/master';
 import { createExpansion } from '@/engine/expansion';
 import type { GameState } from '@/engine/types';
 import { configureTreasury, dynastyExit, enableBeanPay, grantFranchise, lobbyBill, processTycoonWeek, signEnterprise, startPatent, tycoonOf } from '@/engine/tycoon';
-import { balanceSheet } from '@/engine/management';
+import { createManagement, balanceSheet } from '@/engine/management';
 import { openStaffedStore, upgradeSupply } from '@/engine/empire';
 import { demandEffects, weatherAt, propertyMarketFactor } from '@/engine/tycoonState';
 import { processTurn, buyShares, openStore } from '@/engine/engine';
@@ -71,7 +71,7 @@ describe('Konsolidierte Master-Mechaniken', () => {
   });
   it('61 Cafés und Vertriebskanäle laufen 52 Wochen mit exakt abgestimmtem Cashflow', () => {
     let g = stores(61), exp = createExpansion();
-    g = { ...g, cash: 100_000_000, roastery: { ...g.roastery, capacityKgPerWeek: 20000 }, tycoon: { ...tycoonOf(g), beanpay: { ...tycoonOf(g).beanpay, enabled: true }, patents: ['brew', 'drum', 'energy'], licensePatents: true } };
+    g = { ...g, cash: 100_000_000, management: createManagement(100_000_000, balanceSheet(g).inventory), roastery: { ...g.roastery, capacityKgPerWeek: 20000 }, tycoon: { ...tycoonOf(g), beanpay: { ...tycoonOf(g).beanpay, enabled: true }, patents: ['brew', 'drum', 'energy'], licensePatents: true } };
     for (let i = 0; i < 52; i++) {
       g = { ...g, pendingEvent: null }; const r = processTycoonWeek(g, exp); g = r.game; exp = r.exp;
       const row = g.management.history.at(-1); if (!row) throw new Error('Bericht fehlt');
