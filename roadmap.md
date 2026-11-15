@@ -14,6 +14,10 @@
 - [x] Installierbare Vollbild-App für Galaxy S21 FE konfigurieren und mobil prüfen.
 
 ## Visuelle Spielwelt
+- [ ] Alle 20 Städte mit geerdeter Isometrie und eigener Geografie ausstatten.
+- [ ] Drei Nachbarschaftsslots gewichtet und begrenzt in Simulation und Inspektor integrieren.
+- [ ] Tier-/ausstattungsabhängiges Café-Diorama und fünf Haupttabs verbinden.
+- [ ] CMO-Marketing und CTO-Forschung vervollständigen; Finanzangebote zuordnen und Gesamtfluss testen.
 - [x] New York korrigieren: bewegten Verkehr entfernen, Gebäude erden, Manhattan-Straßen, Flüsse, Liberty Island und Central Park sichtbar machen und prüfen.
 - [x] New York isoliert auf mathematische 2:1-Isometrie mit Tiefensortierung umstellen; Mathematiktests und Touch-Pan/Zoom prüfen.
 - [x] Pins, Straßenverkehr, Dampf, Leuchtreklamen und Wasserschimmer animieren; austauschbare New-York-/Interieur-Grafikplätze mobil prüfen.
