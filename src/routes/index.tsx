@@ -17,6 +17,7 @@ import { AccountingPanel } from '@/game/AccountingPanel';
 import { LabPanel } from '@/game/LabPanel';
 import { MasterCatalog } from '@/game/MasterCatalog';
 import { ProgressPanel } from '@/game/ProgressPanel';
+import { SplashScreen } from "@/game/Intro";
 import { WeekSummary } from '@/game/WeekSummary';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 
@@ -56,6 +57,7 @@ function GameWorld() {
   const [place, setPlace] = useState<Place>('cafe');
   const [section, setSection] = useState('stores');
   const [progressOpen, setProgressOpen] = useState(false);
+  const [splash, setSplash] = useState(true);
   useEffect(() => { if ('serviceWorker' in navigator && import.meta.env.PROD) navigator.serviceWorker.register('/sw.js').catch(() => undefined); }, []);
   const destinations: Place[] = section === 'roastery' ? ['roastery', 'port', 'exchange', 'farm'] : ['cafe', 'terrace'];
   const content = section === 'progress' ? <ProgressPanel /> : section === 'development' ? <MasterCatalog /> : section === 'hq' ? <HQPanel /> : section === 'accounting' ? <AccountingPanel /> : section === 'lab' ? <LabPanel />
@@ -66,6 +68,7 @@ function GameWorld() {
   return (
       <div className="game-world mx-auto min-h-dvh max-w-5xl bg-background">
         <TopBar onProgress={() => setProgressOpen(true)} />
+        {splash && <SplashScreen ready={loaded} onDone={() => setSplash(false)} />}
         <EventDialog />
         <WeekSummary />
         <Sheet open={progressOpen} onOpenChange={setProgressOpen}><SheetContent side="bottom" className="max-h-[85dvh] overflow-y-auto px-0"><SheetHeader className="px-3"><SheetTitle>Fortschritt</SheetTitle></SheetHeader><ProgressPanel /></SheetContent></Sheet>

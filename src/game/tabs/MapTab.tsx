@@ -12,12 +12,14 @@ import { CityMap } from '../CityMap';
 import { NeighborhoodPanel } from '../NeighborhoodPanel';
 import airportHub from '@/assets/airport-hub.jpg';
 import { CafeDetail } from '../CafeDetail';
+import { FlightOverlay } from '../Intro';
 
 export function MapTab({ airportOnly = false }: { airportOnly?: boolean }) {
   const { state, perform } = useGame();
   const [hub, setHub] = useState(airportOnly), [region, setRegion] = useState('all');
   const [cabin, setCabin] = useState<'economy' | 'business'>('economy');
   const [selected, setSelected] = useState<MasterBuilding | null>(null), [tier, setTier] = useState<StoreTier>(1);
+  const [flight, setFlight] = useState<{ from: string; to: string } | null>(null);
   const [purchase, setPurchase] = useState(false), [manage, setManage] = useState(false);
   const city = state.city, airport = MASTER.airports.find(a => a.cityId === city.id);
   const own = state.stores.find(s => s.districtId === selected?.id);
@@ -27,6 +29,7 @@ export function MapTab({ airportOnly = false }: { airportOnly?: boolean }) {
   const cost = selected && district ? purchase ? selected.purchasePrice + GAME_CONFIG.STORE_OPENING_COST[tier] : storeOpeningCost(district, tier) : 0;
   const choose = (b: MasterBuilding) => { setSelected(b); setTier(1); setPurchase(false); setManage(state.stores.some(s => s.districtId === b.id)); };
   return <>
+    {flight && <FlightOverlay from={flight.from} to={flight.to} onDone={() => setFlight(null)} />}
     <div className="scene-heading"><div><p className="eyebrow">{hub ? `${city.name} · ${airport?.airportCode ?? ''}` : `${city.country} · ${airport?.airportCode ?? ''}`}</p><h1>{hub ? 'International Airport' : city.name}</h1></div><Button variant="secondary" size="icon" aria-label={hub ? 'Zur Stadtkarte' : 'Flughafen öffnen'} onClick={() => { setHub(!hub); setSelected(null); }}>{hub ? <ArrowLeft /> : <Plane />}</Button></div>
     {hub ? <>
       <img className="airport-hub-img" src={airportHub} alt="Flughafen-Terminal mit Jets" width={1088} height={1600} />
@@ -35,7 +38,7 @@ export function MapTab({ airportOnly = false }: { airportOnly?: boolean }) {
       <div className="departure-board"><div className="departure-head"><span>Destination</span><span>Ticket</span></div>{MASTER.airports.filter(a => region === 'all' || a.region === region).map(a => {
         const target = state.cities.find(c => c.id === a.cityId); if (!target) return null;
         const ticket = cabin === 'business' ? a.baseTicketBusiness : a.baseTicketEconomy, current = a.cityId === city.id;
-        return <div className="departure-row" key={a.cityId}><img src={cityMapImage(a.cityId) ?? getCityArtwork(target).src} alt="" /><div><strong>{a.cityName}</strong><span>{a.airportCode} · {target.country}</span><small>{state.stores.filter(s => s.cityId === a.cityId).length} eigene Filialen · 30 Standorte</small></div><Button variant={current ? 'ghost' : 'secondary'} disabled={current || state.cash < ticket} aria-label={`Nach ${a.cityName} reisen`} onClick={() => { perform(g => travelToCity(g, a.cityId, cabin)); setHub(airportOnly); setSelected(null); }}>{current ? 'Vor Ort' : eur(ticket)}{!current && <Plane size={14} />}</Button></div>;
+        return <div className="departure-row" key={a.cityId}><img src={cityMapImage(a.cityId) ?? getCityArtwork(target).src} alt="" /><div><strong>{a.cityName}</strong><span>{a.airportCode} · {target.country}</span><small>{state.stores.filter(s => s.cityId === a.cityId).length} eigene Filialen · 30 Standorte</small></div><Button variant={current ? 'ghost' : 'secondary'} disabled={current || state.cash < ticket} aria-label={`Nach ${a.cityName} reisen`} onClick={() => { setFlight({ from: airport?.airportCode ?? city.name, to: a.airportCode }); perform(g => travelToCity(g, a.cityId, cabin)); setHub(airportOnly); setSelected(null); }}>{current ? 'Vor Ort' : eur(ticket)}{!current && <Plane size={14} />}</Button></div>;
       })}</div>
       {state.world.travelHistory.length > 0 && <section className="travel-history"><h2>Letzte Reisen</h2>{state.world.travelHistory.slice(-5).reverse().map((t, i) => <p key={i}>Woche {t.week} · {MASTER.airports.find(a => a.cityId === t.from)?.airportCode ?? t.from} → {MASTER.airports.find(a => a.cityId === t.to)?.airportCode ?? t.to} · {eur(t.cost)}</p>)}</section>}
     </> : <>
