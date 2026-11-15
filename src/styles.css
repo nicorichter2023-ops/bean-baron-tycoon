@@ -831,3 +831,8 @@ html[data-contrast="high"] { --muted-foreground: var(--foreground); --border: va
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 38%, transparent 56%); mask-image: linear-gradient(to bottom, #000 0%, #000 38%, transparent 56%); }
 .campaign-auto { min-height: 44px; align-content: center; cursor: pointer; }
 .campaign-auto > button { min-height: 0 !important; min-width: 0 !important; height: 1.25rem; width: 2.25rem; }
+.cafe-mood-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: .4rem; margin-bottom: .6rem; }
+.cafe-mood-row button { min-height: 44px; border-radius: .6rem; border: 1px solid var(--border); background: var(--card); color: var(--foreground); font-size: .8rem; font-weight: 600; }
+.cafe-mood-row button[aria-checked="true"] { background: var(--primary); color: var(--primary-foreground); border-color: var(--primary); }
+.cafe-style-grid small + small { display: block; }
+.swipe-hint { text-align: center; font-size: .7rem; color: var(--muted-foreground); margin-top: 1rem; }

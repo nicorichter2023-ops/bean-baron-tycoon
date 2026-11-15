@@ -14,7 +14,7 @@ export function ResearchHub() {
   const r = cafeOf(state).research, active = r.active && RESEARCH.find(n => n.id === r.active?.id);
   return <div className="space-y-4">
     <HubHeader art="research" eyebrow="HQ · Forschung" title={`Forschung · ${r.done.length}/${RESEARCH.length}`}>
-      <p className="text-xs text-muted-foreground">{active ? `Läuft: ${active.name} · noch ${r.active?.weeksLeft} Wo.` : 'Kein Projekt aktiv.'}{isExec(state, 'cto') ? ' · CTO startet automatisch das nächste Projekt.' : ''}</p>
+      <p className="text-xs text-muted-foreground">{active ? `Läuft: ${active.name} · noch ${r.active?.weeksLeft} Wo.` : 'Kein Projekt aktiv.'}{isExec(state, 'cto') ? ' · CTO startet automatisch das nächste Café-Projekt und die nächste Konzern-Technologie.' : ''}</p>
     </HubHeader>
     {(Object.keys(BRANCH_LABEL) as Branch[]).map(b => { const nodes = RESEARCH.filter(n => n.branch === b), done = nodes.filter(n => r.done.includes(n.id)).length;
       return <details key={b} className="research-branch" open={b === 'drink'}><summary><strong>{BRANCH_LABEL[b]}</strong><span>{done}/{nodes.length}</span></summary>

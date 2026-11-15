@@ -66,7 +66,7 @@ export const hasTerrace = (g: GameState, s: Store) => storeCafe(g, s).gear.terra
 /** Price of switching from the saved design to a draft; unchanged parts are free. */
 export function designCost(g: GameState, s: Store, draft: CafeDesign) {
   const cur = designOf(storeCafe(g, s)), st = stageOf(g, s);
-  return (draft.style !== cur.style ? designPrice.style(st) : 0) + (draft.palette !== cur.palette ? designPrice.palette(st) : 0) + (draft.terrace !== cur.terrace ? designPrice.terrace : 0);
+  return (draft.style !== cur.style ? designPrice.style(st) : 0) + (draft.terrace !== cur.terrace ? designPrice.terrace : 0);
 }
 /** Commits an editor draft: validates, charges once, persists. */
 export function applyDesign(g: GameState, storeId: string, draft: CafeDesign): ActionResult {

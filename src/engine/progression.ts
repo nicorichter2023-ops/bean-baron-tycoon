@@ -161,7 +161,8 @@ export function gateEvent(g: GameState, p: ProgressState): { game: GameState; p:
 export function processProgressWeek(state: GameState, exp: ExpansionState) {
   const p0 = progressOf(state);
   const result = processManagementWeek(state, exp);
-  let g = result.game;
+  // base engine drops unknown fields: keep persisted café gear/design/menu
+  let g: GameState = result.game.cafe || !state.cafe ? result.game : { ...result.game, cafe: state.cafe };
   if (g.week === state.week) return { game: { ...g, progress: p0 }, exp: result.exp };
   let p: ProgressState = { ...p0, stores: { ...p0.stores } };
   // levers + stages
