@@ -62,7 +62,7 @@ export const researchWeeks = (tier: number) => 1 + Math.ceil(tier / 2);
 const BONUS: Record<string, number> = { b1: .015, b2: .015, b3: .015, b4: .02, b5: .02, b6: .02, b7: .025, b8: .03, d7: .02, d8: .03, o1: .015, o4: .02, o5: .02, o8: .025, m2: .015, m3: .02, m5: .02, m6: .025, m8: .03 };
 export const researchRevenueBonus = (done: string[]) => done.reduce((n, id) => n + (BONUS[id] ?? (FX[id]?.[0] === 'rev' ? FX[id][1] : 0)), 0);
 export const researchRepBonus = (done: string[]) => done.reduce((n, id) => n + (FX[id]?.[0] === 'rep' ? FX[id][1] : 0), 0) + (done.includes('m1') ? .2 : 0) + (done.includes('m4') ? .2 : 0) + (done.includes('m7') ? .3 : 0);
-export const researchWageFactor = (done: string[]) => Math.max(0.7, 1 - done.reduce((n, id) => n + (FX[id]?.[0] === 'wage' ? FX[id][1] : 0), 0) - (done.includes('o3') ? .03 : 0) - (done.includes('o6') ? .03 : 0);
+export const researchWageFactor = (done: string[]) => Math.max(0.7, 1 - done.reduce((n, id) => n + (FX[id]?.[0] === 'wage' ? FX[id][1] : 0), 0) - (done.includes('o3') ? .03 : 0) - (done.includes('o6') ? .03 : 0));
 
 export type GearCategory = 'espresso' | 'grinder' | 'seating' | 'vitrine' | 'terrace';
 export const GEAR: Record<GearCategory, { label: string; levels: string[]; base: number; bonus: number }> = {

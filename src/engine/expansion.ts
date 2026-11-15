@@ -10,7 +10,7 @@ export type Base = 'espresso' | 'double' | 'coldbrew' | 'pourover';
 export type Milk = 'none' | 'whole' | 'oat' | 'almond';
 export type Extra = 'none' | 'caramel' | 'vanilla' | 'cinnamon';
 export interface Recipe { id: string; name: string; base: Base; milk: Milk; extra: Extra; price: number; createdWeek: number; }
-export type CampaignKind = 'social' | 'poster' | 'tasting';
+export type CampaignKind = 'social' | 'poster' | 'tasting' | 'tiktok' | 'campus' | 'radio' | 'festival' | 'influencer' | 'loyalty' | 'subway' | 'tv' | 'sponsoring';
 export interface Campaign { id: string; kind: CampaignKind; cityId: string; weeksLeft: number; }
 export interface WeekRecord { week: number; guests: number; revenue: number; campaigns: number; }
 export interface ExpansionState { schemaVersion: number; recipes: Recipe[]; campaigns: Campaign[]; lastBonus: number; history: WeekRecord[]; }
@@ -31,6 +31,15 @@ export const CAMPAIGNS: Record<CampaignKind, { label: string; cost: number; week
   social: { label: 'Social-Media-Hype', cost: 2500, weeks: 2, boost: 0.15, reputation: 0.5 },
   poster: { label: 'Plakatwerbung', cost: 4000, weeks: 6, boost: 0.07, reputation: 0.3 },
   tasting: { label: 'Barista-Tasting', cost: 1500, weeks: 1, boost: 0.05, reputation: 2 },
+  tiktok: { label: 'TikTok-/Reels-Blitz', cost: 3000, weeks: 1, boost: 0.2, reputation: 0.6 },
+  campus: { label: 'Campus-Rabattwoche', cost: 2000, weeks: 2, boost: 0.09, reputation: 0.4 },
+  radio: { label: 'Lokalradio-Spot', cost: 5000, weeks: 3, boost: 0.08, reputation: 0.4 },
+  festival: { label: 'Kaffee-Festival-Stand', cost: 7000, weeks: 1, boost: 0.12, reputation: 2.5 },
+  influencer: { label: 'Influencer-Kooperation', cost: 9000, weeks: 2, boost: 0.16, reputation: 1 },
+  loyalty: { label: 'Treuepunkte-Aktion', cost: 3500, weeks: 4, boost: 0.06, reputation: 0.3 },
+  subway: { label: 'U-Bahn- & City-Plakate', cost: 12000, weeks: 6, boost: 0.1, reputation: 0.5 },
+  tv: { label: 'TV- & Streaming-Spot', cost: 30000, weeks: 4, boost: 0.18, reputation: 1.5 },
+  sponsoring: { label: 'Sport-Sponsoring', cost: 22000, weeks: 8, boost: 0.07, reputation: 1.2 },
 };
 // Vorlieben je Stadtbiom: passende Zutaten geben Bonus.
 export const BIOME_TASTE: Record<string, { milk: Milk; base: Base }> = {
