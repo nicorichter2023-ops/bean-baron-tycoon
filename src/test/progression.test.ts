@@ -21,9 +21,9 @@ describe('Fortschritt', () => {
     expect(leversOf(m, m.stores[0]).stage).toBe(legacyStage(g.stores[0].tier));
   });
   it('Abhängigkeiten sind ohne Kreise erreichbar', () => {
-    const seen = new Set<string>(); const visit = (n: string, path: string[]): void => { expect(path).not.toContain(n); seen.add(n); UNLOCK_GRAPH[n].forEach(d => visit(d, [...path, n])); };
+    const seen = new Set<string>(); const visit = (n: string, path: string[]): void => { expect(path).not.toContain(n); seen.add(n); UNLOCK_GRAPH[n]!.forEach(d => visit(d, [...path, n])); };
     Object.keys(UNLOCK_GRAPH).forEach(n => visit(n, [])); expect(seen.size).toBe(10);
-    for (let i = 1; i < RANKS.length; i++) expect(RANKS[i].maxStage).toBeGreaterThanOrEqual(RANKS[i - 1].maxStage);
+    for (let i = 1; i < RANKS.length; i++) expect(RANKS[i]!.maxStage).toBeGreaterThanOrEqual(RANKS[i - 1]!.maxStage);
   });
   it('zu Beginn sind 3 Städte offen und gesperrte Städte nicht erreichbar', () => {
     const g = createInitialState(); const open = openCityIds(g);
