@@ -141,7 +141,7 @@ describe("Coffee Empire Inhalte und Spieleraktionen", () => {
     const turned = processTurn(createInitialState());
     saveGame(turned);
     const loaded = loadGame();
-    expect(loaded.schemaVersion).toBe(5);
+    expect(loaded.schemaVersion).toBe(6);
     expect(loaded.week).toBe(2);
     expect(loaded.pendingEvent?.id).toBe(turned.pendingEvent?.id);
   });

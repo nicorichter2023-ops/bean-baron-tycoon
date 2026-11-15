@@ -92,7 +92,7 @@ describe('Filial-Ausstattung', () => {
   it('Schema-3-Spielstände erhalten Daten und kostenlose Standards; Upgrades bleiben nach Laden erhalten', () => {
     const g = createInitialState();
     localStorage.setItem('coffee-empire-save', JSON.stringify({ ...g, schemaVersion: 3, stores: g.stores.map(({ equipment: _equipment, ...s }) => s) }));
-    const migrated = loadGame(); expect(migrated.schemaVersion).toBe(5); expect(migrated.cash).toBe(50000);
+    const migrated = loadGame(); expect(migrated.schemaVersion).toBe(6); expect(migrated.cash).toBe(50000);
     expect(migrated.management).toEqual(g.management); expect(migrated.stores[0]?.equipment.bookValue).toBe(0);
     const upgraded = upgrade(migrated, 'grinder', 1); saveGame(upgraded);
     expect(loadGame().stores[0]?.equipment).toEqual(upgraded.stores[0]?.equipment);
