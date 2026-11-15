@@ -12,6 +12,7 @@ import { CityMap } from '../CityMap';
 import { NeighborhoodPanel } from '../NeighborhoodPanel';
 import nycPanorama from '@/assets/nyc-landmarks-panorama.jpg';
 import { cityMapImage } from '@/data/cityMaps';
+import airportHub from '@/assets/airport-hub.jpg';
 import { CafeDetail } from '../CafeDetail';
 
 export function MapTab({ airportOnly = false }: { airportOnly?: boolean }) {
@@ -30,6 +31,7 @@ export function MapTab({ airportOnly = false }: { airportOnly?: boolean }) {
   return <>
     <div className="scene-heading"><div><p className="eyebrow">{hub ? `${city.name} · ${airport?.airportCode ?? ''}` : `${city.country} · ${airport?.airportCode ?? ''}`}</p><h1>{hub ? 'International Airport' : city.name}</h1></div><Button variant="secondary" size="icon" aria-label={hub ? 'Zur Stadtkarte' : 'Flughafen öffnen'} onClick={() => { setHub(!hub); setSelected(null); }}>{hub ? <ArrowLeft /> : <Plane />}</Button></div>
     {hub ? <>
+      <img className="airport-hub-img" src={airportHub} alt="Flughafen-Terminal mit Jets" width={1088} height={1600} />
       <div className="airport-banner"><Plane size={36} /><div><span>COFFEE EMPIRE · DEPARTURES</span><strong>{airport?.airportCode ?? 'HQ'} → WORLD</strong><p>20 Destinationen · {state.world.travelHistory.length} Reisen</p></div></div>
       <div className="airport-controls"><div><Button variant={cabin === 'economy' ? 'secondary' : 'ghost'} onClick={() => setCabin('economy')}>Economy</Button><Button variant={cabin === 'business' ? 'secondary' : 'ghost'} onClick={() => setCabin('business')}>Business</Button></div><select aria-label="Reiseregion" value={region} onChange={e => setRegion(e.target.value)}><option value="all">Alle Regionen</option><option value="EMEA">Europa & Afrika</option><option value="AMER">Amerika</option><option value="APAC">Asien & Pazifik</option></select></div>
       <div className="departure-board"><div className="departure-head"><span>Destination</span><span>Ticket</span></div>{MASTER.airports.filter(a => region === 'all' || a.region === region).map(a => {
