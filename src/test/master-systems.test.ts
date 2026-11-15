@@ -60,7 +60,7 @@ describe('Konsolidierte Master-Mechaniken', () => {
     expect(processTurn(upgraded).roastery.roastedStockKg).toBe(processTurn(g).roastery.roastedStockKg * 2);
   });
   it('51 % übertragen Filialen, Röstkapazität und Verträge ohne erneuten Firmenpreis', () => {
-    const g = { ...rich(), cash: 1_000_000_000_000_000 }, company = g.capitalMarkets.rivals[0]; if (!company) throw new Error('Firma fehlt');
+    const g = { ...rich(), cash: 1_000_000_000_000_000 }, company = g.capitalMarkets.rivals.find(c => Object.values(g.world.occupants).includes(c.id)); if (!company) throw new Error('Firma fehlt');
     const bought = buyShares(g, company.id, Math.ceil(company.sharesOutstanding * .51)); expect(bought.ok, bought.reason).toBe(true);
     const r = takeoverMajority(bought.state, company.id); expect(r.ok, r.reason).toBe(true); expect(r.state.cash).toBe(bought.state.cash); expect(r.state.stores.length).toBeGreaterThan(g.stores.length); expect(r.state.roastery.capacityKgPerWeek).toBe(g.roastery.capacityKgPerWeek + 1500); expect(r.state.b2b.contracts.at(-1)?.weeksRemaining).toBe(52);
   });
