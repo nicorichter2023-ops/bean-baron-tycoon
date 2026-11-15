@@ -543,3 +543,21 @@ select, input { min-height:44px; }
   .traffic-route-0 { left:140px; } .traffic-route-1 { left:700px; } .traffic-route-2 { left:320px; } .traffic-route-3 { left:810px; } .traffic-route-4 { top:230px; } .traffic-route-5 { top:600px; }
   .espresso-steam i { opacity:.15; }
 }
+
+/* Coffee-Inc-Testansicht New York */
+.nyc-photo-map { border-radius: 1rem; overflow: hidden; border: 1px solid var(--border); }
+.nyc-photo-viewport { width: 100% !important; height: min(70dvh, 640px) !important; }
+.nyc-photo-content { width: 100% !important; position: relative; }
+.nyc-photo-content img { width: 100%; height: auto; display: block; user-select: none; }
+.ci-pin { position: absolute; translate: -50% -100%; min-width: 44px; min-height: 44px; display: grid; place-items: center; padding: 0 0 10px; background: none; border: 0; animation: float-pin 3s ease-in-out infinite; }
+.ci-pin span { display: grid; place-items: center; min-width: 38px; height: 34px; padding: 0 5px; border-radius: 9px; font: 800 9px/1 system-ui; color: var(--primary-foreground); background: color-mix(in oklab, var(--card) 85%, transparent); border: 2px solid var(--border); box-shadow: 0 4px 10px color-mix(in oklab, var(--background) 60%, transparent); position: relative; }
+.ci-pin span::after { content: ''; position: absolute; bottom: -9px; left: 50%; translate: -50% 0; border: 7px solid transparent; border-top-color: inherit; border-bottom: 0; }
+.ci-pin[data-status='free'] span { background: var(--destructive); color: var(--destructive-foreground); }
+.ci-pin[data-status='own'] span { background: var(--primary); font-size: 16px; }
+.ci-pin[data-status='rival'] span { background: var(--accent); color: var(--accent-foreground); }
+.ci-pin-airport span { background: var(--secondary); color: var(--secondary-foreground); }
+.cafe-photo { position: relative; border-radius: 1rem; overflow: hidden; }
+.cafe-photo img { width: 100%; height: auto; display: block; }
+.cafe-photo-tags { position: absolute; left: 8px; bottom: 8px; display: flex; gap: 6px; flex-wrap: wrap; }
+.cafe-photo-tags span { font-size: 11px; padding: 4px 8px; border-radius: 999px; background: color-mix(in oklab, var(--card) 85%, transparent); color: var(--foreground); }
+@media (prefers-reduced-motion: reduce) { .ci-pin { animation: none; } }
