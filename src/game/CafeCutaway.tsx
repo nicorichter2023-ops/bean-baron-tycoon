@@ -5,7 +5,7 @@ import { CafeSteam, NeonSign } from './VisualEffects';
 
 export function CafeCutaway({ store }: { store: Store }) {
   const e = equipmentOf(store);
-  const cutArt = (i: number) => cutArt(i).replace('.webp','-grounded.webp');
+  const cutArt = (i: number) => art('interior', i).replace('.webp','-grounded.webp');
   const eqArt = (category: 'espresso' | 'grinder' | 'interior', level: number) => equipmentArt(category,level).replace('.webp','-grounded.webp');
   const seats = store.tier === 1 && e.interior === 0 ? 1 : store.tier + e.interior;
   return <div className="cafe-cutaway" data-tier={store.tier} aria-label={`Café-Diorama · ${['','Kiosk','Café','Flagship'][store.tier]}`}>

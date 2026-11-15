@@ -385,6 +385,8 @@ select, input { min-height:44px; }
 .iso-land { fill:var(--city-ground); stroke:var(--city-pavement); stroke-width:8px; }
 .iso-road { fill:var(--city-road); stroke:var(--ny-curb); stroke-width:5px; }
 .iso-bridge { fill:var(--city-road); stroke:var(--city-pavement); stroke-width:5px; }
+.regional-landmark { width:100%; height:100%; }
+.landmark-shadow { fill:var(--pin-shadow); }.landmark-building { fill:var(--city-road); stroke:var(--ny-curb); stroke-width:3px; }.landmark-stone { fill:var(--city-pavement); stroke:var(--ny-curb); stroke-width:3px; }.landmark-window { fill:none; stroke:var(--city-line); stroke-width:4px; }.landmark-bridge { fill:none; stroke:var(--rival-aromalux); stroke-width:7px; }.landmark-cable { stroke:var(--ny-curb); stroke-width:2px; }.landmark-roof { fill:var(--ny-tree); stroke:var(--city-pavement); stroke-width:2px; }
 .iso-lane-line { stroke:var(--city-line); stroke-width:2px; stroke-dasharray:12 20; opacity:.7; }
 .iso-park { fill:var(--ny-park); stroke:var(--city-pavement); stroke-width:9px; }
 .iso-park-path { fill:var(--city-pavement); }
