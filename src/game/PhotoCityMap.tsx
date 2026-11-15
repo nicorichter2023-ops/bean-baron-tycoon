@@ -31,7 +31,7 @@ export function PhotoCityMap({ cityId, cityName, airportCode, buildings, onBuild
       <button onClick={onAirport} aria-label="Flughafen öffnen">✈</button>
       <button aria-pressed={labels} onClick={() => setLabels(!labels)}>{labels ? 'Aa' : 'Aa̶'}</button>
     </div>
-    <TransformWrapper ref={zoom} initialScale={1} minScale={1} maxScale={3} limitToBounds centerZoomedOut={false} alignmentAnimation={{ sizeX: 0, sizeY: 0 }} doubleClick={{ disabled: true }}>
+    <TransformWrapper ref={zoom} initialScale={1} minScale={1} maxScale={3} limitToBounds centerZoomedOut={false} doubleClick={{ disabled: true }}>
       <TransformComponent wrapperClass="nyc-photo-viewport" contentClass="nyc-photo-content">
         <img src={src} alt={`Stadtkarte ${cityName}`} width={1088} height={1920} draggable={false} onError={onError} />
         {buildings.slice(0, 30).map((b, i) => {
