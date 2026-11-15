@@ -268,7 +268,8 @@ function patchWeek(g: GameState, income: number, cost: number, notes: string[]):
 export function processEmpireWeek(state: GameState, exp: ExpansionState) {
   const r = processProgressWeek(state, exp);
   if (r.game.week === state.week) return r;
-  let g: GameState = { ...r.game, empire: empireOf({ ...r.game, empire: r.game.empire ?? state.empire }) }, x = r.exp, income = 0, cost = 0; const notes: string[] = [];
+  const kept = r.game.empire ?? state.empire;
+  let g: GameState = { ...r.game, empire: empireOf(kept ? { ...r.game, empire: kept } : r.game) }, x = r.exp, income = 0, cost = 0; const notes: string[] = [];
   const sup = supplyWeekly(g); income += sup.total;
   if (sup.total > 0) notes.push(`Lieferkette: ${Math.round(sup.savings).toLocaleString('de-DE')} € Bohnen gespart · ${Math.round(sup.b2b + sup.exportIncome + sup.quality).toLocaleString('de-DE')} € Zusatzerlös.`);
   const v = stepVentures(g); g = { ...g, empire: v.e }; income += v.income; cost += v.cost; notes.push(...v.notes);
