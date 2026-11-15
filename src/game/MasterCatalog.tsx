@@ -31,13 +31,16 @@ const LABELS: Record<string, string> = {
 function Values({ data }: { data: Record<string, unknown> }) {
   return <dl className="catalog-values">{Object.entries(data).filter(([k]) => !['description', 'bio', 'name', 'id'].includes(k)).map(([key, value]) => <div key={key}><dt>{LABELS[key] ?? key}</dt><dd>{value !== null && typeof value === 'object' ? <Values data={value as Record<string, unknown>} /> : typeof value === 'number' ? value.toLocaleString('de-DE') : String(value ?? '—')}</dd></div>)}</dl>;
 }
-export function MasterCatalog() {
+const HUB_KINDS = ['research', 'celebrity', 'csr', 'app'];
+/** `only` embeds a subset inside the research/marketing hubs; the default view shows the remaining corporate catalogs. */
+export function MasterCatalog({ only, embedded = false }: { only?: CatalogKind[]; embedded?: boolean } = {}) {
   const { state, perform } = useGame();
-  const [kind, setKind] = useState<CatalogKind>('research'), [query, setQuery] = useState('');
-  const group = GROUPS.find(g => g[0] === kind) ?? GROUPS[0];
+  const groups = GROUPS.filter(g => only ? only.includes(g[0]) : !HUB_KINDS.includes(g[0]));
+  const [kind, setKind] = useState<CatalogKind>(groups[0]![0]), [query, setQuery] = useState('');
+  const group = groups.find(g => g[0] === kind) ?? groups[0]!;
   return <>
-    <div className="scene-heading"><div><p className="eyebrow">Coffee Empire · Entwicklung</p><h1>Konzernentwicklung</h1></div><FlaskConical className="text-primary" /></div>
-    <div className="management-switch">{GROUPS.map(([id, label, items]) => <Button key={id} variant={id === kind ? 'secondary' : 'ghost'} onClick={() => { setKind(id); setQuery(''); }}>{label} · {items.length}</Button>)}</div>
+    {embedded ? <h2 className="font-display text-lg font-bold">{only?.includes('research') ? 'Konzern-Technologien' : 'Botschafter, Nachhaltigkeit & App'}</h2> : <div className="scene-heading"><div><p className="eyebrow">Coffee Empire · Entwicklung</p><h1>Konzernentwicklung</h1></div><FlaskConical className="text-primary" /></div>}
+    <div className="management-switch">{groups.map(([id, label, items]) => <Button key={id} variant={id === kind ? 'secondary' : 'ghost'} onClick={() => { setKind(id); setQuery(''); }}>{label} · {items.length}</Button>)}</div>
     <label className="catalog-search"><span>{group[1]} suchen</span><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Name oder Spezialisierung" /></label>
     {kind === 'research' && state.world.research.length > 0 && <div className="research-progress">{state.world.research.map(r => <p key={r.id}>{MASTER.techTree.find(t => t.id === r.id)?.name} · noch {Math.max(0, r.finishWeek - state.week)} Wochen</p>)}</div>}
     <div className="catalog-grid">{group[2].filter(item => JSON.stringify(item).toLowerCase().includes(query.toLowerCase())).map(item => {
