@@ -8,6 +8,8 @@ import { stableHash } from '@/engine/world';
 import { useGame } from './GameContext';
 import { cityBuildingArt, MAP_PEOPLE, airportArt } from './sheetArt';
 import { getStoreArtwork, getCityArtwork } from './artwork';
+import { CityTraffic, NeonSign, SceneAsset } from './VisualEffects';
+import { newYorkSlot } from './visualAssets';
 
 export function CityMap({ city, onBuilding, onAirport }: { city: City; onBuilding: (b: MasterBuilding) => void; onAirport: () => void }) {
   const { state } = useGame(); const [zone, setZone] = useState('all'), [people, setPeople] = useState(true);
@@ -32,12 +34,14 @@ export function CityMap({ city, onBuilding, onAirport }: { city: City; onBuildin
               const occupant = state.world.occupants[b.id], rival = MASTER.competitors.find(c => c.id === occupant);
               const visible = zone === 'all' || zone === b.zoneType;
               return <Button variant="ghost" key={b.id} className="city-property" data-zone={b.zoneType} data-status={own ? 'own' : occupant ? occupant : 'free'} data-dim={!visible || undefined} aria-label={`${b.name} · ${own ? 'Deine Filiale' : rival?.name ?? 'Zu vermieten'}`} style={{ left: `${105 + col * 152 + (row % 2) * 24}px`, top: `${100 + row * 122}px` }} onClick={() => onBuilding(b)}>
-                <span className="property-base" /><img draggable={false} src={own ? getStoreArtwork(city.biome, own.tier) : cityBuildingArt(b.zoneType, i + offset)} alt="" />
-                {labels && <span className="property-status">{own ? '☕' : rival ? rival.name.split(' ')[0] : '＋'}<small>{b.id.split('-').at(-1)}</small></span>}
+                <span className="property-base" /><SceneAsset slot={newYorkSlot(city.id, i + offset)} draggable={false} fallback={own ? getStoreArtwork(city.biome, own.tier) : cityBuildingArt(b.zoneType, i + offset)} alt="" />
+                {own && <NeonSign shop />}
+                {labels && <span className="property-pin-anchor"><span className="pin-shadow" /><span className="property-status float-pin">{own ? '☕' : rival ? rival.name.split(' ')[0] : '＋'}<small>{b.id.split('-').at(-1)}</small></span></span>}
               </Button>;
             })}
             <Button variant="ghost" className="city-airport" onClick={onAirport} aria-label="Flughafen öffnen"><img src={airportArt} alt="" /><span>✈ {source.airportCode}</span></Button>
             {people && Array.from({ length: 18 }, (_, i) => <img key={i} className={`city-pedestrian pedestrian-${i % 3}`} src={MAP_PEOPLE[i % MAP_PEOPLE.length]} alt="" style={{ left: `${80 + (i % 6) * 148}px`, top: `${214 + Math.floor(i / 6) * 244}px`, animationDelay: `${-i * 1.7}s`, animationDuration: `${12 + i % 7}s` }} />)}
+            <CityTraffic />
           </div>
         </TransformComponent>
       </>}
