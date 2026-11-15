@@ -57,7 +57,7 @@ function GameWorld() {
   const content = section === 'development' ? <MasterCatalog /> : section === 'hq' ? <HQPanel /> : section === 'accounting' ? <AccountingPanel /> : section === 'lab' ? <LabPanel />
     : section === 'cafe' || section === 'roastery' ? <SceneView place={place} onPlace={setPlace} destinations={destinations} />
     : <SectionFilter.Provider value={section === 'stores' ? ['Filialen'] : section === 'new' ? ['Neue Filiale'] : section === 'holding' ? ['Holding', 'Letzte Woche'] : section === 'startups' ? ['VC-Startups'] : section === 'bank' ? ['Bankkredit'] : section === 'stocks' ? ['Aktienmarkt'] : section === 'market' ? ['Kaffee-Futures', 'Bohnen einkaufen'] : ['B2B-Vertrag', 'Aktive Lieferverträge']}>
-      {tab === 'empire' || section === 'holding' || section === 'startups' ? <EmpireTab /> : section === 'market' || section === 'b2b' ? <MarketTab /> : <FinanceTab />}
+      {tab === 'empire' || section === 'holding' ? <EmpireTab /> : section === 'market' || section === 'b2b' ? <MarketTab /> : <FinanceTab />}
     </SectionFilter.Provider>;
   return (
       <div className="game-world mx-auto min-h-dvh max-w-5xl bg-background">

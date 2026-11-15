@@ -26,7 +26,7 @@ export function IsometricCityScene({ city, buildings, offset, zone, labels, airp
   const plots = buildings.map((building, index) => ({ ...cityGridPosition(index), id: building.id, layer: 'buildings' as const, building, index }));
   const objects = sortIsometricObjects([
     ...plots.map(p => ({ ...p, kind: 'property' as const })),
-    { id: 'landmark', x: 6.3, y: 8.25, layer: 'buildings' as const, kind: 'landmark' as const },
+    { id: 'landmark', x: isNewYork ? 6.3 : 6.05, y: isNewYork ? 8.25 : -1.15, layer: 'buildings' as const, kind: 'landmark' as const },
     { id: 'airport', x: -.15, y: 7.15, layer: 'buildings' as const, kind: 'airport' as const },
   ]);
   const roads = [
@@ -49,7 +49,7 @@ export function IsometricCityScene({ city, buildings, offset, zone, labels, airp
       <polygon className="iso-park" points={rect(.15, -2.25, 4.75, 1.2)} />
       <polygon className="iso-park-path" points={rect(.25, -1.72, 4.55, .13)} />
       {Array.from({length: 16}, (_,i) => { const p=project({x:.4+(i%8)*.57,y:-2.06+Math.floor(i/8)*.7}); return <g key={i}><ellipse className="iso-tree-shadow" cx={p.screenX+4} cy={p.screenY+5} rx="15" ry="6"/><ellipse className="iso-tree" cx={p.screenX} cy={p.screenY-8} rx="12" ry="16"/></g>; })}
-      <polygon className="iso-liberty-island" points={rect(5.65, 7.65, 1.3, 1.2)} />
+      {isNewYork && <polygon className="iso-liberty-island" points={rect(5.65, 7.65, 1.3, 1.2)} />}
       <text className="iso-map-label" x="1320" y="205">{geography?.park}</text>
       <text className="iso-water-label" x="205" y="700" transform="rotate(27 205 700)">{isNewYork ? 'HUDSON RIVER' : geography?.water}</text>
       <text className="iso-water-label" x="1700" y="760" transform="rotate(-27 1700 760)">{isNewYork ? 'EAST RIVER' : city.name}</text>
