@@ -33,5 +33,5 @@
 - [x] Editor-Farbe nur auf Wandflächen
 - [ ] Balance: Mieten großer Standorte sind hoch (23 Kioske ≈ −58 Tsd €/Woche ohne Gebäudekauf) – Wunschwerte vom Nutzer
 - [x] Fehler: Café-Upgrades setzten sich jede Woche zurück
-- [ ] Editor: 3 Grundstimmungen × 4 Designs = 12 je Bildgruppe (4 Gruppen, 48 Bilder), Farbfilter entfernt
-- [ ] Menüs zusammenfassen, Wischen zwischen Bereichen, Entwicklung mit Forschung zusammenlegen, CTO startet automatisch
+- [x] Editor: 3 Grundstimmungen × 4 Designs = 12 je Bildgruppe (4 Gruppen, 48 Bilder), Farbfilter entfernt
+- [x] Menüs zusammenfassen, Wischen zwischen Bereichen, Entwicklung mit Forschung zusammenlegen, CTO startet automatisch
