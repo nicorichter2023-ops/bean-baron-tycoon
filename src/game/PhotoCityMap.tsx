@@ -3,11 +3,15 @@ import { TransformWrapper, TransformComponent, type ReactZoomPanPinchRef } from 
 import { MASTER, type MasterBuilding } from '@/data/master';
 import { CITY_SPOTS, cityMapImage } from '@/data/cityMaps';
 import { useGame } from './GameContext';
+import { Button } from '@/components/ui/button';
+import { tycoonOf, vibeScore } from '@/engine/tycoon';
 
 /** Painted city map (same scheme for all cities): pins sit on land blocks of the artwork. */
 export function PhotoCityMap({ cityId, cityName, airportCode, buildings, onBuilding, onAirport, onError }: { cityId: string; cityName: string; airportCode: string; buildings: MasterBuilding[]; onBuilding: (b: MasterBuilding) => void; onAirport: () => void; onError: () => void }) {
   const { state } = useGame();
   const [labels, setLabels] = useState(true);
+  const [mode, setMode] = useState<'normal' | 'vibe' | 'rival'>('normal');
+  const franchise = tycoonOf(state).franchises;
   const zoom = useRef<ReactZoomPanPinchRef>(null);
   const cycle = useRef<Record<string, number>>({});
   const focus = (status: string) => {
@@ -17,7 +21,7 @@ export function PhotoCityMap({ cityId, cityName, airportCode, buildings, onBuild
     const el = els[n % els.length]; if (!el) return; zoom.current?.zoomToElement(el, 2.2, 350);
     if (status !== 'own') { const b = buildings.find(x => x.id === el.dataset['id']); if (b) onBuilding(b); }
   };
-  const count = (st: string) => buildings.slice(0, 30).filter(b => { const own = state.stores.some(s => s.districtId === b.id); const rival = Boolean(state.world.occupants[b.id]); return st === 'own' ? own : st === 'rival' ? !own && rival : !own && !rival; }).length;
+  const count = (st: string) => buildings.slice(0, 30).filter(b => { const store = state.stores.find(s => s.districtId === b.id), own = !!store, fr = franchise.some(f => f.districtId === b.id); const rival = Boolean(state.world.occupants[b.id]); return st === 'own' ? own : st === 'rival' ? !own && rival : !own && !rival; }).length;
   useEffect(() => {
     const reset = () => zoom.current?.resetTransform(0);
     window.addEventListener('resize', reset);
@@ -27,7 +31,8 @@ export function PhotoCityMap({ cityId, cityName, airportCode, buildings, onBuild
   const spots = CITY_SPOTS[cityId] ?? [];
   if (!src) { onError(); return null; }
   const airport = spots[30] ?? [12, 92];
-  return <div className="nyc-photo-map" data-labels={labels}>
+  return <div className="nyc-photo-map" data-labels={labels} data-map-mode={mode}>
+    <div className="map-mode-bar" aria-label="Kartenmodus">{([['normal', 'Normal'], ['vibe', 'Vibe-Heatmap'], ['rival', 'Rivalenzonen']] as const).map(([id, label]) => <Button size="sm" key={id} variant={mode === id ? 'secondary' : 'ghost'} aria-pressed={mode === id} onClick={() => setMode(id)}>{label}</Button>)}</div>
     <div className="map-focus-bar">
       <button onClick={() => zoom.current?.resetTransform(300)}>Übersicht</button>
       <button onClick={() => focus('own')}>Meine {count('own')}</button>
@@ -44,8 +49,8 @@ export function PhotoCityMap({ cityId, cityName, airportCode, buildings, onBuild
           const rival = MASTER.competitors.find(c => c.id === state.world.occupants[b.id]);
           const [x, y] = spots[i] ?? [50, 50];
           const forSale = !own && !rival && (b.purchasePrice ?? 0) > 0 && i % 3 === 0;
-          return <button key={b.id} className="ci-pin" data-status={own ? 'own' : rival ? 'rival' : 'free'} data-rival={rival?.id} data-id={b.id} style={{ left: `${x}%`, top: `${y}%` }} aria-label={`${b.name} · ${own ? 'Deine Filiale' : rival?.name ?? (forSale ? 'Zu verkaufen' : 'Zu vermieten')}`} onClick={() => onBuilding(b)}>
-            <span>{own ? '☕' : rival ? rival.name.slice(0, 2).toUpperCase() : forSale ? <>FOR<br />SALE</> : <>FOR<br />LEASE</>}</span>
+          return <button key={b.id} className="ci-pin" data-status={own ? 'own' : fr ? 'franchise' : rival ? 'rival' : 'free'} data-rival={rival?.id} data-id={b.id} style={{ left: `${x}%`, top: `${y}%` }} aria-label={`${b.name} · ${own ? 'Deine Filiale' : fr ? 'Franchise' : rival?.name ?? (forSale ? 'Zu verkaufen' : 'Zu vermieten')}`} onClick={() => onBuilding(b)}>
+            <span>{mode === 'vibe' ? store ? vibeScore(state, store) : b.clientele === 'creatives' ? 'Kreativ' : b.clientele === 'business' ? 'Speed' : b.clientele === 'students' ? 'Budget' : 'Genuss' : own ? '☕' : fr ? 'FR' : rival ? rival.name.slice(0, 2).toUpperCase() : forSale ? <>FOR<br />SALE</> : <>FOR<br />LEASE</>}</span>
           </button>;
         })}
         <button className="ci-pin ci-pin-airport" style={{ left: `${airport[0]}%`, top: `${airport[1]}%` }} aria-label="Flughafen öffnen" onClick={onAirport}><span>✈ {airportCode}</span></button>
