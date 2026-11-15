@@ -2,6 +2,8 @@ import { useContext, useState } from "react";
 import { ArrowUpCircle, Factory, MapPin, UserMinus, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GAME_CONFIG, purchaseRoastery } from "@/engine";
+import { stageUpgrade, leversOf } from "@/engine/progression";
+import { stg } from "@/engine/unlocks";
 import { fireEmployee, hireEmployee, openStore, storeOpeningCost, upgradeStore } from "@/engine/engine";
 import { eur, useGame } from "../GameContext";
 import { translateEngineNote } from "../logMessages";
@@ -87,6 +89,7 @@ export function EmpireTab() {
               <img src={getStoreArtwork(city?.biome ?? "european_classic", store.tier)} alt={`${TIER_NAME[store.tier]} ${store.name}`} loading="lazy" decoding="async" className="h-28 w-28 shrink-0 rounded-lg bg-artwork object-contain p-1" />
               <div className="min-w-0 flex-1"><div className="font-semibold">{store.name}</div><div className="mt-1 text-xs text-muted-foreground">{city?.name} · {TIER_NAME[store.tier]}<br />Qualität {Math.round(store.qualityIndex)}</div>
                 <div className="mt-2 text-xs"><div className="font-mono font-semibold">{eur(store.weeklyRevenue)}</div><div className="text-muted-foreground">{store.customersServedLastWeek} Kunden</div></div></div></div>
+            {leversOf(state, store).stage < 7 && <Button className="mt-3 min-h-11 w-full" onClick={() => perform((current) => stageUpgrade(current, store.id))}>Schnell ausbauen · {stg(leversOf(state, store).stage).label} · {eur(stg(leversOf(state, store).stage).cost)}</Button>}
             <div className="mt-3 grid grid-cols-2 gap-2">
               <Button size="sm" variant="outline" onClick={() => perform((current) => hireEmployee(current, store.id, "barista"))}><UserPlus /> Barista</Button>
               <Button size="sm" variant="outline" onClick={() => perform((current) => hireEmployee(current, store.id, "manager"))}><UserPlus /> Manager</Button>
