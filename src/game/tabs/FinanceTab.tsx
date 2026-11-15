@@ -1,17 +1,16 @@
 import { useState } from "react";
-import { Banknote, Building, Lock, RotateCcw, Rocket } from "lucide-react";
+import { Banknote, Building, Lock, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { acquireRival, acquireStartup, buyShares, investInStartup, repayLoan, resetGame, sellShares, takeLoan } from "@/engine";
+import { buyShares, repayLoan, resetGame, sellShares, takeLoan } from "@/engine";
 import { createInitialState } from "@/data";
 import { eur, useGame } from "../GameContext";
 import { Empty, Panel, Section } from "../ui";
 import { COMPANY_ARTWORK } from "../artwork";
-import { rivalArt, startupArt } from '../sheetArt';
+import { rivalArt } from '../sheetArt';
 import { effectiveInterestRate } from '@/engine/management';
 import { acquireRivalWithStores } from '@/engine/empire';
 
 const inputClass = "h-9 w-full rounded-md border border-input bg-background px-3 font-mono text-sm text-foreground";
-const RISK = { low: "Niedrig", medium: "Mittel", high: "Hoch", moonshot: "Moonshot" } as const;
 
 export function FinanceTab() {
   const { state, set, perform } = useGame();
@@ -44,7 +43,7 @@ export function FinanceTab() {
             <p className="mt-1 text-xs text-muted-foreground">{company.description}</p>
             {company.acquired ? <p className="mt-2 text-xs font-semibold text-success">Zum Imperium gehörig</p> : <>
               <div className="mt-2 grid grid-cols-2 gap-2"><Button size="sm" variant="outline" disabled={!marketsUnlocked} onClick={() => perform((current) => buyShares(current, company.id, 1))}>1 Aktie kaufen</Button><Button size="sm" variant="outline" disabled={!marketsUnlocked || !holding} onClick={() => perform((current) => sellShares(current, company.id, 1))}>1 Aktie verkaufen</Button></div>
-              <Button size="sm" variant="ghost" className="mt-1 w-full text-xs" disabled={!marketsUnlocked} onClick={() => perform((current) => acquireRivalWithStores(current, company.id, Math.round(company.valuation * 1.45)))}><Building /> Übernehmen · {eur(company.valuation * 1.45)}</Button>
+              <Button size="sm" variant="ghost" className="mt-1 w-full text-xs" disabled={!marketsUnlocked} onClick={() => perform((current) => acquireRivalWithStores(current, company.id, Math.round(company.valuation * 1.45)))}><Building /> Firma samt Cafés übernehmen · {eur(company.valuation * 1.45)}</Button>
             </>}
           </Panel>;
         })}
