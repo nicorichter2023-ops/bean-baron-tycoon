@@ -694,3 +694,4 @@ html[data-contrast="high"] { --muted-foreground: var(--foreground); --border: va
 .room-machine { width: 38%; } .room-grinder { width: 22%; right: 46%; } .room-vitrine { width: 34%; }
 .room-seating { right: 40%; } .room-seating img { width: 42%; }
 .room-counter { bottom: 14%; }
+.room-machine { width: 50%; right: 2%; } .room-grinder { width: 30%; right: 44%; } .room-seating img { width: 48%; }
