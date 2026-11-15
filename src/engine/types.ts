@@ -238,6 +238,7 @@ export interface GameState {
   lastReport: TurnReport | null;
   progress?: ProgressState;
   cafe?: import('./cafe').CafeState;
+  empire?: import('./empire').EmpireState;
 }
 
 export interface ActionResult {

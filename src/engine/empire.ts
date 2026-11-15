@@ -55,6 +55,7 @@ function seedPipeline(e: EmpireState, week: number) { let n = e; while (n.ventur
 export const ventureSignal = (v: Venture) => v.quality >= 0.7 ? 'Starkes Team' : v.quality >= 0.45 ? 'Solide Traktion' : 'Hohes Risiko';
 export const ventureStake = (v: Venture) => r2(v.valuation * v.ownership);
 const patchVenture = (g: GameState, e: EmpireState, id: string, patch: Partial<Venture>): GameState => ({ ...g, empire: { ...e, ventures: e.ventures.map(v => v.id === id ? { ...v, ...patch } : v) } });
+const vh = (v: Venture) => [...v.id].reduce((n, c) => (n * 31 + c.charCodeAt(0)) % 100000, 7);
 const closeVenture = (e: EmpireState, v: Venture): EmpireState => ({ ...e, ventures: e.ventures.filter(x => x.id !== v.id), history: [v, ...e.history].slice(0, 15) });
 
 export function investVenture(g: GameState, id: string): ActionResult {
@@ -78,7 +79,7 @@ export const decisionText = (k: DecisionKind) => DECISION_TEXT[k];
 export function resolveVenture(g: GameState, id: string, accept: boolean): ActionResult {
   const e = empireOf(g), v = e.ventures.find(x => x.id === id), d = v?.decision;
   if (!v || !d) return no(g, 'Keine offene Entscheidung.');
-  const next = g.week + 6 + Math.floor(rand(g.week * 3 + v.seqHash()) * 9);
+  const next = g.week + 6 + Math.floor(rand(g.week * 3 + vh(v)) * 9);
   if (accept && d.cost > g.cash) return no(g, 'Nicht genug Barvermögen.');
   let cash = g.cash, patch: Partial<Venture> = { decision: null, nextWeek: next }, msg = '';
   if (d.kind === 'round') {
@@ -95,10 +96,6 @@ export function resolveVenture(g: GameState, id: string, accept: boolean): Actio
   }
   return ok(patchVenture({ ...g, cash: r2(cash) }, e, id, patch), msg);
 }
-declare global { interface Object { seqHash(): number } }
-// tiny stable hash helper used for deterministic follow-up timing
-Object.defineProperty(Object.prototype, 'seqHash', { value: function (this: { id?: string }) { return [...(this.id ?? '')].reduce((n, c) => n * 31 + c.charCodeAt(0), 7) % 100000; }, enumerable: false, configurable: true });
-
 function makeDecision(v: Venture, week: number): VentureDecision {
   const x = (k: number) => rand(week * 131 + v.invested + k), roll = x(1);
   if (v.stage < STAGES.length - 1 && roll < 0.6) { const value = Math.round(v.valuation * (1.6 + v.quality * 1.8 + x(2))); return { kind: 'round', value, cost: Math.round(v.ownership * value * 0.2), expires: week + 3 }; }
@@ -121,12 +118,12 @@ export function stepVentures(g: GameState) {
     if (v.decision) {
       if (g.week >= v.decision.expires || isExec(g, 'cfo')) {
         const r = resolveVenture({ ...g, cash: g.cash + income - cost, empire: e }, v.id, autoChoice(g, v));
-        if (r.ok) { cost += Math.max(0, g.cash + income - cost - r.state.cash); income += Math.max(0, r.state.cash - (g.cash + income - cost)); e = empireOf(r.state); notes.push(`${isExec(g, 'cfo') ? 'CFO' : 'Frist'}: ${r.reason}`); }
+        if (r.ok) { const delta = r.state.cash - (g.cash + income - cost); if (delta > 0) income += delta; else cost -= delta; e = empireOf(r.state); notes.push(`${isExec(g, 'cfo') ? 'CFO' : 'Frist'}: ${r.reason}`); }
       }
       continue;
     }
     if (g.week < v.nextWeek) continue;
-    const x = (k: number) => rand(g.week * 977 + v.seqHash() + k);
+    const x = (k: number) => rand(g.week * 977 + vh(v) + k);
     if (x(1) < (1 - v.quality) * 0.3 + 0.03) {
       const sued = x(2) < 0.3, fee = sued ? Math.round(v.invested * 0.15) : 0;
       cost += fee; e = closeVenture(e, { ...v, status: sued ? 'sued' : 'failed', closedWeek: g.week, payout: -fee });
@@ -293,6 +290,6 @@ export function processEmpireWeek(state: GameState, exp: ExpansionState) {
     if (next && g.cash - campCost > researchCost(next.tier) * 3) { const s = startResearch({ ...g, cash: g.cash - campCost }, next.id); if (s.ok) { extra += (g.cash - campCost) - s.state.cash; g = { ...s.state, cash: g.cash }; execNotes.push(`CTO startet „${next.name}“.`); } }
   }
   if (campCost || extra) { if (renewed.length) execNotes.push(`Auto-Kampagnen verlängert: ${renewed.join(', ')}.`); g = patchWeek(g, 0, campCost + extra, execNotes); }
-  if (isExec(g, 'cfo') && g.debt > 0 && g.cash > 150_000) { const pay = r2(Math.min(g.debt, (g.cash - 150_000) * 0.25)); const p = repayLoan(g, pay); if (p.ok) g = { ...p.state, lastReport: p.state.lastReport ? { ...p.state.lastReport, notes: [...p.state.lastReport.notes, `CFO tilgt ${Math.round(pay).toLocaleString('de-DE')} € Kredit.`] } : null }; }
+  if (isExec(g, 'cfo') && g.debt > 0 && g.cash > 150_000) { const pay = r2(Math.min(g.debt, (g.cash - 150_000) * 0.25)); const p = repayLoan(g, pay); if (p.ok) { const row = p.state.management.history.at(-1); g = { ...p.state, management: { ...p.state.management, openingCash: p.state.cash, history: row ? [...p.state.management.history.slice(0, -1), { ...row, cashEnd: p.state.cash, financing: r2(row.financing - pay) }] : p.state.management.history }, lastReport: p.state.lastReport ? { ...p.state.lastReport, notes: [...p.state.lastReport.notes, `CFO tilgt ${Math.round(pay).toLocaleString('de-DE')} € Kredit.`] } : null }; } }
   return { game: g, exp: x };
 }
