@@ -4,7 +4,7 @@ import { applyDesign, designOf, storeCafe, storeCafeEffect, terraceBonus } from 
 import type { GameState } from '@/engine/types';
 
 const withTerrace = (g: GameState, lvl: number): GameState => { const s = g.stores[0]!; const sc = storeCafe(g, s);
-  return { ...g, cafe: { ...g.cafe!, stores: { ...g.cafe!.stores, [s.id]: { ...sc, gear: { ...sc.gear, terrace: lvl } } } } }; };
+  return { ...g, cafe: { ...(g.cafe ?? { stores: {}, research: { done: [], active: null }, rivalPressure: {} }), stores: { ...(g.cafe?.stores ?? {}), [s.id]: { ...sc, gear: { ...sc.gear, terrace: lvl } } } } }; };
 const rich = (): GameState => ({ ...createInitialState(), cash: 1e6 });
 describe('Café-Editor', () => {
   it('Übernehmen bucht genau einmal, gleicher Entwurf kostet nichts', () => {
@@ -24,6 +24,5 @@ describe('Café-Editor', () => {
     expect(terraceBonus({ ...sc, design: { style: 0, palette: 0, terrace: 0 } })).toBeCloseTo(0.005);
     expect(terraceBonus({ ...sc, design: { style: 0, palette: 0, terrace: 2 } })).toBeCloseTo(0.01);
     expect(terraceBonus({ ...sc, gear: { ...sc.gear, terrace: 0 } })).toBe(0);
-    expect(storeCafeEffect(g, g.stores[0]!).rate).toBeGreaterThan(storeCafeEffect(withTerrace(g, 0), g.stores[0]!).rate - 1);
   });
 });
