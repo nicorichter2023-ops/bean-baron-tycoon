@@ -16,3 +16,7 @@
 - [ ] Feintuning Balance nach echtem Spieltest (Rang-Ziele 15–25 / 80–120 / 250+ Wochen) – wartet auf dein Feedback
 - [x] Karte randlos, Kontextfenster für Frei/Rivalen, Goldsterne, gemalte Räume je Stufe (7) mit Editor-Ebenen
 - [ ] Schnellaktionen in Filialliste, weitere Schubladen, alte Grafiken ersetzen, 2 weitere Raumstile je Stufe
+- [ ] Gesammelte Kartenfehler: grauen Rand verhindern, alte eigene Standorte auf der Karte sichtbar machen, Frei/Rivalen-Kontext prüfen
+- [ ] Erfolge kompakt darstellen; Wochenabschluss darf keine Weiter-Aktion verdecken
+- [ ] Terrasse: alte Grafik ersetzen, passende Gestaltung samt Sonderboni; Ansicht und Gestaltung nur für Filialen mit Terrasse
+- [ ] Überlagerte Buttons und Icons auf Handygröße beseitigen und durch echte Touch-Klicks prüfen
