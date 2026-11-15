@@ -11,7 +11,9 @@ import { SectionFilter, StoreFilter } from './ui';
 import { EmpireTab } from './tabs/EmpireTab';
 import { FinanceTab } from './tabs/FinanceTab';
 import { MarketTab } from './tabs/MarketTab';
-import { getStoreArtwork } from './artwork';
+import { roomScene } from './roomLayouts';
+import { designOf, storeCafe } from '@/engine/cafe';
+import { leversOf } from '@/engine/progression';
 import { LabPanel } from './LabPanel';
 import roasteryScene from '@/assets/roastery-scene.jpg';
 import { CafeCutaway } from './CafeCutaway';
@@ -87,7 +89,7 @@ export function SceneView({ place, onPlace, destinations }: { place: Place; onPl
     {place !== 'lab' && <div className="scene-actions">
       {isCafe ? <><Button onClick={() => open('Filialen & Personal', 'empire', ['Filialen'])}><Users /> Team & Ausbau</Button><Button variant="outline" onClick={() => open('Neue Filiale', 'empire', ['Neue Filiale'])}><Store /> Eröffnen</Button></> : place === 'roastery' ? <><Button onClick={() => open('Rösterei', 'empire', ['Rösterei'])}><Factory /> Rösterei</Button><Button variant="outline" onClick={() => open('Bohnenlager', 'market', ['Bohnen einkaufen'])}><Package /> Lager</Button></> : place === 'holding' ? <><Button onClick={() => open('Startup-Pitches', 'finance', ['VC-Startups'])}><Rocket /> Pitches</Button><Button variant="outline" onClick={() => open('Wochenbericht', 'empire', ['Letzte Woche'])}><Landmark /> Bericht</Button></> : place === 'office' || place === 'negotiation' ? <><Button onClick={() => open('Bankkredit', 'finance', ['Bankkredit'])}><Wallet /> Bank</Button><Button variant="outline" onClick={() => open('Aktien & M&A', 'finance', ['Aktienmarkt'])}><Landmark /> Börse & M&A</Button></> : <><Button onClick={() => open('Bohnen einkaufen', 'market', ['Bohnen einkaufen'])}><Coffee /> Bohnen</Button><Button variant="outline" onClick={() => open('B2B-Lieferverträge', 'market', ['B2B-Vertrag', 'Aktive Lieferverträge'])}><Package /> Verträge</Button></>}
     </div>}
-    {isCafe && <div className="owned-stores"><div className="flex items-center justify-between mb-3"><h2>Deine Filialen</h2><span className="text-xs text-muted-foreground">{state.stores.length} Standorte</span></div><div className="store-strip">{state.stores.map((s) => { const c = state.cities.find((c) => c.id === s.cityId); return <Button key={s.id} variant="ghost" className={`store-tile ${store?.id === s.id ? 'selected-store' : ''}`} onClick={() => setStoreId(s.id)}><img src={getStoreArtwork(c?.biome ?? 'european_classic', s.tier)} alt="" /><span>{c?.name}<small>{['', 'Kiosk', 'Café', 'Flagship'][s.tier]}</small></span></Button>; })}</div></div>}
+    {isCafe && <div className="owned-stores"><div className="flex items-center justify-between mb-3"><h2>Deine Filialen</h2><span className="text-xs text-muted-foreground">{state.stores.length} Standorte</span></div><div className="store-strip">{state.stores.map((s) => { const c = state.cities.find((c) => c.id === s.cityId); return <Button key={s.id} variant="ghost" className={`store-tile ${store?.id === s.id ? 'selected-store' : ''}`} onClick={() => setStoreId(s.id)}><img src={roomScene(leversOf(state, s).stage, designOf(storeCafe(state, s)).style)} alt="" /><span>{c?.name}<small>{['', 'Kiosk', 'Café', 'Flagship'][s.tier]}</small></span></Button>; })}</div></div>}
     <Button variant="ghost" className="mt-4 text-muted-foreground" onClick={() => open('Spielstand', 'finance', ['Spielstand'])}><ArrowUpCircle /> Spielstand</Button>
     <ActionSheet menu={menu} close={() => setMenu(null)} />
   </>;
