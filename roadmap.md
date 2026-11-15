@@ -20,3 +20,5 @@
 - [ ] Erfolge kompakt darstellen; Wochenabschluss darf keine Weiter-Aktion verdecken
 - [ ] Terrasse: alte Grafik ersetzen, passende Gestaltung samt Sonderboni; Ansicht und Gestaltung nur für Filialen mit Terrasse
 - [ ] Überlagerte Buttons und Icons auf Handygröße beseitigen und durch echte Touch-Klicks prüfen
+- [ ] Café-Editor dauerhaft direkt im Café öffnen; vollständige belebte Stufenszenen mit harmonischen Farb-/Ausstattungskombinationen statt frei platzierten Bildern
+- [ ] Ausstattungskäufe und Editor-Upgrades vereinheitlichen: gleiche Modelle, Stufen und sichtbare Ergebnisse in allen Ansichten
