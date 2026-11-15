@@ -78,5 +78,6 @@ export function createInitialState(): GameState {
     resolvedEventIds: [],
     lastReport: null,
   };
-  return { ...state, companyValuation: calculateCompanyValuation(state) };
+  const ready = { ...state, companyValuation: calculateCompanyValuation(state) };
+  return { ...ready, progress: { ...createProgress(ready), goals: makeGoals(ready) } };
 }
