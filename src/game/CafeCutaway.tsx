@@ -12,7 +12,9 @@ import roasteryPhoto from '@/assets/cafe-interior-roastery.jpg';
 import { useGame } from './GameContext';
 import { leversOf } from '@/engine/progression';
 import { stg } from '@/engine/unlocks';
-import { espressoTierArt, grinderTierArt, seatingArt, terraceArt, vitrineArt, decorArt } from './sheetArt';
+import { gearArt, sheet16 } from './sheetArt';
+import { storeCafe } from '@/engine/cafe';
+import { DECOR, GEAR, GEAR_KEYS, WALL_TINT } from '@/engine/cafeContent';
 
 const STAGE_PHOTOS = [cartPhoto, kioskPhoto, barPhoto, cafePhoto, bistroPhoto, roasteryPhoto, flagshipPhoto];
 /** Each of the 7 stages has its own interior; interior upgrades lift the look one step within the same tier. */
@@ -42,8 +44,13 @@ export function CafeCutaway({ store }: { store: Store }) {
   const { state } = useGame();
   const stage = leversOf(state, store).stage;
   const v = stageInteriorVariant(stage, e.interior);
-  const parts: [string, string, number][] = [[espressoTierArt(e.espresso), ESPRESSO[e.espresso] ?? '', e.espresso], [grinderTierArt(e.grinder), GRINDER[e.grinder] ?? '', e.grinder], [seatingArt(e.interior, stage), INTERIOR[e.interior] ?? '', e.interior], [vitrineArt(stage), 'Vitrine', stage >= 3 ? 1 : 0], ...(stage >= 4 ? ([[terraceArt(stage), 'Terrasse', 1]] as [string, string, number][]) : []), [decorArt(stage), 'Deko', stage >= 5 ? 2 : 0]];
-  if (v) return <div className="cafe-photo" data-variant={v.label} data-stage={stage} aria-label={`Café-Innenansicht · ${v.label}`}><img key={v.src} className="cafe-photo-img" src={v.src} alt={`Isometrischer Innenraum · ${v.label}`} width={1088} height={1088} loading="lazy" /><span className="cafe-photo-title">{v.label} · Stufe {stage}/7</span><div className="cafe-loadout" aria-label="Sichtbare Ausstattung">{parts.map(([src, label, lvl]) => <figure key={label} data-lvl={lvl}><img src={src} alt="" width={44} height={44} loading="lazy" /><figcaption>{label}</figcaption></figure>)}</div></div>;
+  const sc = storeCafe(state, store);
+  const parts: [string, string, number][] = GEAR_KEYS.filter(c => c !== 'terrace' || sc.gear.terrace > 0).map(c => [gearArt(c, sc.gear[c]), GEAR[c].levels[sc.gear[c]] ?? '', sc.gear[c]]);
+  const deco = (slot: 'light' | 'art' | 'sign' | 'plant' | 'extra') => { const i = sc.decor[slot]; const o = i === undefined ? undefined : DECOR[slot].options[i]; return o ? <img className={`d-${slot}`} src={sheet16(DECOR[slot].sheet, o.art)} alt={o.name} loading="lazy" /> : null; };
+  const wall = sc.decor.wall;
+  if (v) return <div className="cafe-photo" data-variant={v.label} data-stage={stage} aria-label={`Café-Innenansicht · ${v.label}`}><img key={v.src} className="cafe-photo-img" src={v.src} alt={`Isometrischer Innenraum · ${v.label}`} width={1088} height={1088} loading="lazy" />
+    <div className="cafe-decor-layer" aria-label="Eigene Gestaltung">{wall !== undefined && <span className="cafe-decor-tint" style={{ background: WALL_TINT[wall] }} />}{deco('light')}{deco('art')}{deco('sign')}{deco('plant')}{deco('extra')}</div>
+    <span className="cafe-photo-title">{v.label} · Stufe {stage}/7</span><div className="cafe-loadout" aria-label="Sichtbare Ausstattung">{parts.map(([src, label, lvl], i) => <figure key={i} data-lvl={Math.min(2, lvl)}><img src={src} alt="" width={44} height={44} loading="lazy" /><figcaption>{label}</figcaption></figure>)}</div></div>;
   return <div className="cafe-cutaway" data-tier={store.tier} aria-label={`Café-Diorama · ${['','Kiosk','Café','Flagship'][store.tier]}`}>
     <div className="cutaway-street" /><div className="cutaway-floor" /><div className="cutaway-wall wall-back" /><div className="cutaway-wall wall-side" />
     <NeonSign />
