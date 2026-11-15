@@ -14,7 +14,7 @@ export function PhotoCityMap({ cityId, cityName, airportCode, buildings, onBuild
     const els = Array.from(document.querySelectorAll<HTMLElement>(`.nyc-photo-content [data-status='${status}']`));
     if (!els.length) return;
     const n = (cycle.current[status] ?? -1) + 1; cycle.current[status] = n;
-    const el = els[n % els.length]!; zoom.current?.zoomToElement(el, 2.2, 350);
+    const el = els[n % els.length]; if (!el) return; zoom.current?.zoomToElement(el, 2.2, 350);
     if (status !== 'own') { const b = buildings.find(x => x.id === el.dataset['id']); if (b) onBuilding(b); }
   };
   const count = (st: string) => buildings.slice(0, 30).filter(b => { const own = state.stores.some(s => s.districtId === b.id); const rival = Boolean(state.world.occupants[b.id]); return st === 'own' ? own : st === 'rival' ? !own && rival : !own && !rival; }).length;
@@ -28,10 +28,10 @@ export function PhotoCityMap({ cityId, cityName, airportCode, buildings, onBuild
       <button onClick={() => focus('own')}>Meine {count('own')}</button>
       <button onClick={() => focus('free')}>Frei {count('free')}</button>
       <button onClick={() => focus('rival')}>Rivalen {count('rival')}</button>
-      <button onClick={() => { const a = document.querySelector<HTMLElement>('.ci-pin-airport'); if (a) zoom.current?.zoomToElement(a, 2.2, 350); }}>✈</button>
+      <button onClick={onAirport} aria-label="Flughafen öffnen">✈</button>
       <button aria-pressed={labels} onClick={() => setLabels(!labels)}>{labels ? 'Aa' : 'Aa̶'}</button>
     </div>
-    <TransformWrapper ref={zoom} initialScale={1} minScale={0.6} maxScale={3} centerOnInit doubleClick={{ disabled: true }}>
+    <TransformWrapper ref={zoom} initialScale={1} minScale={1} maxScale={3} limitToBounds centerZoomedOut={false} doubleClick={{ disabled: true }}>
       <TransformComponent wrapperClass="nyc-photo-viewport" contentClass="nyc-photo-content">
         <img src={src} alt={`Stadtkarte ${cityName}`} width={1088} height={1920} draggable={false} onError={onError} />
         {buildings.slice(0, 30).map((b, i) => {

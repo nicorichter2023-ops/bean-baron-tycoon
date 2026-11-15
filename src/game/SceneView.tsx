@@ -11,10 +11,15 @@ import { SectionFilter, StoreFilter } from './ui';
 import { EmpireTab } from './tabs/EmpireTab';
 import { FinanceTab } from './tabs/FinanceTab';
 import { MarketTab } from './tabs/MarketTab';
-import { getStoreArtwork } from './artwork';
+import { roomScene } from './roomLayouts';
+import { designOf, storeCafe } from '@/engine/cafe';
+import { leversOf } from '@/engine/progression';
 import { LabPanel } from './LabPanel';
 import roasteryScene from '@/assets/roastery-scene.jpg';
 import { CafeCutaway } from './CafeCutaway';
+import { CafeRoom } from './CafeRoom';
+import { CafeEditor } from './CafeEditor';
+import { hasTerrace } from '@/engine/cafe';
 import { CafeSteam, NeonSign, SceneAsset } from './VisualEffects';
 
 export type Place = 'cafe' | 'terrace' | 'holding' | 'office' | 'roastery' | 'port' | 'exchange' | 'farm' | 'negotiation' | 'lab';
@@ -44,6 +49,7 @@ export function SceneView({ place, onPlace, destinations }: { place: Place; onPl
   const [storeId, setStoreId] = useState(state.stores[0]?.id ?? '');
   const [pulse, setPulse] = useState(false);
   const [zen, setZen] = useState(false);
+  const [edit, setEdit] = useState(false);
   const lastWeek = useRef(state.week);
   const store = state.stores.find((s) => s.id === storeId) ?? state.stores[0];
   const city = state.cities.find((c) => c.id === store?.cityId) ?? state.city;
@@ -58,10 +64,10 @@ export function SceneView({ place, onPlace, destinations }: { place: Place; onPl
   const open = (title: string, group: Menu['group'], sections: string[]) => setMenu({ title, group, sections, storeId: group === 'empire' && sections.includes('Filialen') ? store?.id : undefined });
   return <>
     <div className="scene-heading"><div><p className="eyebrow">{isCafe ? `${city.name} · Woche ${state.week}` : details.subtitle}</p><h1>{isCafe ? store?.name ?? details.title : details.title}</h1></div><Sprite sheet="finance" index={1} className="h-12 w-12" /></div>
-    <div className="location-switch" aria-label="Spielorte">{destinations.map((p) => <Button key={p} variant={place === p ? 'secondary' : 'ghost'} onClick={() => onPlace(p)}>{PLACES[p].title.replace('Coffee Empire ', '').replace('Café-', '')}</Button>)}</div>
+    <div className="location-switch" aria-label="Spielorte">{destinations.filter(p => p !== 'terrace' || (store && hasTerrace(state, store))).map((p) => <Button key={p} variant={place === p ? 'secondary' : 'ghost'} onClick={() => onPlace(p)}>{PLACES[p].title.replace('Coffee Empire ', '').replace('Café-', '')}</Button>)}</div>
     {isCafe && <div className="store-selector"><Store className="h-4 w-4 text-primary" /><select aria-label="Filiale auswählen" value={store?.id ?? ''} onChange={(e) => setStoreId(e.target.value)}>{state.stores.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}</select></div>}
     <div className={`scene-stage ${zen ? 'zen' : ''} ${pulse ? 'week-pulse' : ''}`} key={place}>
-      {place === 'cafe' && store ? <CafeCutaway store={store} /> : place === 'roastery' ? <img className="scene-image" src={roasteryScene} alt="Isometrische Rösterei mit Großröstern, Silos und Jutesäcken" width={1536} height={864} /> : <SceneAsset slot={place === 'cafe' ? 'cafe-interior' : undefined} className="scene-image" fallback={details.image} alt={details.title} fetchPriority="high" />}
+      {place === 'cafe' && store ? <CafeCutaway store={store} /> : place === 'terrace' && store && hasTerrace(state, store) ? <CafeRoom store={store} view="terrace" /> : place === 'roastery' ? <img className="scene-image" src={roasteryScene} alt="Isometrische Rösterei mit Großröstern, Silos und Jutesäcken" width={1536} height={864} /> : <SceneAsset slot={place === 'cafe' ? 'cafe-interior' : undefined} className="scene-image" fallback={details.image} alt={details.title} fetchPriority="high" />}
       {place === 'cafe' && !store && <><div className="cafe-machine-slot" aria-hidden="true"><SceneAsset slot="espresso-machine" fallback={equipmentArt('espresso', store ? equipmentOf(store).espresso : 0)} alt="" /><CafeSteam /></div><NeonSign /></>}
       {isCafe && <><Hotspot x={33} y={56} label="Café verwalten" icon={<Coffee />} onClick={() => open('Café & Ausbau', 'empire', ['Filialen'])} /><Hotspot x={67} y={66} label="Personal" icon={<Users />} onClick={() => open('Personal & Filialen', 'empire', ['Filialen'])} /><Hotspot x={80} y={36} label="Neue Filiale" icon={<Store />} onClick={() => open('Expansion', 'empire', ['Neue Filiale'])} />
         {pulse && store && <div className="income-float" role="status">+{eur(store.weeklyRevenue)}</div>}
@@ -76,13 +82,14 @@ export function SceneView({ place, onPlace, destinations }: { place: Place; onPl
       <div className="scene-badge"><span className="live-dot" />{isCafe ? `${store?.employees.length ?? 0} im Team` : place === 'roastery' ? state.roastery.owned ? 'In Betrieb' : 'Noch nicht erworben' : 'Coffee Empire'}</div>
     </div>
     <div className="scene-metrics">{isCafe ? <><Metric label="Umsatz / Woche" value={eur(store?.weeklyRevenue ?? 0)} /><Metric label="Gäste" value={String(store?.customersServedLastWeek ?? 0)} /><Metric label="Qualität" value={`${Math.round(store?.qualityIndex ?? 0)} / 100`} /></> : place === 'roastery' ? <><Metric label="Rohbohnen" value={`${Math.round(state.roastery.rawBeanStockKg)} kg`} /><Metric label="Geröstet" value={`${Math.round(state.roastery.roastedStockKg)} kg`} /><Metric label="Kapazität / Wo" value={`${state.roastery.capacityKgPerWeek} kg`} /></> : <><Metric label="Filialen" value={String(state.stores.length)} /><Metric label="Reputation" value={String(Math.round(state.brandReputation))} /><Metric label="Ergebnis / Wo" value={eur(state.lastReport?.netIncome ?? 0)} /></>}</div>
-    {isCafe && store && <div className="cafe-loadout" aria-label="Einrichtung"><div className="mb-2 flex items-center justify-between"><h2>Ausstattung</h2><span className="text-xs text-muted-foreground">{eur(equipmentOf(store).bookValue)}</span></div><div className="loadout-grid">{(['espresso', 'grinder', 'interior'] as const).map(category => { const level = equipmentOf(store)[category]; return <Button variant="ghost" key={category} className="h-auto min-h-11 whitespace-normal" onClick={() => open('Café & Ausstattung', 'empire', ['Filialen'])}><img src={equipmentArt(category, level)} alt="" /><span>{EQUIPMENT[category][level]?.label}</span></Button>; })}</div></div>}
-    {(isCafe || place === 'roastery') && <div className="art-strip" aria-label={isCafe ? 'Speisekarte' : 'Röstgrade'}>{(isCafe ? CAFE_MENU : ROAST_LEVELS).map((src) => <img key={src} src={src} alt="" />)}</div>}
+    {isCafe && store && <Button className="min-h-11 w-full" onClick={() => setEdit(true)}>Café gestalten · Farben, Sitze & Deko{hasTerrace(state, store) ? ' · Terrasse' : ''}</Button>}
+    {edit && store && <CafeEditor store={store} onClose={() => setEdit(false)} />}
+    {place === 'roastery' && <div className="art-strip" aria-label={isCafe ? 'Speisekarte' : 'Röstgrade'}>{(isCafe ? CAFE_MENU : ROAST_LEVELS).map((src) => <img key={src} src={src} alt="" />)}</div>}
     {place === 'lab' && <LabPanel />}
     {place !== 'lab' && <div className="scene-actions">
       {isCafe ? <><Button onClick={() => open('Filialen & Personal', 'empire', ['Filialen'])}><Users /> Team & Ausbau</Button><Button variant="outline" onClick={() => open('Neue Filiale', 'empire', ['Neue Filiale'])}><Store /> Eröffnen</Button></> : place === 'roastery' ? <><Button onClick={() => open('Rösterei', 'empire', ['Rösterei'])}><Factory /> Rösterei</Button><Button variant="outline" onClick={() => open('Bohnenlager', 'market', ['Bohnen einkaufen'])}><Package /> Lager</Button></> : place === 'holding' ? <><Button onClick={() => open('Startup-Pitches', 'finance', ['VC-Startups'])}><Rocket /> Pitches</Button><Button variant="outline" onClick={() => open('Wochenbericht', 'empire', ['Letzte Woche'])}><Landmark /> Bericht</Button></> : place === 'office' || place === 'negotiation' ? <><Button onClick={() => open('Bankkredit', 'finance', ['Bankkredit'])}><Wallet /> Bank</Button><Button variant="outline" onClick={() => open('Aktien & M&A', 'finance', ['Aktienmarkt'])}><Landmark /> Börse & M&A</Button></> : <><Button onClick={() => open('Bohnen einkaufen', 'market', ['Bohnen einkaufen'])}><Coffee /> Bohnen</Button><Button variant="outline" onClick={() => open('B2B-Lieferverträge', 'market', ['B2B-Vertrag', 'Aktive Lieferverträge'])}><Package /> Verträge</Button></>}
     </div>}
-    {isCafe && <div className="owned-stores"><div className="flex items-center justify-between mb-3"><h2>Deine Filialen</h2><span className="text-xs text-muted-foreground">{state.stores.length} Standorte</span></div><div className="store-strip">{state.stores.map((s) => { const c = state.cities.find((c) => c.id === s.cityId); return <Button key={s.id} variant="ghost" className={`store-tile ${store?.id === s.id ? 'selected-store' : ''}`} onClick={() => setStoreId(s.id)}><img src={getStoreArtwork(c?.biome ?? 'european_classic', s.tier)} alt="" /><span>{c?.name}<small>{['', 'Kiosk', 'Café', 'Flagship'][s.tier]}</small></span></Button>; })}</div></div>}
+    {isCafe && <div className="owned-stores"><div className="flex items-center justify-between mb-3"><h2>Deine Filialen</h2><span className="text-xs text-muted-foreground">{state.stores.length} Standorte</span></div><div className="store-strip">{state.stores.map((s) => { const c = state.cities.find((c) => c.id === s.cityId); return <Button key={s.id} variant="ghost" className={`store-tile ${store?.id === s.id ? 'selected-store' : ''}`} onClick={() => setStoreId(s.id)}><img src={roomScene(leversOf(state, s).stage, designOf(storeCafe(state, s)).style)} alt="" /><span>{c?.name}<small>{['', 'Kiosk', 'Café', 'Flagship'][s.tier]}</small></span></Button>; })}</div></div>}
     <Button variant="ghost" className="mt-4 text-muted-foreground" onClick={() => open('Spielstand', 'finance', ['Spielstand'])}><ArrowUpCircle /> Spielstand</Button>
     <ActionSheet menu={menu} close={() => setMenu(null)} />
   </>;

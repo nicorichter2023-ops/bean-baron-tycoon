@@ -75,3 +75,25 @@ export const DECOR_SLOTS = Object.keys(DECOR) as DecorSlot[];
 /** CSS tint per wall colour (index into DECOR.wall.options). */
 export const WALL_TINT = ['oklch(0.93 0.03 85)', 'oklch(0.75 0.06 140)', 'oklch(0.62 0.12 45)', 'oklch(0.35 0.07 255)', 'oklch(0.5 0.1 35)', 'oklch(0.3 0.01 250)', 'oklch(0.85 0.05 10)', 'oklch(0.5 0.07 200)'];
 export const BARISTA_LEVELS = [0, 40, 120, 260, 500];
+
+/** Café design editor: 3 complete deco concepts per stage (each with its own seating), colour moods and terrace styles. */
+export const DESIGN_STYLES = [
+  { id: 'bistro', name: 'Holz-Bistro', seats: 'Holztische & Bistrostühle' },
+  { id: 'lounge', name: 'Lounge', seats: 'Polsterbänke & Sessel' },
+  { id: 'botanic', name: 'Botanisch', seats: 'Rattanstühle & Pflanzen' },
+] as const;
+/** Colour moods re-tone the complete painted scene (no rectangle overlays). */
+export const PALETTES = [
+  { name: 'Salbei', swatch: 'oklch(0.62 0.07 145)', filter: 'none' },
+  { name: 'Petrol', swatch: 'oklch(0.45 0.07 210)', filter: 'hue-rotate(80deg) saturate(.85) brightness(.97)' },
+  { name: 'Terrakotta', swatch: 'oklch(0.6 0.13 45)', filter: 'hue-rotate(-75deg) saturate(1.05)' },
+  { name: 'Kreideweiß', swatch: 'oklch(0.94 0.02 90)', filter: 'saturate(.5) brightness(1.08)' },
+] as const;
+export const TERRACE_STYLES = [
+  { name: 'Bistro', bonus: .02 },
+  { name: 'Garten', bonus: .03 },
+  { name: 'Lounge', bonus: .04 },
+] as const;
+/** Share of a store's revenue that comes from the terrace; terrace style bonus applies only to this share. */
+export const TERRACE_SHARE = 0.25;
+export const designPrice = { style: (stage: number) => 500 * stage, palette: (stage: number) => 300 + 100 * stage, terrace: 900 } as const;

@@ -2,9 +2,10 @@ import type { ActionResult, GameState, Store } from './types';
 import { calculateCompanyValuation } from './engine';
 import { equipmentOf } from './equipment';
 import { researchDuration } from './world';
-import { BARISTA_LEVELS, DECOR, DEFAULT_MENU, GEAR, GEAR_KEYS, MENU_ITEMS, MENU_LIMIT, RESEARCH, gearPrice, gearStageNeed, researchCost, researchRepBonus, researchRevenueBonus, researchWageFactor, researchWeeks, type DecorSlot, type GearCategory } from './cafeContent';
+import { BARISTA_LEVELS, DECOR, DEFAULT_MENU, GEAR, GEAR_KEYS, MENU_ITEMS, MENU_LIMIT, RESEARCH, gearPrice, gearStageNeed, DESIGN_STYLES, PALETTES, TERRACE_STYLES, TERRACE_SHARE, designPrice, researchCost, researchRepBonus, researchRevenueBonus, researchWageFactor, researchWeeks, type DecorSlot, type GearCategory } from './cafeContent';
 
-export interface StoreCafe { menu: string[]; gear: Record<GearCategory, number>; decor: Partial<Record<DecorSlot, number>>; xp: number }
+export interface CafeDesign { style: number; palette: number; terrace: number }
+export interface StoreCafe { menu: string[]; gear: Record<GearCategory, number>; decor: Partial<Record<DecorSlot, number>>; xp: number; design?: CafeDesign }
 export interface CafeState { stores: Record<string, StoreCafe>; research: { done: string[]; active: { id: string; weeksLeft: number } | null }; rivalPressure: Record<string, number> }
 const r2 = (n: number) => Math.round(n * 100) / 100;
 export const createCafeState = (): CafeState => ({ stores: {}, research: { done: [], active: null }, rivalPressure: {} });
@@ -59,6 +60,26 @@ export function setDecor(g: GameState, storeId: string, slot: DecorSlot, option:
   if (g.cash < d.price) return no(g, 'Nicht genug Barvermögen.');
   return ok(withStore({ ...g, cash: r2(g.cash - d.price) }, s, { decor: { ...sc.decor, [slot]: option } }), `${s.name}: ${d.label} „${d.options[option]?.name}“.`);
 }
+export const DEFAULT_DESIGN: CafeDesign = { style: 0, palette: 0, terrace: 0 };
+export const designOf = (sc: StoreCafe): CafeDesign => ({ ...DEFAULT_DESIGN, ...sc.design });
+export const hasTerrace = (g: GameState, s: Store) => storeCafe(g, s).gear.terrace > 0;
+/** Price of switching from the saved design to a draft; unchanged parts are free. */
+export function designCost(g: GameState, s: Store, draft: CafeDesign) {
+  const cur = designOf(storeCafe(g, s)), st = stageOf(g, s);
+  return (draft.style !== cur.style ? designPrice.style(st) : 0) + (draft.palette !== cur.palette ? designPrice.palette(st) : 0) + (draft.terrace !== cur.terrace ? designPrice.terrace : 0);
+}
+/** Commits an editor draft: validates, charges once, persists. */
+export function applyDesign(g: GameState, storeId: string, draft: CafeDesign): ActionResult {
+  const s = find(g, storeId); if (!s) return no(g, 'Filiale nicht gefunden.');
+  if (!DESIGN_STYLES[draft.style] || !PALETTES[draft.palette] || !TERRACE_STYLES[draft.terrace]) return no(g, 'Ungültige Auswahl.');
+  const cur = designOf(storeCafe(g, s));
+  if (draft.terrace !== cur.terrace && !hasTerrace(g, s)) return no(g, 'Diese Filiale hat keine Terrasse.');
+  const cost = designCost(g, s, draft); if (cost === 0) return no(g, 'Keine Änderung.');
+  if (g.cash < cost) return no(g, 'Nicht genug Barvermögen.');
+  return ok(withStore({ ...g, cash: r2(g.cash - cost) }, s, { design: { ...draft } }), `${s.name}: neue Gestaltung übernommen.`);
+}
+/** Terrace style bonus on the terrace revenue share only; zero without a terrace. */
+export const terraceBonus = (sc: StoreCafe) => sc.gear.terrace > 0 ? (TERRACE_STYLES[designOf(sc).terrace]?.bonus ?? 0) * TERRACE_SHARE : 0;
 export function renameStore(g: GameState, storeId: string, name: string): ActionResult {
   const n = name.trim().slice(0, 28); if (n.length < 2) return no(g, 'Name zu kurz.');
   return ok({ ...g, stores: g.stores.map(s => s.id === storeId ? { ...s, name: n } : s) }, `Filiale heißt jetzt „${n}“.`);
@@ -90,7 +111,7 @@ export function storeCafeEffect(g: GameState, s: Store, done = cafeOf(g).researc
   const decor = Math.min(0.06, Object.keys(sc.decor).length * 0.01);
   const level = baristaLevel(sc.xp), staff = s.employees.length ? (level - 1) * 0.02 : 0;
   const rival = cafeOf(g).rivalPressure[s.cityId] ?? 0;
-  const rate = Math.min(0.45, menu + gear + decor + staff + researchRevenueBonus(done)) - rival;
+  const rate = Math.min(0.45, menu + gear + decor + terraceBonus(sc) + staff + researchRevenueBonus(done)) - rival;
   const cost = items.length * 35 + (s.employees.length ? (level - 1) * 60 : 0);
   return { rate, revenue: r2(s.weeklyRevenue * rate), cost: r2(cost * researchWageFactor(done)), level, rival };
 }

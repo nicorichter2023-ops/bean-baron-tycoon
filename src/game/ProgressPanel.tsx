@@ -31,7 +31,8 @@ export function ProgressPanel() {
     </section>
     <section className="rounded-lg border border-border bg-card p-3">
       <div className="flex items-center gap-2"><img src={PROGRESS_ICONS.trophy} alt="" className="h-8 w-8 rounded" /><h3 className="font-semibold">Erfolge {p.achievements.length}/{ACHIEVEMENTS.length}</h3><span className="ml-auto text-xs text-muted-foreground">+{(p.achievements.length * 0.4).toFixed(1)} % Umsatz</span></div>
-      <div className="mt-2 flex flex-wrap gap-1">{ACHIEVEMENTS.map(a => { const has = p.achievements.includes(a.id); return <span key={a.id} className={`rounded-full border px-2 py-0.5 text-[11px] ${has ? 'border-primary text-foreground' : 'border-border text-muted-foreground'}`}>{has ? '★' : '🔒'} {a.label}</span>; })}</div>
+      <ul className="mt-2 grid gap-1 text-sm">{ACHIEVEMENTS.filter(a => p.achievements.includes(a.id)).slice(-2).map(a => <li key={a.id}>★ {a.label}</li>)}{ACHIEVEMENTS.filter(a => !p.achievements.includes(a.id)).slice(0, 2).map(a => <li key={a.id} className="text-muted-foreground">○ {a.label}</li>)}</ul>
+      <details className="mt-1 text-xs"><summary className="min-h-11 cursor-pointer py-3">Alle {ACHIEVEMENTS.length} Erfolge anzeigen</summary><ul className="grid gap-0.5">{ACHIEVEMENTS.map(a => <li key={a.id} className={p.achievements.includes(a.id) ? '' : 'text-muted-foreground'}>{p.achievements.includes(a.id) ? '★' : '○'} {a.label}</li>)}</ul></details>
     </section>
     <section className="rounded-lg border border-border bg-card p-3 text-sm"><h3 className="font-semibold">Städte</h3><p className="text-muted-foreground">{openCityIds(state).length} von {state.cities.length} Städten offen. Weitere Städte schaltest du über deinen Rang frei.</p></section>
     <section className="rounded-lg border border-border bg-card p-3 text-sm" aria-label="Einstellungen"><h3 className="mb-2 font-semibold">Einstellungen</h3>
