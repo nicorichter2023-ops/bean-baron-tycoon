@@ -15,7 +15,7 @@ export function PhotoCityMap({ cityId, cityName, airportCode, buildings, onBuild
     if (!els.length) return;
     const n = (cycle.current[status] ?? -1) + 1; cycle.current[status] = n;
     const el = els[n % els.length]!; zoom.current?.zoomToElement(el, 2.2, 350);
-    if (status !== 'own') { const b = buildings.find(x => x.id === el.dataset.id); if (b) onBuilding(b); }
+    if (status !== 'own') { const b = buildings.find(x => x.id === el.dataset['id']); if (b) onBuilding(b); }
   };
   const count = (st: string) => buildings.slice(0, 30).filter(b => { const own = state.stores.some(s => s.districtId === b.id); const rival = Boolean(state.world.occupants[b.id]); return st === 'own' ? own : st === 'rival' ? !own && rival : !own && !rival; }).length;
   const src = cityMapImage(cityId);
