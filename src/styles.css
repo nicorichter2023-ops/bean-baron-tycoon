@@ -708,3 +708,21 @@ html[data-contrast="high"] { --muted-foreground: var(--foreground); --border: va
 .property-sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; max-height: 72dvh; overflow-y: auto; background: var(--card); border-top: 1px solid var(--border); border-radius: 1.25rem 1.25rem 0 0; padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom)); box-shadow: 0 -12px 32px oklch(0 0 0 / .35); animation: sheet-up .22s ease-out; }
 @keyframes sheet-up { from { transform: translateY(100%); } }
 @media (prefers-reduced-motion: reduce) { .property-sheet { animation: none; } }
+
+/* Painted stage rooms with editor overlays */
+.cafe-room-painted { position: relative; aspect-ratio: 4 / 3; overflow: hidden; border-radius: .9rem; background: var(--muted); }
+.cafe-room-painted > * { position: absolute; }
+.cafe-room-painted .room-base { inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.cafe-room-painted .room-tint { mix-blend-mode: multiply; opacity: .75; border-radius: 2px; }
+.cafe-room-painted .room-tint[data-brick='true'] { background-image: repeating-linear-gradient(0deg, transparent 0 9px, oklch(0.95 0 0 / .35) 9px 10px) !important; background-color: oklch(0.55 0.11 35) !important; }
+.cafe-room-painted .room-floor-tint { mix-blend-mode: multiply; opacity: .6; }
+.cafe-room-painted .room-on { z-index: 2; }
+.cafe-room-painted .room-on img, .cafe-room-painted img.room-on { width: 100%; height: auto; display: block; filter: drop-shadow(0 3px 2px oklch(0 0 0 / .35)); }
+.cafe-room-painted .room-tables { left: 2%; right: 2%; bottom: 2%; display: flex; justify-content: space-around; align-items: flex-end; z-index: 3; }
+.cafe-room-painted .room-tables img { width: 15%; filter: drop-shadow(0 4px 3px oklch(0 0 0 / .35)); }
+.cafe-room-painted .room-art { left: 40%; top: 8%; width: 18%; bottom: auto; right: auto; z-index: 1; }
+.cafe-room-painted .room-sign { left: 4%; top: 4%; width: 18%; bottom: auto; right: auto; z-index: 1; }
+.cafe-room-painted .room-plant { right: 1%; bottom: 4%; width: 13%; z-index: 3; }
+.cafe-room-painted .room-extra { left: 1%; bottom: 4%; width: 12%; right: auto; top: auto; z-index: 3; }
+.cafe-room-painted .room-terrace { right: 0; top: 0; width: 22%; z-index: 1; opacity: .95; }
+.cafe-room-painted .cafe-photo-title { z-index: 5; }
