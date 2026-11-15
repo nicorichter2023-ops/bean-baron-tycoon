@@ -24,7 +24,7 @@ export function StaffPanel({ store }: { store: Store }) {
 export function MenuPanel({ store }: { store: Store }) {
   const { state, perform } = useGame();
   const sc = storeCafe(state, store);
-  return <div className="cafe-panel-block"><h3 className="cafe-panel-h"><img src={icon('menu')} alt="" />Speisekarte</h3>
+  return <div className="cafe-panel-block"><h3 className="cafe-panel-h">Speisekarte</h3>
     {([['Getränke', DRINKS], ['Snacks', SNACKS]] as const).map(([title, list]) => <div key={title}><p className="mt-2 text-xs font-semibold text-muted-foreground">{title}</p>
       <div className="cafe-menu-grid">{list.map(it => { const on = sc.menu.includes(it.id), open = itemUnlocked(state, it.id);
         return <button key={it.id} className="cafe-menu-item" data-on={on} data-locked={!open} aria-pressed={on} onClick={() => perform(g => toggleMenuItem(g, store.id, it.id))}>
@@ -37,7 +37,7 @@ export function ResearchPanel() {
   const [branch, setBranch] = useState<Branch>('drink');
   const r = cafeOf(state).research;
   const active = r.active && RESEARCH.find(n => n.id === r.active?.id);
-  return <div className="cafe-panel-block"><h3 className="cafe-panel-h"><img src={icon('gear')} alt="" />Forschung · {r.done.length}/32</h3>
+  return <div className="cafe-panel-block"><h3 className="cafe-panel-h">Forschung · {r.done.length}/32</h3>
     {active && <p className="cafe-active">Läuft: {active.name} · noch {r.active?.weeksLeft} Wo.</p>}
     <div className="cafe-chip-row">{(Object.keys(BRANCH_LABEL) as Branch[]).map(b => <Button key={b} size="sm" variant={branch === b ? 'secondary' : 'ghost'} onClick={() => setBranch(b)}>{BRANCH_LABEL[b]}</Button>)}</div>
     <ol className="cafe-research">{RESEARCH.filter(n => n.branch === branch).map(n => { const done = r.done.includes(n.id), avail = researchAvailable(state, n.id);
@@ -49,7 +49,7 @@ export function ResearchPanel() {
 export function GearPanel({ store }: { store: Store }) {
   const { state, perform } = useGame();
   const sc = storeCafe(state, store), stage = leversOf(state, store).stage;
-  return <div className="cafe-panel-block"><h3 className="cafe-panel-h"><img src={icon('machine')} alt="" />Ausstattung · 5 Stufen</h3>
+  return <div className="cafe-panel-block"><h3 className="cafe-panel-h">Ausstattung · 5 Stufen</h3>
     <div className="grid gap-2">{GEAR_KEYS.map(c => { const lvl = sc.gear[c], cost = gearUpgradeCost(state, store, c), need = gearStageNeed(lvl + 1), locked = lvl < 4 && stage < need;
       return <div key={c} className="cafe-gear-row"><img src={gearArt(c, lvl)} alt="" width={56} height={56} loading="lazy" />
         <div className="min-w-0 flex-1"><strong>{GEAR[c].label}</strong><small>{GEAR[c].levels[lvl]}</small><span className="cafe-pips">{[0, 1, 2, 3, 4].map(i => <i key={i} data-on={i <= lvl} />)}</span></div>
@@ -61,7 +61,7 @@ export function DecorPanel({ store }: { store: Store }) {
   const { state, perform } = useGame();
   const sc = storeCafe(state, store); const [slot, setSlot] = useState<DecorSlot>('wall'); const [name, setName] = useState(store.name);
   const d = DECOR[slot];
-  return <div className="cafe-panel-block"><h3 className="cafe-panel-h"><img src={icon('star')} alt="" />Café gestalten</h3>
+  return <div className="cafe-panel-block"><h3 className="cafe-panel-h">Café gestalten</h3>
     <form className="flex gap-2" onSubmit={e => { e.preventDefault(); perform(g => renameStore(g, store.id, name)); }}><input aria-label="Name der Filiale" className="min-h-11 min-w-0 flex-1 rounded-md border border-input bg-background px-2 text-sm" value={name} maxLength={28} onChange={e => setName(e.target.value)} /><Button type="submit" variant="outline" className="min-h-11">Umbenennen</Button></form>
     <div className="cafe-chip-row mt-2">{DECOR_SLOTS.map(s => <Button key={s} size="sm" variant={slot === s ? 'secondary' : 'ghost'} onClick={() => setSlot(s)}>{DECOR[s].label}</Button>)}</div>
     <div className="cafe-menu-grid">{d.options.map((o, i) => <button key={o.name} className="cafe-menu-item" data-on={sc.decor[slot] === i} aria-pressed={sc.decor[slot] === i} onClick={() => perform(g => setDecor(g, store.id, slot, i))}><img src={sheet16(d.sheet, o.art)} alt="" width={56} height={56} loading="lazy" /><span>{o.name}</span><small>{eur(d.price)}</small></button>)}</div>

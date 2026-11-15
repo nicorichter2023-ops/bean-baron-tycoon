@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Users, Coffee, Wrench, Wallet, ArrowUpCircle } from 'lucide-react';
+import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { GameState, Store } from '@/engine/types';
 import { CafeCutaway } from './CafeCutaway';
@@ -29,15 +29,15 @@ export function CafeDetail({ store, address, onClose }: { store: Store; address:
   const [tab, setTab] = useState<Tab>('gear');
   const r = cafeReviews(store), boss = store.employees[0];
   const greeting = r.overall >= 4 ? 'Hallo Boss! Der Laden brummt heute.' : r.overall >= 3 ? 'Hallo Boss. Wie geht es dir heute?' : 'Boss, die Gäste meckern – wir brauchen Verbesserungen.';
-  const tabs: [Tab, string, typeof Users][] = [['service','Service',Users],['product','Produkt',Coffee],['gear','Ausstattung',Wrench],['finance','Finanzen',Wallet]];
+  const tabs: [Tab, string][] = [['service','Service'],['product','Produkt'],['gear','Ausstattung'],['finance','Finanzen']];
   const next = nextUpgrade(state, store);
   return <div className="cafe-detail" role="dialog" aria-modal="true" aria-label={`${store.name} Filialansicht`}>
-    <header className="cafe-detail-head"><span className="cafe-detail-logo">☕</span><div><strong>{store.name}</strong><small>{address}</small></div><Button variant="ghost" size="icon" aria-label="Filialansicht schließen" onClick={onClose}><X /></Button></header>
+    <header className="cafe-detail-head"><div><strong>{store.name}</strong><small>{address}</small></div><Button variant="ghost" size="icon" aria-label="Filialansicht schließen" onClick={onClose}><X /></Button></header>
     <div className="cafe-detail-body">
       <p className="cafe-detail-greeting">„{greeting}“<small>{boss?.name ?? 'Kein Personal'}</small></p>
       <div className="cafe-detail-scene"><CafeCutaway store={store} /></div>
-      {next && <Button className="cafe-next-upgrade" onClick={() => perform(next.run)}><ArrowUpCircle />Nächstes Upgrade: {next.label}</Button>}
-      <nav className="cafe-detail-tabs" style={{ position: 'static' }}>{tabs.map(([id,label,Icon]) => <Button key={id} variant={tab === id ? 'secondary' : 'ghost'} aria-pressed={tab === id} onClick={() => setTab(id)}><Icon /><span>{label}</span></Button>)}</nav>
+      {next && <Button className="cafe-next-upgrade" onClick={() => perform(next.run)}>Nächstes Upgrade: {next.label}</Button>}
+      <nav className="cafe-detail-tabs" style={{ position: 'static' }}>{tabs.map(([id,label]) => <Button key={id} variant={tab === id ? 'secondary' : 'ghost'} aria-pressed={tab === id} onClick={() => setTab(id)}><span>{label}</span></Button>)}</nav>
       <section className="grid gap-3">
         {tab === 'service' && <><StaffPanel store={store} /><StoreLeversPanel store={store} /></>}
         {tab === 'product' && <><MenuPanel store={store} /><ResearchPanel /></>}
