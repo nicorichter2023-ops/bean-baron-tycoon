@@ -58,9 +58,11 @@ const patchVenture = (g: GameState, e: EmpireState, id: string, patch: Partial<V
 const vh = (v: Venture) => [...v.id].reduce((n, c) => (n * 31 + c.charCodeAt(0)) % 100000, 7);
 const closeVenture = (e: EmpireState, v: Venture): EmpireState => ({ ...e, ventures: e.ventures.filter(x => x.id !== v.id), history: [v, ...e.history].slice(0, 15) });
 
+export const VENTURE_SLOTS = 6;
 export function investVenture(g: GameState, id: string): ActionResult {
   const e = empireOf(g), v = e.ventures.find(x => x.id === id);
   if (!v || v.status !== 'open') return no(g, 'Dieses Startup sucht keine Finanzierung mehr.');
+  if (e.ventures.filter(x => x.status === 'active').length >= VENTURE_SLOTS) return no(g, `Maximal ${VENTURE_SLOTS} Beteiligungen gleichzeitig.`);
   if (g.cash < v.ticket) return no(g, 'Nicht genug Barvermögen.');
   const nextWeek = g.week + 6 + Math.floor(rand(g.week + v.ticket) * 8);
   return ok(patchVenture({ ...g, cash: r2(g.cash - v.ticket) }, e, id, { status: 'active', invested: v.ticket, ownership: r2(v.ticket / (v.valuation + v.ticket) * 1000) / 1000, nextWeek }), `${v.name}: ${STAGES[0]}-Runde mitfinanziert.`);
@@ -98,7 +100,7 @@ export function resolveVenture(g: GameState, id: string, accept: boolean): Actio
 }
 function makeDecision(v: Venture, week: number): VentureDecision {
   const x = (k: number) => rand(week * 131 + v.invested + k), roll = x(1);
-  if (v.stage < STAGES.length - 1 && roll < 0.6) { const value = Math.round(v.valuation * (1.6 + v.quality * 1.8 + x(2))); return { kind: 'round', value, cost: Math.round(v.ownership * value * 0.2), expires: week + 3 }; }
+  if (v.stage < STAGES.length - 1 && roll < 0.6) { const value = Math.round(v.valuation * (1.4 + v.quality * 1.0 + x(2) * 0.5)); return { kind: 'round', value, cost: Math.round(v.ownership * value * 0.2), expires: week + 3 }; }
   if (roll < 0.75) return { kind: 'crisis', value: 0, cost: Math.max(5000, Math.round(v.invested * 0.2)), expires: week + 3 };
   if (roll < 0.9) return { kind: 'offer', value: Math.round(ventureStake(v) * (1.2 + x(3) * 0.8)), cost: 0, expires: week + 3 };
   return { kind: 'pivot', value: 0, cost: 0, expires: week + 3 };
@@ -130,7 +132,7 @@ export function stepVentures(g: GameState) {
       notes.push(sued ? `${v.name} insolvent – Anlegerklage kostet ${fee.toLocaleString('de-DE')} €.` : `${v.name} ist gescheitert – Einsatz verloren.`); continue;
     }
     if (v.stage >= STAGES.length - 1) {
-      const ipo = v.quality > 0.5 && x(3) < 0.75, val = Math.round(v.valuation * (ipo ? 1.8 + x(4) * 2.5 : 1.15)), payout = Math.round(val * v.ownership);
+      const ipo = v.quality > 0.5 && x(3) < 0.75, val = Math.round(v.valuation * (ipo ? 1.3 + x(4) * 1.2 : 1.05)), payout = Math.round(val * v.ownership);
       income += payout; e = closeVenture(e, { ...v, valuation: val, status: ipo ? 'ipo' : 'sold', payout, closedWeek: g.week });
       notes.push(ipo ? `🔔 IPO! ${v.name} geht an die Börse: +${payout.toLocaleString('de-DE')} €.` : `${v.name} an Konzern verkauft: +${payout.toLocaleString('de-DE')} €.`); continue;
     }
