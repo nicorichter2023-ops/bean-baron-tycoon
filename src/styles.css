@@ -379,6 +379,7 @@ select, input { min-height:44px; }
 .city-plan[data-biome=tropical_colonial] { --city-ground:oklch(.9 .065 145); }
 /* Isolated New York projection: all positions are ground-centred anchors. */
 .city-plan-isometric { width:1600px; height:1120px; background:var(--city-water); }
+.city-map-viewport:has(.city-plan-isometric) { background:var(--city-water); }
 .iso-ground { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
 .iso-water { fill:var(--city-water); }
 .iso-land { fill:var(--city-ground); stroke:var(--city-pavement); stroke-width:8px; }
