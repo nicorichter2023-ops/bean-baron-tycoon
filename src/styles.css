@@ -549,7 +549,7 @@ select, input { min-height:44px; }
 .nyc-photo-viewport { width: 100% !important; height: min(70dvh, 640px) !important; }
 .nyc-photo-content { width: 100% !important; position: relative; }
 .nyc-photo-content img { width: 100%; height: auto; display: block; user-select: none; }
-.ci-pin { position: absolute; transform: translate(-50%, -100%); min-width: 44px; min-height: 44px; display: grid; place-items: center; padding: 0 0 10px; background: none; border: 0; animation: float-pin 3s ease-in-out infinite; }
+.ci-pin { position: absolute; translate: -50% -100%; min-width: 44px; min-height: 44px; display: grid; place-items: center; padding: 0 0 10px; background: none; border: 0; animation: float-pin 3s ease-in-out infinite; }
 .ci-pin span { display: grid; place-items: center; min-width: 38px; height: 34px; padding: 0 5px; border-radius: 9px; font: 800 9px/1 system-ui; color: var(--primary-foreground); background: color-mix(in oklab, var(--card) 85%, transparent); border: 2px solid var(--border); box-shadow: 0 4px 10px color-mix(in oklab, var(--background) 60%, transparent); position: relative; }
 .ci-pin span::after { content: ''; position: absolute; bottom: -9px; left: 50%; translate: -50% 0; border: 7px solid transparent; border-top-color: inherit; border-bottom: 0; }
 .ci-pin[data-status='free'] span { background: var(--destructive); color: var(--destructive-foreground); }
