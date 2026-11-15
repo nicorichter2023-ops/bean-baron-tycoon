@@ -1,4 +1,10 @@
 # Roadmap
+- [ ] Master-GDD: Saisons, Vibes, Trends, Reviews und Pop-ups integrieren
+- [ ] Master-GDD: zentrale Supply mit Fracht, Auktionen, Agrarmethoden und Blends
+- [ ] Master-GDD: bestehendes B2B mit SLA erweitern, Franchise und FMCG ergänzen
+- [ ] Master-GDD: Rivalenreaktionen, Vermieterhebel, Politik und Spionage integrieren
+- [ ] Master-GDD: BeanPay-Float, Patente, ESG/Mikrokredite und Dynastie integrieren
+- [ ] Fünf Säulen, neue Grafiken/Icons/Karten, mobile und Desktop-Prüfung, Migration und Tests
 - [x] 7 Filialstufen, Firmenrang (10), Freischaltungen, Städte-Freigabe, Spielstand v6
 - [x] Spielhebel: Öffnungszeiten, Qualität/Menge, Treueprogramm, Spezialisierung, Bohnen-Festpreis
 - [x] Wochenziele mit Serie, 40 Erfolge, Filial-Abzeichen, Hinweis „Nächster Schritt“
