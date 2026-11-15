@@ -36,7 +36,7 @@ export function PhotoCityMap({ cityId, cityName, airportCode, buildings, onBuild
       <button onClick={onAirport} aria-label="Flughafen öffnen">✈</button>
       <button aria-pressed={labels} onClick={() => setLabels(!labels)}>{labels ? 'Aa' : 'Aa̶'}</button>
     </div>
-    <TransformWrapper key={cityId} ref={zoom} initialScale={1} minScale={1} maxScale={3} limitToBounds centerZoomedOut={false} disablePadding pinch={{ step: 5 }} panning={{ velocityDisabled: true }} doubleClick={{ disabled: true }} onTransformed={(r: { resetTransform: (t?: number) => void }, st: { scale: number }) => { if (st.scale < 0.999) r.resetTransform(0); }} onPinchingStop={(r: { resetTransform: (t?: number) => void; state: { scale: number } }) => { if (r.state.scale < 1) r.resetTransform(150); }}>
+    <TransformWrapper key={cityId} ref={zoom} initialScale={1} minScale={1} maxScale={3} limitToBounds centerZoomedOut={false} disablePadding pinch={{ step: 5 }} panning={{ velocityDisabled: true }} doubleClick={{ disabled: true }} onTransform={(r: { resetTransform: (t?: number) => void }, st: { scale: number }) => { if (st.scale < 0.999) r.resetTransform(0); }} onPinchingStop={(r: { resetTransform: (t?: number) => void; state: { scale: number } }) => { if (r.state.scale < 1) r.resetTransform(150); }}>
       <TransformComponent wrapperClass="nyc-photo-viewport" contentClass="nyc-photo-content">
         <img src={src} alt={`Stadtkarte ${cityName}`} width={1088} height={1920} draggable={false} onError={onError} onLoad={() => zoom.current?.resetTransform(0)} />
         {buildings.slice(0, 30).map((b, i) => {
