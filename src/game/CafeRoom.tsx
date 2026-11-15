@@ -4,7 +4,9 @@ import { leversOf } from '@/engine/progression';
 import { stg } from '@/engine/unlocks';
 import { storeCafe } from '@/engine/cafe';
 import { DECOR, GEAR, WALL_TINT } from '@/engine/cafeContent';
-import { gearArt, sheet16 } from './sheetArt';
+import { gearArt as rawGear, sheet16 } from './sheetArt';
+const cutout = (src: string) => src.replace(/\.webp$/, '-cut.webp');
+const gearArt = (c: string, l: number) => cutout(rawGear(c, l));
 import { CafeSteam } from './VisualEffects';
 
 /** Light colour washes per light option (Edison, Spots, Neon, Kronleuchter). */
@@ -18,7 +20,7 @@ export function CafeRoom({ store }: { store: Store }) {
   const sc = storeCafe(state, store);
   const g = sc.gear, d = sc.decor;
   const wall = d.wall ?? 0;
-  const deco = (slot: 'art' | 'plant' | 'extra' | 'sign') => { const i = d[slot]; const o = i === undefined ? undefined : DECOR[slot].options[i]; return o ? <img className={`room-${slot}`} src={sheet16(DECOR[slot].sheet, o.art)} alt={o.name} /> : null; };
+  const deco = (slot: 'art' | 'plant' | 'extra' | 'sign') => { const i = d[slot]; const o = i === undefined ? undefined : DECOR[slot].options[i]; return o ? <img className={`room-${slot}`} src={DECOR[slot].sheet === 'decor-b' ? cutout(sheet16('decor-b', o.art)) : sheet16(DECOR[slot].sheet, o.art)} alt={o.name} /> : null; };
   const tables = Math.min(6, 1 + g.seating + Math.floor(stage / 3));
   return <div className="cafe-room" data-stage={stage} data-wall={wall} aria-label={`Café ${store.name} · ${stg(stage - 1).label}`}>
     <div className="room-wall" style={{ background: WALL_TINT[wall] }} data-brick={wall === 4} />
