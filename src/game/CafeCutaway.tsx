@@ -50,8 +50,6 @@ export function CafeCutaway({ store }: { store: Store }) {
   const deco = (slot: 'light' | 'art' | 'sign' | 'plant' | 'extra') => { const i = sc.decor[slot]; const o = i === undefined ? undefined : DECOR[slot].options[i]; return o ? <img className={`d-${slot}`} src={sheet16(DECOR[slot].sheet, o.art)} alt={o.name} loading="lazy" /> : null; };
   const wall = sc.decor.wall;
   if (v) return <CafeRoom store={store} />;
-    <div className="cafe-decor-layer" aria-label="Eigene Gestaltung">{wall !== undefined && <span className="cafe-decor-tint" style={{ background: WALL_TINT[wall] }} />}{deco('light')}{deco('art')}{deco('sign')}{deco('plant')}{deco('extra')}</div>
-    <span className="cafe-photo-title">{v.label} · Stufe {stage}/7</span><div className="cafe-loadout" aria-label="Sichtbare Ausstattung">{parts.map(([src, label, lvl], i) => <figure key={i} data-lvl={Math.min(2, lvl)}><img src={src} alt="" width={44} height={44} loading="lazy" /><figcaption>{label}</figcaption></figure>)}</div></div>;
   return <div className="cafe-cutaway" data-tier={store.tier} aria-label={`Café-Diorama · ${['','Kiosk','Café','Flagship'][store.tier]}`}>
     <div className="cutaway-street" /><div className="cutaway-floor" /><div className="cutaway-wall wall-back" /><div className="cutaway-wall wall-side" />
     <NeonSign />
