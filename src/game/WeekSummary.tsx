@@ -1,6 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { useGame, eur } from './GameContext';
 import { progressOf } from '@/engine/progression';
 import { PROGRESS_ICONS, rankArt } from './sheetArt';
@@ -10,9 +11,10 @@ export function WeekSummary() {
   const { state } = useGame();
   const s = progressOf(state).summary;
   const [seen, setSeen] = useState(0);
-  const noteworthy = s && (s.rankUp || s.achievements.length || s.badges.length || s.goalsDone || s.eventNote);
+  // Only big moments open a card; routine weeks report via a short toast so play is not interrupted.
+  const noteworthy = s && (s.rankUp || s.achievements.length);
   const open = Boolean(noteworthy && s && s.week !== seen && !state.pendingEvent);
-  useEffect(() => { if (!s) return; }, [s]);
+  useEffect(() => { if (!s || noteworthy) return; const bits = [s.goalsDone ? `${s.goalsDone}/3 Wochenziele · +${eur(s.reward)}` : '', ...s.badges, s.eventNote ? `Kurzmeldung: ${s.eventNote}` : ''].filter(Boolean); if (bits.length) toast.success(bits.join(' · ')); }, [s?.week]); // eslint-disable-line react-hooks/exhaustive-deps
   if (!s) return null;
   return <Dialog open={open} onOpenChange={o => { if (!o) setSeen(s.week); }}>
     <DialogContent className="max-w-sm">
