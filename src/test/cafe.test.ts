@@ -9,7 +9,7 @@ import type { GameState } from '@/engine/types';
 
 const rich = (): GameState => ({ ...createInitialState(), cash: 1e6 });
 describe('Café-Tiefe', () => {
-  it('hat 12 Getränke, 10 Snacks und 32 Forschungsziele', async () => {
+  it('hat 12 Getränke, 10 Snacks und 80 Forschungsziele (mit 16 Konzern-Technologien dreimal so viele wie vorher)', async () => {
     const c = await import('@/engine/cafeContent');
     expect(c.DRINKS).toHaveLength(12); expect(c.SNACKS).toHaveLength(10); expect(RESEARCH).toHaveLength(32);
   });
