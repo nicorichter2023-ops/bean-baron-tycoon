@@ -756,4 +756,4 @@ html[data-contrast="high"] { --muted-foreground: var(--foreground); --border: va
 .nyc-photo-content { width: 100% !important; }
 .nyc-photo-content > img { width: 100% !important; height: auto !important; display: block; }
 /* Reserve room so the week button never covers content */
-main { padding-bottom: calc(9rem + env(safe-area-inset-bottom)); }
+.game-main { padding-bottom: calc(9rem + env(safe-area-inset-bottom)); }
