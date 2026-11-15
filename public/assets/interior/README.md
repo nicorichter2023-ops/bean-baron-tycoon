@@ -1,7 +1,7 @@
 # Café interior slots
 
 `cafe-interior.png`: transparent 1376 × 768 canvas, matching the existing
-interior framing. The espresso-machine center is at 33% x / 48% y.
+interior framing. The espresso-machine center is at 27% x / 54% y.
 `espresso-machine.png`: square transparent crop, grounded at bottom center.
 
 Configure `cafe-interior` and `espresso-machine` in `src/game/visualAssets.ts`

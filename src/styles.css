@@ -457,8 +457,9 @@ select, input { min-height:44px; }
 .traffic-route-5 img { transform:rotate(-100deg); }
 @keyframes traffic-horizontal { from { transform:translateX(-50px); } to { transform:translateX(1080px); } }
 @keyframes traffic-vertical { from { transform:translateY(-50px); } to { transform:translateY(1000px); } }
-.cafe-machine-slot { position:absolute; left:27%; top:36%; width:12%; height:20%; pointer-events:none; z-index:2; }
+.cafe-machine-slot { position:absolute; left:21%; top:44%; width:12%; height:20%; pointer-events:none; z-index:2; }
 .cafe-machine-slot > img { width:100%; height:100%; object-fit:contain; }
+.cafe-machine-slot > img[data-custom-asset=false] { visibility:hidden; }
 .espresso-steam { position:absolute; left:25%; bottom:75%; width:50%; height:120%; pointer-events:none; }
 .espresso-steam i { position:absolute; left:10%; bottom:0; width:24%; height:75%; border-radius:50%; background:linear-gradient(to top,transparent,var(--steam-ink),transparent); filter:blur(2px); opacity:0; transform-origin:bottom; animation:coffee-plume 4.8s ease-out infinite; }
 .espresso-steam i:nth-child(2) { left:35%; height:95%; animation-delay:-1.2s; }
