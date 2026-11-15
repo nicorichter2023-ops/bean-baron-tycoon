@@ -93,10 +93,21 @@ export const WALL_TINT = ['oklch(0.93 0.03 85)', 'oklch(0.75 0.06 140)', 'oklch(
 export const BARISTA_LEVELS = [0, 40, 120, 260, 500];
 
 /** Café design editor: 3 complete deco concepts per stage (each with its own seating), colour moods and terrace styles. */
+export const DESIGN_MOODS = ['Skandinavisch', 'Edel', 'Traditionell'] as const;
+/** 3 moods × 4 complete looks; every look is a painted variant of the same base scene per store group. */
 export const DESIGN_STYLES = [
-  { id: 'bistro', name: 'Holz-Bistro', seats: 'Holztische & Bistrostühle' },
-  { id: 'lounge', name: 'Lounge', seats: 'Polsterbänke & Sessel' },
-  { id: 'botanic', name: 'Botanisch', seats: 'Rattanstühle & Pflanzen' },
+  { id: 'birch', mood: 0, name: 'Birke & Weiß', seats: 'Birkenstühle', counter: 'Weißer Lack, Eiche', colors: 'Weiß · Salbei' },
+  { id: 'oak', mood: 0, name: 'Eiche & Salbei', seats: 'Eichenbänke mit Wollpolster', counter: 'Eichen-Lamellen', colors: 'Salbeigrün' },
+  { id: 'boucle', mood: 0, name: 'Wolle & Sand', seats: 'Bouclé-Sessel', counter: 'Terrazzo', colors: 'Sand · Creme' },
+  { id: 'pastel', mood: 0, name: 'Pastell', seats: 'Schalenstühle', counter: 'Mintgrüne Fliesen', colors: 'Puderblau' },
+  { id: 'marble', mood: 1, name: 'Marmor & Gold', seats: 'Samtsessel smaragd', counter: 'Marmor mit Messing', colors: 'Dunkelgrün · Gold' },
+  { id: 'leather', mood: 1, name: 'Leder & Nussbaum', seats: 'Chesterfield-Leder', counter: 'Nussbaum', colors: 'Cognac · Braun' },
+  { id: 'velvet', mood: 1, name: 'Samt & Bordeaux', seats: 'Samtbänke', counter: 'Schwarzer Marmor', colors: 'Bordeaux · Schwarz' },
+  { id: 'navy', mood: 1, name: 'Navy & Messing', seats: 'Polsterstühle navy', counter: 'Gebürstetes Messing', colors: 'Navy · Creme' },
+  { id: 'vienna', mood: 2, name: 'Wiener Kaffeehaus', seats: 'Thonet-Bugholzstühle', counter: 'Geschnitztes Holz', colors: 'Creme · Rot' },
+  { id: 'country', mood: 2, name: 'Landhaus', seats: 'Holzbänke', counter: 'Backstein', colors: 'Terrakotta' },
+  { id: 'italian', mood: 2, name: 'Italienische Bar', seats: 'Barhocker', counter: 'Kupfer', colors: 'Ocker · Grün' },
+  { id: 'kontor', mood: 2, name: 'Kontor', seats: 'Ledersessel', counter: 'Dunkle Eiche, Jutesäcke', colors: 'Petrol · Holz' },
 ] as const;
 /** Wall colours: the swatch tints only the upper wall band of the painted scene; `filter` is kept for old callers. */
 export const PALETTES = [
