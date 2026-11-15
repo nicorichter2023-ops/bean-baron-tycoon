@@ -79,7 +79,7 @@ export function applyDesign(g: GameState, storeId: string, draft: CafeDesign): A
   return ok(withStore({ ...g, cash: r2(g.cash - cost) }, s, { design: { ...draft } }), `${s.name}: neue Gestaltung übernommen.`);
 }
 /** Terrace style bonus on the terrace revenue share only; zero without a terrace. */
-export const terraceBonus = (sc: StoreCafe) => sc.gear.terrace > 0 ? r2((TERRACE_STYLES[designOf(sc).terrace]?.bonus ?? 0) * TERRACE_SHARE * 10000) / 10000 : 0;
+export const terraceBonus = (sc: StoreCafe) => sc.gear.terrace > 0 ? (TERRACE_STYLES[designOf(sc).terrace]?.bonus ?? 0) * TERRACE_SHARE : 0;
 export function renameStore(g: GameState, storeId: string, name: string): ActionResult {
   const n = name.trim().slice(0, 28); if (n.length < 2) return no(g, 'Name zu kurz.');
   return ok({ ...g, stores: g.stores.map(s => s.id === storeId ? { ...s, name: n } : s) }, `Filiale heißt jetzt „${n}“.`);
