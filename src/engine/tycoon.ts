@@ -1,5 +1,5 @@
 import type { ActionResult, GameState } from './types';
-import { createTycoon, tycoonOf, hash, farmScore, franchiseReady, masterEra, propertyDiscount, esgScore, trendAt, vibeScore, type TycoonState, type FarmSetup } from './tycoonState';
+import { createTycoon, tycoonOf, hash, farmScore, franchiseReady, masterEra, propertyDiscount, esgScore, trendAt, vibeScore, weatherAt, type TycoonState, type FarmSetup } from './tycoonState';
 import { ENTERPRISE, RETAIL, PATENTS, FARM_METHODS, type HeritagePerk } from '@/data/tycoonContent';
 import { MASTER, buildingById } from '@/data/master';
 import { processEmpireWeek, acquireRivalWithStores, isExec } from './empire';
@@ -16,6 +16,10 @@ function changed(g: GameState, t: TycoonState, reason: string, cost = 0): Action
   if (g.pendingEvent) return no(g, 'Zuerst das Wochenereignis entscheiden.');
   const state = { ...g, cash: money(g.cash - cost), tycoon: t };
   return ok({ ...state, companyValuation: calculateCompanyValuation(state) }, reason);
+}
+export function configureRoastery(g: GameState, safety: number, autoRestock: boolean): ActionResult {
+  if (!Number.isFinite(safety) || safety < 0 || safety > 1000000) return no(g, 'Sicherheitsbestand zwischen 0 und 1.000.000 kg wählen.');
+  return ok({ ...g, roastery: { ...g.roastery, safetyStockKg: safety, autoRestock } }, 'Sicherheitsbestand und automatischer Einkauf gespeichert.');
 }
 export function configureFarm(g: GameState, id: string, setup: FarmSetup): ActionResult {
   if (!g.world.assets.some(a => a.kind === 'plantation' && a.id === id)) return no(g, 'Diese Finca gehört dir noch nicht.');
@@ -163,7 +167,7 @@ export function setDividend(g: GameState, rate: number): ActionResult {
 }
 export function heritagePoints(g: GameState) {
   const t = tycoonOf(g), cities = new Set(g.stores.map(s => s.cityId)).size;
-  return Math.max(0, Math.floor((calculateCompanyValuation(g) - t.beanpay.balance) / 100000) + cities * 100 + esgScore(g) * 5 + t.patents.length * 100 + (g.progress?.achievements.length ?? 0) * 10);
+  return Math.max(0, Math.floor(calculateCompanyValuation(g) / 100000) + cities * 100 + esgScore(g) * 5 + t.patents.length * 100 + (g.progress?.achievements.length ?? 0) * 10);
 }
 export function dynastyExit(g: GameState, perks: HeritagePerk[]): ActionResult {
   const allowed: HeritagePerk[] = ['diplomat', 'roast', 'property', 'tech'];
@@ -185,6 +189,12 @@ function prepareSupply(state: GameState): GameState {
     const bean = state.market.beanVarieties.find(b => b.originCountry === p.country) ?? state.market.beanVarieties[0];
     t.cargo.push({ id: `crop-${a.id}-${state.week + 1}`, kg, origin: p.country, score: farmScore(state, a.id), arrival: state.week + 1 + (setup.freight === 'air' ? 1 : 2), mode: setup.freight, beanId: bean?.id ?? '', cost: money(kg * (setup.freight === 'air' ? 1.8 : .25)) });
   }
+  t.news = [];
+  t.cargo = t.cargo.map(c => {
+    if (c.arrival !== state.week + 1) return c;
+    if (c.mode === 'sea' && hash(`${c.id}-${c.arrival}-port`) % 13 === 0) { t.news.push(`Hafenkrise: ${c.origin} verspätet sich um eine Woche.`); return { ...c, arrival: c.arrival + 1 }; }
+    return { ...c, cost: money(c.cost + (t.dynasty.perks.includes('diplomat') ? 0 : c.kg * .15)) };
+  });
   const arriving = t.cargo.filter(c => c.arrival <= state.week + 1);
   let total = roastery.rawBeanStockKg, score = t.inventoryScore;
   for (const c of arriving) {
@@ -193,7 +203,7 @@ function prepareSupply(state: GameState): GameState {
     if (lot) lot.quantityKg += c.kg; else roastery.beanLots.push({ beanId: c.beanId, quantityKg: c.kg, averagePricePerKg: c.cost / c.kg });
   }
   roastery.rawBeanStockKg = money(total); t.inventoryScore = money(score);
-  t.news = arriving.map(c => `${c.mode === 'air' ? 'Luftfracht' : 'Seefracht'}: ${c.kg} kg aus ${c.origin} im Rohkaffee-Lager.`);
+  t.news.push(...arriving.map(c => `${c.mode === 'air' ? 'Luftfracht' : 'Seefracht'}: ${c.kg} kg aus ${c.origin} im Rohkaffee-Lager.`));
   // Spot lots and the saved signature blend share the same inventory.
   const blend = t.blend;
   const a = state.market.beanVarieties.find(b => b.id === blend.beanA), b = state.market.beanVarieties.find(b => b.id === blend.beanB);
@@ -211,6 +221,8 @@ export function processTycoonWeek(state: GameState, exp: ExpansionState) {
   let g: GameState = { ...r.game, world: { ...r.game.world, occupants: { ...r.game.world.occupants } }, tycoon: tycoonOf(prepared) }, t = structuredClone(tycoonOf(g));
   let revenue = 0, cost = 0, financing = 0;
   const notes = [...t.news];
+  const missed = g.b2b.contracts.filter(c => c.penaltyRate && (c.fulfillment ?? 1) < 1).length;
+  if (missed) g.brandReputation = Math.max(0, g.brandReputation - missed * 2);
   const channels = { ...createTycoon().channels, b2b: g.lastReport?.revenueB2B ?? 0 };
   const shipmentCost = t.cargo.filter(c => c.arrival <= g.week).reduce((n, c) => n + c.cost, 0);
   cost += shipmentCost; t.cargo = t.cargo.filter(c => c.arrival > g.week);
@@ -310,6 +322,9 @@ export function processTycoonWeek(state: GameState, exp: ExpansionState) {
   if (adopted && g.week <= trend.until) {
     const cups = Math.round(g.stores.reduce((n, s) => n + s.customersServedLastWeek, 0) * .06);
     revenue += cups * adopted.price; cost += cups * 1.4;
+  }
+  for (const store of g.stores) if (weatherAt(g.week, store.cityId).rain) {
+    if (g.cafe?.stores[store.id]?.menu.some(id => ['croissant', 'muffin', 'cookie', 'bagel', 'sandwich'].includes(id))) { const extras = money(store.weeklyRevenue * .08); revenue += extras; cost += extras * .3; }
   }
   t.trends = Object.fromEntries(Object.entries(t.trends).filter(([, v]) => v.adoptedWeek > g.week - 16));
   t.reviews = [...g.stores.slice().sort((a, b) => a.qualityIndex - b.qualityIndex).slice(0, 12).map(s => {

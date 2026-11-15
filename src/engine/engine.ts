@@ -391,12 +391,18 @@ function processRoastery(
     }
   }
 
-  const roastInput = Math.max(0, Math.min(rawBeanStockKg, targetInput));
+  let roastInput = Math.max(0, Math.min(rawBeanStockKg, targetInput));
+  const blend = game?.tycoon?.blend;
+  const blended = blend && blend.beanA && blend.beanB && blend.beanA !== blend.beanB;
+  if (blended) {
+    const share = blend.percentA / 100, a = beanLots.find(l => l.beanId === blend.beanA)?.quantityKg ?? 0, b = beanLots.find(l => l.beanId === blend.beanB)?.quantityKg ?? 0;
+    roastInput = Math.min(roastInput, share > 0 ? a / share : Infinity, share < 1 ? b / (1 - share) : Infinity);
+  }
   const produced = roastInput * yieldFactor;
   let consumptionLeft = roastInput;
   beanLots = beanLots
     .map((lot) => {
-      const consumed = Math.min(lot.quantityKg, consumptionLeft);
+      const consumed = blended ? lot.beanId === blend.beanA ? roastInput * blend.percentA / 100 : lot.beanId === blend.beanB ? roastInput * (1 - blend.percentA / 100) : 0 : Math.min(lot.quantityKg, consumptionLeft);
       consumptionLeft -= consumed;
       return { ...lot, quantityKg: round2(lot.quantityKg - consumed) };
     })
