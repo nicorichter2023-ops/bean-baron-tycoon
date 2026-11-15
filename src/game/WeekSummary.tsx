@@ -12,12 +12,12 @@ export function WeekSummary() {
   const s = progressOf(state).summary;
   const [seen, setSeen] = useState(0);
   // Only big moments open a card; routine weeks report via a short toast so play is not interrupted.
-  const noteworthy = s && (s.rankUp || s.achievements.length);
+  const noteworthy = Boolean(s?.rankUp);
   const open = Boolean(noteworthy && s && s.week !== seen && !state.pendingEvent);
-  useEffect(() => { if (!s || noteworthy) return; const bits = [s.goalsDone ? `${s.goalsDone}/3 Wochenziele · +${eur(s.reward)}` : '', ...s.badges, s.eventNote ? `Kurzmeldung: ${s.eventNote}` : ''].filter(Boolean); if (bits.length) toast.success(bits.join(' · ')); }, [s?.week]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (!s || noteworthy) return; const bits = [s.goalsDone ? `${s.goalsDone}/3 Wochenziele · +${eur(s.reward)}` : '', ...s.achievements.map(a => `Erfolg: ${a}`), ...s.badges, s.eventNote ? `Kurzmeldung: ${s.eventNote}` : ''].filter(Boolean); if (bits.length) toast.success(bits.join(' · ')); }, [s?.week]); // eslint-disable-line react-hooks/exhaustive-deps
   if (!s) return null;
   return <Dialog open={open} onOpenChange={o => { if (!o) setSeen(s.week); }}>
-    <DialogContent className="max-w-sm">
+    <DialogContent className="max-h-[85dvh] max-w-sm overflow-y-auto">
       <DialogHeader><DialogTitle>Woche {s.week}</DialogTitle><DialogDescription>Deine Wochenbilanz</DialogDescription></DialogHeader>
       {s.rankUp && <div className="reward-pop flex items-center gap-3 rounded-lg border border-primary p-3"><img src={rankArt(progressOf(state).rank)} alt="" className="h-14 w-14 rounded-full" /><div><p className="text-xs">Neuer Rang!</p><strong className="text-lg">{s.rankUp}</strong></div></div>}
       <dl className="grid grid-cols-2 gap-2 text-sm"><div><dt className="text-muted-foreground">Gewinn</dt><dd className={`font-mono font-bold ${s.profit >= 0 ? 'text-success' : 'text-destructive'}`}>{eur(s.profit)}</dd></div>
@@ -27,7 +27,7 @@ export function WeekSummary() {
       {s.achievements.map(a => <p key={a} className="reward-pop flex items-center gap-2 text-sm"><img src={PROGRESS_ICONS.medal} alt="" className="h-6 w-6 rounded" />Erfolg: {a}</p>)}
       {s.badges.map(b => <p key={b} className="text-sm">🏅 {b}</p>)}
       {s.eventNote && <p className="rounded border border-border p-2 text-xs">Kurzmeldung: {s.eventNote}</p>}
-      <Button className="h-12" onClick={() => setSeen(s.week)}>Weiter</Button>
+      <Button className="sticky bottom-0 h-12" onClick={() => setSeen(s.week)}>Weiter</Button>
     </DialogContent>
   </Dialog>;
 }
