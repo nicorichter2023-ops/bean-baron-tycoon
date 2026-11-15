@@ -9,7 +9,7 @@ it('repro', () => {
   g = C.upgradeGear(g, s.id, 'espresso').state;
   const pk = Object.keys(P).filter(k=>/lever|set|upgrade/i.test(k)); console.log(pk);
   console.log('before', JSON.stringify(C.storeCafe(g, g.stores[0]!).gear), JSON.stringify(g.stores[0]!.equipment), JSON.stringify(g.progress?.stores[s.id]));
-  const exp = createExpansion(g as any);
-  const r = E.processEmpireWeek(g, exp as any); g = (r as any).state ?? r;
+  const exp = createExpansion();
+  const r = E.processEmpireWeek(g, exp as any); g = r.game;
   console.log('after', JSON.stringify(C.storeCafe(g, g.stores[0]!).gear), JSON.stringify(g.stores[0]!.equipment), JSON.stringify(g.progress?.stores[s.id]), Object.keys(g.cafe?.stores??{}));
 });
