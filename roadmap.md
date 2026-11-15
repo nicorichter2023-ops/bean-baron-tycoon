@@ -14,6 +14,7 @@
 - [x] Installierbare Vollbild-App für Galaxy S21 FE konfigurieren und mobil prüfen.
 
 ## Visuelle Spielwelt
+- [ ] New York korrigieren: bewegten Verkehr entfernen, Gebäude erden, Manhattan-Straßen, Flüsse, Liberty Island und Central Park sichtbar machen und prüfen.
 - [x] New York isoliert auf mathematische 2:1-Isometrie mit Tiefensortierung umstellen; Mathematiktests und Touch-Pan/Zoom prüfen.
 - [x] Pins, Straßenverkehr, Dampf, Leuchtreklamen und Wasserschimmer animieren; austauschbare New-York-/Interieur-Grafikplätze mobil prüfen.
 - [x] Masterdatei vollständig anbinden: Standorte, Rivalen und alle Wirtschafts- und Konzernangebote.
