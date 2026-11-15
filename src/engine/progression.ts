@@ -162,7 +162,7 @@ export function processProgressWeek(state: GameState, exp: ExpansionState) {
   const p0 = progressOf(state);
   const result = processManagementWeek(state, exp);
   // base engine drops unknown fields: keep persisted café gear/design/menu
-  let g = { ...result.game, cafe: result.game.cafe ?? state.cafe };
+  let g: GameState = result.game.cafe || !state.cafe ? result.game : { ...result.game, cafe: state.cafe };
   if (g.week === state.week) return { game: { ...g, progress: p0 }, exp: result.exp };
   let p: ProgressState = { ...p0, stores: { ...p0.stores } };
   // levers + stages
