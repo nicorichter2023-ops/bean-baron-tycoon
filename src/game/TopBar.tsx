@@ -23,7 +23,7 @@ export function TopBar({ onProgress }: { onProgress?: () => void }) {
     <header className="fixed inset-x-0 top-0 z-30 border-b border-border bg-card/95 backdrop-blur pt-[env(safe-area-inset-top)]">
       <div className={`hud mx-auto grid max-w-5xl gap-1 px-3 py-1.5 ${flash ? 'hud-flash' : ''}`}>
         <div className="flex items-baseline justify-between gap-2 text-[13px]">
-          <span className="font-mono font-bold">{compact(state.cash)} €{state.lastReport && <span className={`ml-1 text-[11px] ${state.lastReport.netIncome >= 0 ? 'text-success' : 'text-destructive'}`}>{state.lastReport.netIncome >= 0 ? '+' : ''}{compact(state.lastReport.netIncome)}/Wo</span>}</span>
+          <span className="font-mono font-bold">{compact(state.cash)}{state.lastReport && <span className={`ml-1 text-[11px] ${state.lastReport.netIncome >= 0 ? 'text-success' : 'text-destructive'}`}>{state.lastReport.netIncome >= 0 ? '+' : ''}{compact(state.lastReport.netIncome)}/Wo</span>}</span>
           <span className="text-muted-foreground">Woche <strong className="text-foreground">{state.week}</strong></span>
           <span className="text-muted-foreground">Bohne <strong className={up ? 'text-success' : 'text-destructive'}>{price.toFixed(2)}€</strong></span>
         </div>
