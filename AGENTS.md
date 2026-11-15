@@ -44,3 +44,5 @@ use the editor.
 - Visual replacement slots live in src/game/visualAssets.ts with image-error fallbacks; CSS effects animate separate presentation layers and respect reduced motion so art swaps never alter gameplay or hit targets.
 - Long-term progression (ranks, 7 store stages, levers, weekly goals, achievements, event gating) lives in src/engine/progression.ts with pure content in src/engine/unlocks.ts; weekly play runs through processProgressWeek, which wraps processManagementWeek and patches the same accounting row so lever/goal cash reconciles.
 - Store stages refine engine tiers (stages map onto tiers 1/2/3) instead of replacing them, so the base engine and old saves stay valid.
+- Café depth (menu, 5-level gear, decor, barista XP, 32 research nodes, rival pressure) lives in src/engine/cafe.ts + cafeContent.ts, persisted as GameState.cafe and applied in processProgressWeek; gear syncs legacy equipment upwards only so old effects and saves stay valid.
+- City maps: painted per-city images with precomputed land pin spots in src/data/cityMaps.ts; isometric scene is the fallback when an image fails.
