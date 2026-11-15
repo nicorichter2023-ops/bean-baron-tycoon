@@ -36,18 +36,6 @@
 - **5 Stufen pro Ausstattung** (Maschine, Mühle, Sitzplätze, Vitrine, Terrasse), sichtbar im Café-Bild über die vorhandenen Bildbögen.
 - **Die Konkurrenz wächst**: Rivalen eröffnen mit der Zeit neue Standorte, starten Preisaktionen und greifen gute Lagen ab. Ihre Stärke steigt mit deinem Rang.
 
-## Icons, Upgrades und eigene Café-Gestaltung
-- **Einheitliche Symbole**: Alle bisherigen Symbole für Anzeige, Ausstattung, Ränge und Status werden in einem gemeinsamen Stil neu gezeichnet. Dafür gibt es 3 neue Bildbögen mit je 16 Bildern; die alten, uneinheitlichen Symbole fliegen raus.
-- **Upgrades sichtbar im Café**: Jede Ausstattungsstufe ist ein eigenes Bild, das im Café-Bild an seinem festen Platz liegt (Theke, Mühle, Sitzbereich, Vitrine, Terrasse). Jeder Kauf verändert das Café sofort sichtbar.
-- **Eigene Gestaltung pro Café** (rein optisch, ohne Kosten für den Spielablauf außer dem Kaufpreis):
-  - Farbschema: 6 Varianten für Wände und Theke
-  - Boden: Holz, Fliesen, Beton oder Marmor
-  - Beleuchtung: warm, hell oder Neon
-  - Pflanzen und Deko frei wählbar
-  - Ladenschild und Name frei wählbar
-- Ausgewählte Stile können die Atmosphäre-Bewertung leicht verbessern, wenn sie zur Spezialisierung des Cafés passen.
-- **Zusätzliche Bilder**: 2 Bildbögen für Deko, Böden und Lampen. Damit steigt die Schätzung auf etwa 32 bis 42 Credits.
-
 ## Balance
 - Eine Simulation über 300 Wochen mit drei Spielweisen: vorsichtig, ausgewogen und aggressiv.
 - Zielwerte: Rang 3 nach 15–25 Wochen, Rang 6 nach 80–120 Wochen, Rang 10 nach mehr als 250 Wochen. Investitionen sollen sich in 8–40 Wochen bezahlt machen.
@@ -62,5 +50,4 @@
 - Bilder: Karten per edit_image auf Basis von `src/assets/nyc-city-map.jpg` (1088×1920) nach `src/assets/maps/<city>.jpg`; Bögen 4×4 nach `public/assets/sheets/{drinks,snacks,research-a,research-b,portraits}/1..16.webp`, Index-Maps in `sheetArt.ts`.
 - Neue reine Module: `src/engine/menu.ts` (Produkte, Effekt auf Umsatz/Marge), `src/engine/staff.ts` (XP), `src/engine/research.ts` (32 Knoten, Graph), Rivalen-Eskalation in `world.ts`; Ausstattung 5 Stufen in `equipment.ts` mit Migration (0–2 → passende neue Stufen, nie herabgestuft).
 - Alles wirkt über `processProgressWeek`; Schema 7 mit Migration v6→v7.
-- Gestaltung: `src/engine/decor.ts` (rein; Farbschema, Boden, Licht, Deko, Schild je Filiale, persistiert), CafeCutaway setzt Ausstattungs-Layer an feste Ankerpunkte; Symbole über `sheetArt.ts` auf neue Bögen `icons-a/b/c`, `decor-a/b` umgestellt.
-- Tests: decor, menu, staff, research, equipment-Migration, Rivalen, `balance.test.ts` (300 Wochen, 3 Bots).
+- Tests: menu, staff, research, equipment-Migration, Rivalen, `balance.test.ts` (300 Wochen, 3 Bots).

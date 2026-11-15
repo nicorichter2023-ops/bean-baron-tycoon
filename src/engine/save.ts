@@ -5,6 +5,7 @@ import { balanceSheet, createManagement } from './management';
 import { createEquipment } from './equipment';
 import { createWorld } from './world';
 import { createProgress } from './progression';
+import { createCafeState, defaultStoreCafe } from './cafe';
 import { MASTER_CITIES, MASTER_STOCKS, MASTER_STARTUPS } from '@/data/master';
 
 const KEY = "coffee-empire-save";
@@ -69,7 +70,12 @@ export function migrateV5ToV6(state: GameState): GameState {
   const visited = state.world?.travelHistory?.map(t => t.to) ?? [];
   return { ...state, schemaVersion: 6, progress: { ...progress, extraCities: [...new Set([...progress.extraCities, ...visited, state.city.id])] } };
 }
-const migrations: Record<number, (state: any) => GameState> = { 1: migrateV1ToV2, 2: migrateV2ToV3, 3: migrateV3ToV4, 4: migrateV4ToV5, 5: migrateV5ToV6 };
+/** Café depth: legacy equipment becomes 5-level gear (0/1/2 -> 0/2/4), default menu, no XP. */
+export function migrateV6ToV7(state: GameState): GameState {
+  const cafe = state.cafe ?? createCafeState();
+  return { ...state, schemaVersion: 7, cafe: { ...cafe, stores: Object.fromEntries(state.stores.map(s => [s.id, cafe.stores[s.id] ?? defaultStoreCafe(s)])) } };
+}
+const migrations: Record<number, (state: any) => GameState> = { 1: migrateV1ToV2, 2: migrateV2ToV3, 3: migrateV3ToV4, 4: migrateV4ToV5, 5: migrateV5ToV6, 6: migrateV6ToV7 };
 
 export function loadGame(): GameState {
   try {

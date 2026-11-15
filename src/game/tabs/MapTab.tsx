@@ -11,6 +11,8 @@ import { getCityArtwork } from '../artwork';
 import { CityMap } from '../CityMap';
 import { NeighborhoodPanel } from '../NeighborhoodPanel';
 import nycPanorama from '@/assets/nyc-landmarks-panorama.jpg';
+import { cityMapImage } from '@/data/cityMaps';
+import airportHub from '@/assets/airport-hub.jpg';
 import { CafeDetail } from '../CafeDetail';
 
 export function MapTab({ airportOnly = false }: { airportOnly?: boolean }) {
@@ -29,6 +31,7 @@ export function MapTab({ airportOnly = false }: { airportOnly?: boolean }) {
   return <>
     <div className="scene-heading"><div><p className="eyebrow">{hub ? `${city.name} · ${airport?.airportCode ?? ''}` : `${city.country} · ${airport?.airportCode ?? ''}`}</p><h1>{hub ? 'International Airport' : city.name}</h1></div><Button variant="secondary" size="icon" aria-label={hub ? 'Zur Stadtkarte' : 'Flughafen öffnen'} onClick={() => { setHub(!hub); setSelected(null); }}>{hub ? <ArrowLeft /> : <Plane />}</Button></div>
     {hub ? <>
+      <img className="airport-hub-img" src={airportHub} alt="Flughafen-Terminal mit Jets" width={1088} height={1600} />
       <div className="airport-banner"><Plane size={36} /><div><span>COFFEE EMPIRE · DEPARTURES</span><strong>{airport?.airportCode ?? 'HQ'} → WORLD</strong><p>20 Destinationen · {state.world.travelHistory.length} Reisen</p></div></div>
       <div className="airport-controls"><div><Button variant={cabin === 'economy' ? 'secondary' : 'ghost'} onClick={() => setCabin('economy')}>Economy</Button><Button variant={cabin === 'business' ? 'secondary' : 'ghost'} onClick={() => setCabin('business')}>Business</Button></div><select aria-label="Reiseregion" value={region} onChange={e => setRegion(e.target.value)}><option value="all">Alle Regionen</option><option value="EMEA">Europa & Afrika</option><option value="AMER">Amerika</option><option value="APAC">Asien & Pazifik</option></select></div>
       <div className="departure-board"><div className="departure-head"><span>Destination</span><span>Ticket</span></div>{MASTER.airports.filter(a => region === 'all' || a.region === region).map(a => {
@@ -38,7 +41,7 @@ export function MapTab({ airportOnly = false }: { airportOnly?: boolean }) {
       })}</div>
       {state.world.travelHistory.length > 0 && <section className="travel-history"><h2>Letzte Reisen</h2>{state.world.travelHistory.slice(-5).reverse().map((t, i) => <p key={i}>Woche {t.week} · {MASTER.airports.find(a => a.cityId === t.from)?.airportCode ?? t.from} → {MASTER.airports.find(a => a.cityId === t.to)?.airportCode ?? t.to} · {eur(t.cost)}</p>)}</section>}
     </> : <>
-      <div className="city-summary"><img src={city.id === 'new_york' ? nycPanorama : BIOME_SCENE[city.biome]} alt={`${city.name} – Stadtpanorama`} /><div><strong>{city.name}</strong><span>Kaufkraft {city.purchasingPower.toFixed(2)}× · {state.stores.filter(s => s.cityId === city.id).length} eigene Filialen</span></div></div>
+      <div className="city-summary"><img src={city.id === 'new_york' ? nycPanorama : cityMapImage(city.id) ?? BIOME_SCENE[city.biome]} alt={`${city.name} – Stadtpanorama`} /><div><strong>{city.name}</strong><span>Kaufkraft {city.purchasingPower.toFixed(2)}× · {state.stores.filter(s => s.cityId === city.id).length} eigene Filialen</span></div></div>
       <CityMap key={city.id} city={city} onBuilding={choose} onAirport={() => { setHub(true); setSelected(null); }} />
       {selected && <section className="property-detail" aria-label="Standortdetails"><div className="flex items-start justify-between gap-2"><div><p className="eyebrow">{ZONES[selected.zoneType]} · {CLIENTELE[selected.clientele]}</p><h2>{selected.name}</h2></div><Button variant="ghost" size="icon" aria-label="Standort schließen" onClick={() => setSelected(null)}><ArrowLeft /></Button></div>
         <div className="property-metrics"><div><Users /><strong>{selected.footTraffic.toLocaleString('de-DE')}</strong><span>Laufkundschaft / Woche</span></div><div><MapPin /><strong>{eur(selected.weeklyRent)}</strong><span>Miete / Woche</span></div><div><Trophy /><strong>+{selected.locationBonus.valuePercent}%</strong><span>{selected.locationBonus.label}</span></div><div><Store /><strong>{eur(selected.purchasePrice)}</strong><span>Immobilienpreis</span></div></div>

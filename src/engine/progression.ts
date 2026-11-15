@@ -1,6 +1,7 @@
 import type { ActionResult, GameState, GameEvent, Store } from './types';
 import { applyEventChoice, upgradeStore } from './engine';
 import { processManagementWeek } from './management';
+import { cafeWeek } from './cafe';
 import type { ExpansionState } from './expansion';
 import { RANKS, STAGES, stg, rk, firstStageOfTier, leverUnlocked, legacyStage, maxStage, rankInfo, tierOfStage, type LeverId, type Stage } from './unlocks';
 
@@ -174,6 +175,7 @@ export function processProgressWeek(state: GameState, exp: ExpansionState) {
   }
   const revenue = g.stores.reduce((n, s) => n + s.weeklyRevenue, 0);
   leverRev += revenue * achievementBonus(g);
+  const cw = cafeWeek(g); leverRev += cw.revenue; leverCost += cw.cost; rep += cw.reputation; g = { ...g, cafe: cw.cafe };
   if (p.beanContract && p.beanContract.untilWeek >= g.week) leverRev += (g.market.futuresPricePerKg - p.beanContract.price) * g.stores.length * 40;
   // goals
   const m = metrics(g), profit = g.lastReport?.netIncome ?? 0;
@@ -203,6 +205,7 @@ export function processProgressWeek(state: GameState, exp: ExpansionState) {
   p.goalStreak = streak; p.goals = makeGoals(g); p.goalBaseline = { stores: g.stores.length, upgrades: p.upgradesDone };
   if (p.tutorialStep < 99) p.tutorialStep = Math.min(99, p.tutorialStep + 1);
   p.summary = { week: g.week, profit: g.lastReport?.netIncome ?? 0, guests: m.guests, goalsDone: done, reward, rankUp, achievements: earned.map(id => ACHIEVEMENTS.find(a => a.id === id)?.label ?? id), badges, leverNet: r2(net - reward), eventNote: gated.note };
+  if (cw.notes.length && g.lastReport) g = { ...g, lastReport: { ...g.lastReport, notes: [...g.lastReport.notes, ...cw.notes] } };
   if (gated.note && g.lastReport) g = { ...g, lastReport: { ...g.lastReport, notes: [...g.lastReport.notes, `Kurzmeldung – ${gated.note}`] } };
   return { game: { ...g, progress: p }, exp: result.exp };
 }
