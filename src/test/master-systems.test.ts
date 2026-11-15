@@ -69,4 +69,16 @@ describe('Konsolidierte Master-Mechaniken', () => {
     const occupied = { ...g, tycoon: { ...tycoonOf(g), franchises: [{ id: 'fr', districtId: site.id, cityId: g.city.id, quality: 85, royalty: .06, revenue: 0, supplied: 0, violations: 0 }] } };
     expect(openStore(occupied, g.city.id, site.id, 1).ok).toBe(false);
   });
+  it('61 Cafés und Vertriebskanäle laufen 52 Wochen mit exakt abgestimmtem Cashflow', () => {
+    let g = stores(61), exp = createExpansion();
+    g = { ...g, cash: 100_000_000, roastery: { ...g.roastery, capacityKgPerWeek: 20000 }, tycoon: { ...tycoonOf(g), beanpay: { ...tycoonOf(g).beanpay, enabled: true }, patents: ['brew', 'drum', 'energy'], licensePatents: true } };
+    for (let i = 0; i < 52; i++) {
+      g = { ...g, pendingEvent: null }; const r = processTycoonWeek(g, exp); g = r.game; exp = r.exp;
+      const row = g.management.history.at(-1); if (!row) throw new Error('Bericht fehlt');
+      expect(row.cashStart + row.operating + row.investing + row.financing).toBeCloseTo(row.cashEnd, 1);
+      expect(g.stores.filter(s => s.weeklyRevenue > 0)).toHaveLength(61); expect(Number.isFinite(g.cash)).toBe(true);
+    }
+    expect(g.week).toBe(53);
+  });
+
 });
