@@ -880,3 +880,5 @@ html[data-contrast="high"] { --muted-foreground: var(--foreground); --border: va
 .nyc-photo-map[data-map-mode="rival"] .ci-pin:not([data-status="rival"]) { opacity: .35; }.nyc-photo-map[data-map-mode="rival"] .ci-pin[data-status="rival"] span { outline: 3px solid var(--system-red); outline-offset: 2px; }
 
 .next-week-fab { bottom: calc(4.4rem + env(safe-area-inset-bottom)); right: .6rem; height: 42px; min-height: 42px; }.game-world > nav { padding-top: 3.3rem; }.game-main { padding-bottom: calc(11rem + env(safe-area-inset-bottom)); }
+
+[data-sonner-toaster] { top: calc(7rem + env(safe-area-inset-top)) !important; }.logistics-map svg.system-icon { width: 18px; height: 18px; }

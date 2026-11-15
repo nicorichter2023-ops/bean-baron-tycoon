@@ -285,7 +285,7 @@ export function processTycoonWeek(state: GameState, exp: ExpansionState) {
     else if (g.world.occupants[l.districtId] === l.rivalId) { const rent = money((buildingById(l.districtId)?.weeklyRent ?? 0) * l.multiplier); revenue += rent; channels.rent += rent; }
   }
   for (const a of g.world.assets.filter(a => a.kind === 'plantation')) {
-    if (t.farms[a.id]?.leased) cost += money((MASTER.plantations.find(p => p.id === a.id)?.purchasePrice ?? 0) * .08 / 52);
+    if (t.farms[a.id]?.leased && g.week > a.startWeek + 1) cost += money((MASTER.plantations.find(p => p.id === a.id)?.purchasePrice ?? 0) * .08 / 52);
   }
   for (const city of g.cities.filter(c => c.id === g.city.id || g.stores.some(s => s.cityId === c.id))) {
     const current = billFor({ ...g, tycoon: t }, city.id), previous = state.tycoon?.bills[city.id];
