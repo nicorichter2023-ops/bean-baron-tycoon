@@ -27,7 +27,7 @@ export function TopBar({ onProgress }: { onProgress?: () => void }) {
         <div className="grid grid-cols-4 gap-x-2 text-[11px]">
           <Stat icon={<img src={HUD.cash} alt="" className="h-5 w-5 object-contain" />} label="Bar" value={compact(state.cash)} />
           <Stat icon={<img src={HUD.calendar} alt="" className="h-5 w-5 object-contain" />} label="" value={`Wo ${state.week}`} />
-          <Stat icon={<span aria-hidden className="text-warning">★</span>} label="Ruf" value={String(Math.round(state.brandReputation))} />
+          <Stat icon={<span aria-hidden className="text-primary">★</span>} label="Ruf" value={String(Math.round(state.brandReputation))} />
           <div className="flex items-center gap-1 whitespace-nowrap">
             {up ? <TrendingUp className="h-3.5 w-3.5 text-success" aria-label="steigt" /> : <TrendingDown className="h-3.5 w-3.5 text-destructive" aria-label="fällt" />}
             <span className={`font-mono font-semibold ${up ? "text-success" : "text-destructive"}`}>{price.toFixed(2)}€</span>

@@ -10,6 +10,7 @@ import { staffArt } from '../sheetArt';
 import { COMPANY_ARTWORK, getStoreArtwork } from "../artwork";
 import type { StoreTier } from "@/engine/types";
 import { StoreEquipmentPanel } from '../StoreEquipmentPanel';
+import { StoreLeversPanel } from '../StoreLeversPanel';
 import { retrofitStandardEquipment, standardRetrofitCost } from '@/engine/equipment';
 import { hasExecutive } from '@/engine/management';
 
@@ -101,6 +102,7 @@ export function EmpireTab() {
             <Button className="mt-2 w-full" size="sm" variant="secondary" disabled={store.tier >= 3 || !storeDistrict || store.tier + 1 > storeDistrict.maxStoreTier} onClick={() => perform((current) => upgradeStore(current, store.id))}>
               <ArrowUpCircle /> {store.tier >= 3 ? "Maximale Ausbaustufe" : storeDistrict && store.tier + 1 > storeDistrict.maxStoreTier ? "Höhere Stufe hier nicht erlaubt" : `Ausbauen · ${eur(GAME_CONFIG.STORE_UPGRADE_COST[(store.tier + 1) as 2 | 3])}`}
             </Button>
+            <StoreLeversPanel store={store} />
             <StoreEquipmentPanel store={store} />
           </Panel>;
         })}
