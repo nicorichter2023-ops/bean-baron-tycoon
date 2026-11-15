@@ -1,7 +1,7 @@
 import type { ActionResult, GameState, Store } from './types';
 import { calculateCompanyValuation } from './engine';
 import { equipmentOf } from './equipment';
-import { hasExecutive } from './management';
+import { researchDuration } from './world';
 import { BARISTA_LEVELS, DECOR, DEFAULT_MENU, GEAR, GEAR_KEYS, MENU_ITEMS, MENU_LIMIT, RESEARCH, gearPrice, gearStageNeed, researchCost, researchRepBonus, researchRevenueBonus, researchWageFactor, researchWeeks, type DecorSlot, type GearCategory } from './cafeContent';
 
 export interface StoreCafe { menu: string[]; gear: Record<GearCategory, number>; decor: Partial<Record<DecorSlot, number>>; xp: number }
@@ -78,7 +78,7 @@ export function startResearch(g: GameState, id: string): ActionResult {
   if (!n || !researchAvailable(g, id)) return no(g, 'Erst die vorherige Stufe erforschen.');
   if (c.research.active) return no(g, 'Es läuft bereits ein Projekt.');
   const cost = researchCost(n.tier); if (g.cash < cost) return no(g, 'Nicht genug Barvermögen.');
-  const weeks = Math.max(1, researchWeeks(n.tier) - (hasExecutive(g, 'cto') ? 1 : 0));
+  const weeks = researchDuration(g, researchWeeks(n.tier));
   return ok({ ...g, cash: r2(g.cash - cost), cafe: { ...c, research: { ...c.research, active: { id, weeksLeft: weeks } } } }, `Forschung „${n.name}“ gestartet (${weeks} Wo.).`);
 }
 /** Per-store weekly modifier from menu, gear, decor, staff XP and rivals. Bounded so stacking can't explode. */
