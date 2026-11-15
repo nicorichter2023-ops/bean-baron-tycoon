@@ -14,3 +14,5 @@
 - [x] Bedienung vereinfachen, Balance 300 Wochen
 
 - [ ] Feintuning Balance nach echtem Spieltest (Rang-Ziele 15–25 / 80–120 / 250+ Wochen) – wartet auf dein Feedback
+- [x] Karte randlos, Kontextfenster für Frei/Rivalen, Goldsterne, gemalte Räume je Stufe (7) mit Editor-Ebenen
+- [ ] Schnellaktionen in Filialliste, weitere Schubladen, alte Grafiken ersetzen, 2 weitere Raumstile je Stufe

@@ -33,9 +33,9 @@ export function CafeRoom({ store }: { store: Store }) {
     {L.floor && d.floor !== undefined && <div className={`room-floor-tint ${FLOOR[d.floor]}`} style={box(L.floor)} />}
     {deco('art')}{deco('sign')}
     {g.terrace > 0 && <img className="room-terrace" src={gearArt('terrace', g.terrace)} alt={GEAR.terrace.levels[g.terrace]} />}
-    <div className="room-on" style={on(0.62, 18, 0.8 + g.espresso * 0.12)}><img src={gearArt('espresso', g.espresso)} alt={GEAR.espresso.levels[g.espresso]} /><CafeSteam /></div>
-    <img className="room-on" style={on(0.44, 10, 0.8 + g.grinder * 0.1)} src={gearArt('grinder', g.grinder)} alt={GEAR.grinder.levels[g.grinder]} />
-    {g.vitrine > 0 && <img className="room-on" style={on(0.05, 22, 0.8 + g.vitrine * 0.08)} src={gearArt('vitrine', g.vitrine)} alt={GEAR.vitrine.levels[g.vitrine]} />}
+    <div className="room-on" style={on(0.6, 26, 0.8 + g.espresso * 0.12)}><img src={gearArt('espresso', g.espresso)} alt={GEAR.espresso.levels[g.espresso]} /><CafeSteam /></div>
+    <img className="room-on" style={on(0.42, 14, 0.8 + g.grinder * 0.1)} src={gearArt('grinder', g.grinder)} alt={GEAR.grinder.levels[g.grinder]} />
+    {g.vitrine > 0 && <img className="room-on" style={on(0.05, 28, 0.8 + g.vitrine * 0.08)} src={gearArt('vitrine', g.vitrine)} alt={GEAR.vitrine.levels[g.vitrine]} />}
     {tables > 0 && <div className="room-tables">{Array.from({ length: tables }, (_, i) => <img key={i} src={gearArt('seating', g.seating)} alt={i === 0 ? GEAR.seating.levels[g.seating] : ''} />)}</div>}
     {deco('plant')}{deco('extra')}
     {d.light !== undefined && <div className="room-light" style={{ background: `radial-gradient(ellipse at 50% 0%, ${LIGHT[d.light]}, transparent 70%)` }} />}
