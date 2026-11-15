@@ -4,10 +4,13 @@ import { Switch } from '@/components/ui/switch';
 import { createManagement, EXECUTIVES, financialForecast, hasExecutive, hireExecutive, releaseExecutive } from '@/engine/management';
 import { eur, useGame } from './GameContext';
 import { SCENES } from './sceneAssets';
+import { catalogAction, dismissCandidate } from '@/engine/world';
+import { useState } from 'react';
 import { MASTER } from '@/data/master';
 
 export function HQPanel() {
-  const { state, set, setBoth } = useGame();
+  const { state, set, setBoth, perform } = useGame();
+  const [choices, setChoices] = useState<Record<string,string>>({});
   const forecast = financialForecast(state);
   const latest = state.management?.history.at(-1);
   return <section>
@@ -25,6 +28,18 @@ export function HQPanel() {
         <Button className="mt-3 w-full" variant={hired ? 'outline' : 'default'} disabled={!hired && state.cash < c.fee} onClick={() => setBoth((game, exp) => { const result = hired ? releaseExecutive(game, role) : hireExecutive(game, role); return typeof result === 'string' ? result : { game: result, exp }; })}>{hired ? <UserMinus /> : <UserPlus />}{hired ? `${role.toUpperCase()} entlassen` : `${role.toUpperCase()} einstellen`}</Button>
         {hired && role === 'coo' && <div className="mt-4 flex items-center justify-between gap-3"><label htmlFor="coo-delegation" className="text-sm">Filialbetrieb delegieren</label><Switch id="coo-delegation" checked={state.management?.delegation ?? false} onCheckedChange={delegation => set(game => ({ ...game, management: { ...(game.management ?? createManagement(game.cash)), delegation } }))} /></div>}
         {hired && role === 'coo' && latest && <p className="mt-3 text-xs text-muted-foreground">Letzte Woche: {latest.cooHires} Baristas eingestellt.</p>}
+      </article>;
+    })}</div>
+    <div className="grid gap-3 md:grid-cols-2 mt-3">{(['CMO','CTO'] as const).map(role => {
+      const candidates = MASTER.cSuiteCandidates.filter(c => c.role === role);
+      const hired = candidates.find(c => state.world.candidates.includes(c.id));
+      const c = hired ?? candidates.find(c => c.id === choices[role]) ?? candidates[0];
+      if (!c) return null;
+      return <article key={role} className="rounded-lg border border-border bg-card p-4"><h3 className="font-display text-lg font-bold">{role} · {c.name}</h3><p className="text-sm text-muted-foreground">{c.specialty}</p>
+        {!hired && <select className="executive-select" aria-label={`${role} auswählen`} value={c.id} onChange={e=>setChoices(v=>({...v,[role]:e.target.value}))}>{candidates.map(x=><option key={x.id} value={x.id}>{x.name} · {eur(x.weeklySalary)}/Wo</option>)}</select>}
+        <p className="my-3 text-sm">{role === 'CMO' ? `Kampagnenwirkung +${Math.round(Number((c.perks as Record<string,number>)['campaignEffectivenessBonus'] ?? 0)*100)} %; zusätzliches wöchentliches Markenwachstum.` : `Forschungspunkte beschleunigen neue Projekte; 6 Wochen Basis dauern mit diesem CTO ${Math.max(1,Math.ceil(6/(1+Number((c.perks as Record<string,number>)['weeklyResearchPoints'] ?? 0)/100)))} Wochen.`}</p>
+        <dl className="financial-ledger"><div><dt>Einstellung</dt><dd>{eur(c.signingBonus)}</dd></div><div><dt>Wochengehalt</dt><dd>{eur(c.weeklySalary)}</dd></div></dl>
+        <Button className="w-full mt-3" disabled={!hired && state.cash<c.signingBonus} onClick={()=>perform(g=>hired ? dismissCandidate(g,c.id) : catalogAction(g,'candidate',c.id))}>{hired ? <UserMinus/> : <UserPlus/>}{role} {hired ? 'entlassen' : 'einstellen'}</Button>
       </article>;
     })}</div>
     {hasExecutive(state, 'cfo') && <section className="mt-6 border-t border-border pt-4"><h2 className="font-display text-lg font-bold">CFO · Liquiditätsausblick</h2><dl className="financial-ledger"><div><dt>Operativer Cashflow / Woche</dt><dd>{eur(forecast.weekly)}</dd></div><div><dt>Barvermögen in 4 Wochen</dt><dd>{eur(forecast.cashInFourWeeks)}</dd></div><div><dt>Zinsen nächste Woche</dt><dd>{eur(forecast.interest)}</dd></div><div><dt>Zinsersparnis letzte Woche</dt><dd>{eur(latest?.interestSaved ?? 0)}</dd></div></dl><p className="mt-3 text-xs text-muted-foreground">{latest ? 'Fortschreibung der letzten Woche ohne einmalige Ausgaben. Keine Zusage: Nachfrage, Ereignisse und neue Investitionen können abweichen.' : 'Vorläufig: berücksichtigt bisher nur HQ-Gehälter. Der erste Wochenabschluss liefert die operative Basis.'}</p></section>}

@@ -1,0 +1,23 @@
+export interface CityGeography { kind: 'island' | 'river' | 'canals' | 'bay' | 'lake' | 'inland'; water: string; park: string; landmark: string; }
+export const CITY_GEOGRAPHY: Record<string, CityGeography> = {
+  new_york: { kind: 'island', water: 'Hudson · East River', park: 'Central Park', landmark: 'Freiheitsstatue' },
+  paris: { kind: 'river', water: 'Seine', park: 'Champ de Mars', landmark: 'Eiffelturm' },
+  london: { kind: 'river', water: 'Themse', park: 'Hyde Park', landmark: 'Big Ben' },
+  amsterdam: { kind: 'canals', water: 'Grachtengürtel · Amstel', park: 'Vondelpark', landmark: 'Grachtenhäuser' },
+  wien: { kind: 'river', water: 'Donau', park: 'Prater', landmark: 'Riesenrad' },
+  mailand: { kind: 'canals', water: 'Navigli', park: 'Parco Sempione', landmark: 'Mailänder Dom' },
+  berlin: { kind: 'river', water: 'Spree', park: 'Tiergarten', landmark: 'Brandenburger Tor' },
+  kopenhagen: { kind: 'bay', water: 'Nyhavn · Øresund', park: 'Kongens Have', landmark: 'Nyhavn' },
+  zuerich: { kind: 'lake', water: 'Zürichsee · Limmat', park: 'Arboretum', landmark: 'Grossmünster' },
+  kapstadt: { kind: 'bay', water: 'Table Bay', park: 'Tafelberg', landmark: 'Tafelberg' },
+  madrid: { kind: 'inland', water: 'Manzanares', park: 'Retiro', landmark: 'Puerta de Alcalá' },
+  san_francisco: { kind: 'bay', water: 'San Francisco Bay', park: 'Golden Gate Park', landmark: 'Golden Gate Bridge' },
+  chicago: { kind: 'lake', water: 'Lake Michigan', park: 'Millennium Park', landmark: 'Willis Tower' },
+  seattle: { kind: 'bay', water: 'Puget Sound', park: 'Seattle Center', landmark: 'Space Needle' },
+  sao_paulo: { kind: 'inland', water: 'Rio Pinheiros', park: 'Ibirapuera', landmark: 'MASP' },
+  tokio: { kind: 'bay', water: 'Tokyo Bay', park: 'Ueno Park', landmark: 'Tokyo Tower' },
+  osaka: { kind: 'river', water: 'Dōtonbori · Yodo', park: 'Osaka Castle Park', landmark: 'Osaka Castle' },
+  seoul: { kind: 'river', water: 'Han River', park: 'Yeouido Park', landmark: 'Gyeongbokgung' },
+  singapur: { kind: 'bay', water: 'Marina Bay', park: 'Gardens by the Bay', landmark: 'Marina Bay Sands' },
+  sydney: { kind: 'bay', water: 'Sydney Harbour', park: 'Royal Botanic Garden', landmark: 'Sydney Opera House' },
+};

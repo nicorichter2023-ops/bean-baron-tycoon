@@ -284,7 +284,8 @@ function processStore(
   const tier = store.tier;
   const staff = store.employees;
   const requiredStaff = Math.max(1, GAME_CONFIG.TIER_REQUIRED_STAFF[tier] ?? 1);
-  const staffingRatio = staff.length === 0 ? 0 : clamp(staff.length / requiredStaff, 0.25, 1.25);
+  const robotic = game.world.technologies.includes('tech_operations_t4');
+  const staffingRatio = robotic ? 1 : staff.length === 0 ? 0 : clamp(staff.length / requiredStaff, 0.25, 1.25);
   const avgSkill = average(staff.map((e) => e.skill));
   const managers = staff.filter((e) => e.role === 'manager').length;
   const equipment = equipmentEffects(store);
@@ -318,7 +319,7 @@ function processStore(
     served = Math.max(0, Math.min(served, beanLimited));
   }
 
-  const revenue = round2(served * Math.max(0, store.pricePerCup));
+  const revenue = round2(served * Math.max(0, store.pricePerCup) * location.margin);
   const salaries = round2(staff.reduce((sum, e) => sum + Math.max(0, e.salaryWeekly), 0));
   const rent = round2(
     Math.max(0, district.rentWeekly) * (store.propertyBookValue ? 0 : buildingById(district.id) ? 1 : (GAME_CONFIG.TIER_RENT_FACTOR[tier] ?? 1)),
@@ -1066,7 +1067,7 @@ export function processTurn(state: GameState): GameState {
   let roastery = state.roastery;
   const ownRoasteryActive = isModule('roastery') && roastery.owned;
   if (ownRoasteryActive) {
-    const r = processRoastery(roastery, market, cash);
+    const r = processRoastery(state.world.technologies.includes('tech_logistics_t2') ? { ...roastery, autoRestock: true } : roastery, market, cash);
     roastery = r.roastery;
     costBeans += r.autoBuyCost;
   }

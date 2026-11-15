@@ -38,5 +38,7 @@ use the editor.
 - Sheet artwork is cut into public/assets/sheets/<sheet>/<index>.webp and referenced only through src/game/sheetArt.ts index maps, so re-cutting a sheet needs edits in one place.
 - Preserve the complete uploaded master JSON in src/data; adapters expose engine units, while world.ts owns persisted travel, research, property occupancy and catalog actions so city UI never mutates economic rules.
 - City maps use existing indexed artwork with react-zoom-pan-pinch and deterministic per-city property placement; old owned locations remain in migrated saves instead of being reassigned to new leases.
-- New York alone uses src/game/isometric.ts projection helpers and x+y-sorted scene layers; alpha-trimmed grounded artwork sits on explicit curb foundations, and traffic is static to prevent intersections with buildings without changing simulation coordinates.
+- All master cities use shared isometric projection and x+y-sorted layers with alpha-trimmed artwork on curb foundations; cityGeography defines regional water/parks, with no moving traffic to intersect buildings.
+- Neighborhood simulation and inspector share src/engine/neighborhood.ts slot placement and bounded effects; map ordering uses that same pure layout so shown neighbors match weekly economic rules.
+- Café cutaways derive every visual piece from persisted store tier and equipment; CMO perks multiply campaigns and CTO points accelerate research, with no presentation-side charges.
 - Visual replacement slots live in src/game/visualAssets.ts with image-error fallbacks; CSS effects animate separate presentation layers and respect reduced motion so art swaps never alter gameplay or hit targets.

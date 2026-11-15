@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
+import { Plane } from 'lucide-react';
 import { HUD } from "@/game/sheetArt";
 import { GameProvider, useGame } from "@/game/GameContext";
 import { Button } from "@/components/ui/button";
@@ -19,9 +20,9 @@ import { MasterCatalog } from '@/game/MasterCatalog';
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Coffee Empire – Kaffee-Tycoon" },
+      { title: "Bean Baron Tycoon – Kaffee-Imperium" },
       { name: "description", content: "Baue dein Kaffee-Imperium in 20 Städten mit 600 Standorten, Flughafenreisen, Rivalen und Konzernforschung." },
-      { property: "og:title", content: "Coffee Empire – Kaffee-Tycoon" },
+      { property: "og:title", content: "Bean Baron Tycoon – Kaffee-Imperium" },
       { property: "og:description", content: "600 Standorte, Stadtviertel, Konkurrenz und internationale Expansion in Coffee Empire." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -31,15 +32,16 @@ export const Route = createFileRoute("/")({
 });
 
 const TABS = [
-  { id: "empire", label: "Betrieb", icon: HUD.empire },
-  { id: "hq", label: "Konzern", icon: HUD.market },
-  { id: "map", label: "Welt", icon: HUD.map },
+  { id: "map", label: "Stadtkarte", icon: HUD.map },
+  { id: "empire", label: "Café", icon: HUD.empire },
+  { id: "hq", label: "HQ", icon: HUD.market },
   { id: "finance", label: "Finanzen", icon: HUD.finance },
+  { id: "airport", label: "Flughafen", icon: undefined },
 ] as const;
 const SECTIONS = {
   empire: [['stores', 'Filialen'], ['new', 'Eröffnen'], ['cafe', 'Café'], ['roastery', 'Rösterei']],
-  hq: [['hq', 'HQ & Leitung'], ['development', 'Entwicklung'], ['lab', 'Labor & Marketing'], ['startups', 'Startups'], ['holding', 'Holding']],
-  finance: [['accounting', 'Accounting'], ['bank', 'Bank'], ['stocks', 'Aktien & M&A'], ['market', 'Bohnenmarkt'], ['b2b', 'B2B']],
+  hq: [['hq', 'HQ & Leitung'], ['development', 'Entwicklung'], ['lab', 'Labor & Marketing'], ['holding', 'Holding']],
+  finance: [['accounting', 'Accounting'], ['bank', 'Bank'], ['stocks', 'Aktien & M&A'], ['market', 'Bohnenmarkt'], ['b2b', 'B2B'], ['startups', 'Startups']],
 } as const;
 
 function Game() {
@@ -47,7 +49,7 @@ function Game() {
 }
 function GameWorld() {
   const { loaded } = useGame();
-  const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("empire");
+  const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("map");
   const [place, setPlace] = useState<Place>('cafe');
   const [section, setSection] = useState('stores');
   useEffect(() => { if ('serviceWorker' in navigator && import.meta.env.PROD) navigator.serviceWorker.register('/sw.js').catch(() => undefined); }, []);
@@ -61,12 +63,12 @@ function GameWorld() {
       <div className="game-world mx-auto min-h-dvh max-w-5xl bg-background">
         <TopBar />
         <EventDialog />
-        <main className="game-main pb-28 pt-[calc(5.5rem+env(safe-area-inset-top))]">{loaded ? tab === 'map' ? <MapTab /> : <><div className="management-switch" aria-label="Managementbereiche">{SECTIONS[tab].map(([id, label]) => <Button key={id} variant={section === id ? 'secondary' : 'ghost'} aria-pressed={section === id} onClick={() => { setSection(id); setPlace(id === 'roastery' ? 'roastery' : 'cafe'); }}>{label}</Button>)}</div><div className="management-content" key={section}>{content}</div></> : <div className="loading-game">Coffee Empire …</div>}</main>
+        <main className="game-main pb-28 pt-[calc(5.5rem+env(safe-area-inset-top))]">{loaded ? tab === 'map' || tab === 'airport' ? <MapTab key={tab} airportOnly={tab === 'airport'} /> : <><div className="management-switch" aria-label="Managementbereiche">{SECTIONS[tab].map(([id, label]) => <Button key={id} variant={section === id ? 'secondary' : 'ghost'} aria-pressed={section === id} onClick={() => { setSection(id); setPlace(id === 'roastery' ? 'roastery' : 'cafe'); }}>{label}</Button>)}</div><div className="management-content" key={section}>{content}</div></> : <div className="loading-game">Coffee Empire …</div>}</main>
         <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card/95 backdrop-blur pb-[env(safe-area-inset-bottom)]">
-          <div className="mx-auto grid max-w-3xl grid-cols-4">
+          <div className="mx-auto grid max-w-3xl grid-cols-5">
             {TABS.map((t) => (
               <Button variant="ghost" aria-label={t.label} aria-current={tab === t.id ? 'page' : undefined} key={t.id} onClick={() => { setTab(t.id); setSection(t.id === 'hq' ? 'hq' : t.id === 'finance' ? 'accounting' : 'stores'); setPlace('cafe'); window.scrollTo(0, 0); }} className={`nav-tab flex h-16 flex-col items-center gap-1 py-2.5 text-[11px] transition ${tab === t.id ? "text-primary" : "text-muted-foreground"}`}>
-                <img src={t.icon} alt="" className="h-7 w-7 object-contain" />{t.label}
+                <>{t.icon ? <img src={t.icon} alt="" className="h-7 w-7 object-contain" /> : <Plane className="h-7 w-7" />}{t.label}</>
               </Button>
             ))}
           </div>

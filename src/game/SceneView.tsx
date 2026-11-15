@@ -14,6 +14,7 @@ import { MarketTab } from './tabs/MarketTab';
 import { getStoreArtwork } from './artwork';
 import { LabPanel } from './LabPanel';
 import roasteryScene from '@/assets/roastery-scene.jpg';
+import { CafeCutaway } from './CafeCutaway';
 import { CafeSteam, NeonSign, SceneAsset } from './VisualEffects';
 
 export type Place = 'cafe' | 'terrace' | 'holding' | 'office' | 'roastery' | 'port' | 'exchange' | 'farm' | 'negotiation' | 'lab';
@@ -60,8 +61,8 @@ export function SceneView({ place, onPlace, destinations }: { place: Place; onPl
     <div className="location-switch" aria-label="Spielorte">{destinations.map((p) => <Button key={p} variant={place === p ? 'secondary' : 'ghost'} onClick={() => onPlace(p)}>{PLACES[p].title.replace('Coffee Empire ', '').replace('Café-', '')}</Button>)}</div>
     {isCafe && <div className="store-selector"><Store className="h-4 w-4 text-primary" /><select aria-label="Filiale auswählen" value={store?.id ?? ''} onChange={(e) => setStoreId(e.target.value)}>{state.stores.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}</select></div>}
     <div className={`scene-stage ${zen ? 'zen' : ''} ${pulse ? 'week-pulse' : ''}`} key={place}>
-      {place === 'roastery' ? <img className="scene-image" src={roasteryScene} alt="Isometrische Rösterei mit Großröstern, Silos und Jutesäcken" width={1536} height={864} /> : <SceneAsset slot={place === 'cafe' ? 'cafe-interior' : undefined} className="scene-image" fallback={details.image} alt={details.title} fetchPriority="high" />}
-      {place === 'cafe' && <><div className="cafe-machine-slot" aria-hidden="true"><SceneAsset slot="espresso-machine" fallback={equipmentArt('espresso', store ? equipmentOf(store).espresso : 0)} alt="" /><CafeSteam /></div><NeonSign /></>}
+      {place === 'cafe' && store ? <CafeCutaway store={store} /> : place === 'roastery' ? <img className="scene-image" src={roasteryScene} alt="Isometrische Rösterei mit Großröstern, Silos und Jutesäcken" width={1536} height={864} /> : <SceneAsset slot={place === 'cafe' ? 'cafe-interior' : undefined} className="scene-image" fallback={details.image} alt={details.title} fetchPriority="high" />}
+      {place === 'cafe' && !store && <><div className="cafe-machine-slot" aria-hidden="true"><SceneAsset slot="espresso-machine" fallback={equipmentArt('espresso', store ? equipmentOf(store).espresso : 0)} alt="" /><CafeSteam /></div><NeonSign /></>}
       {isCafe && <><Hotspot x={33} y={56} label="Café verwalten" icon={<Coffee />} onClick={() => open('Café & Ausbau', 'empire', ['Filialen'])} /><Hotspot x={67} y={66} label="Personal" icon={<Users />} onClick={() => open('Personal & Filialen', 'empire', ['Filialen'])} /><Hotspot x={80} y={36} label="Neue Filiale" icon={<Store />} onClick={() => open('Expansion', 'empire', ['Neue Filiale'])} />
         {pulse && store && <div className="income-float" role="status">+{eur(store.weeklyRevenue)}</div>}
       </>}
