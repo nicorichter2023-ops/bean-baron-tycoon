@@ -61,7 +61,7 @@ export function EmpireTab() {
       </Section>
 
       <Section title="Letzte Woche">
-        {!report ? <Empty>Tippe auf „Nächste Woche“, um zu starten. Danach erwartet dich dein erstes Ereignis.</Empty> : (
+        {!report ? <Empty>Tippe unten auf „Weiter“, um zu starten. Danach erwartet dich dein erstes Ereignis.</Empty> : (
           <Panel><dl className="grid grid-cols-2 gap-y-1 text-xs">
             <dt className="text-muted-foreground">Umsatz</dt><dd className="text-right font-mono">{eur(report.revenueTotal)}</dd>
             <dt className="text-muted-foreground">Kosten</dt><dd className="text-right font-mono">{eur(report.costTotal)}</dd>

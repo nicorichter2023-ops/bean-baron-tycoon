@@ -4,7 +4,7 @@ import { ACHIEVEMENTS, RANK_LABEL, nextHint, progressOf, rankProgress, setSettin
 import { RANKS, rk, openCityIds } from '@/engine/unlocks';
 import { PROGRESS_ICONS, rankArt } from './sheetArt';
 
-const TUTORIAL = ['Willkommen! Tippe auf der Karte auf deine erste Filiale, um sie dir anzusehen.', 'Tippe unten rechts auf „Nächste Woche“, um eine Woche zu spielen.', 'Erfülle die Wochenziele – jedes Ziel bringt Bonusgeld.', 'Baue deine Filiale aus: Jede der 7 Stufen bringt mehr Umsatz.', 'Neue Ränge schalten Städte, Stufen und Spielhebel frei.'];
+const TUTORIAL = ['Willkommen! Tippe auf der Karte auf deine erste Filiale, um sie dir anzusehen.', 'Tippe unten in der Mitte auf den runden „Weiter“-Knopf, um eine Woche zu spielen.', 'Erfülle die Wochenziele – jedes Ziel bringt Bonusgeld.', 'Baue deine Filiale aus: Jede der 7 Stufen bringt mehr Umsatz.', 'Neue Ränge schalten Städte, Stufen und Spielhebel frei.'];
 const fmt = (k: string, v: number) => k === 'valuation' || k === 'weeklyRevenue' ? eur(v) : Math.floor(v).toLocaleString('de-DE');
 
 export function ProgressPanel() {
