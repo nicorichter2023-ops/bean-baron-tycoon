@@ -3,7 +3,7 @@ import { GAME_CONFIG, calculateCompanyValuation, hireEmployee, processTurn } fro
 import { applyExpansionWeek, type ExpansionState, cupsSold, recipeCost, CAMPAIGNS } from './expansion';
 import { equipmentOf } from './equipment';
 import { MASTER } from '@/data/master';
-import { advanceWorld, applyWorldSupply, worldWeeklyFlows, campaignMultiplier } from './world';
+import { advanceWorld, applyWorldSupply, worldWeeklyFlows, campaignMultiplier, candidateOf } from './world';
 
 export type ExecutiveRole = 'coo' | 'cfo';
 export const EXECUTIVES = {
