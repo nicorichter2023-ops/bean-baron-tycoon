@@ -104,11 +104,11 @@ function GameWorld() {
         <Sheet open={progressOpen} onOpenChange={setProgressOpen}><SheetContent side="bottom" className="max-h-[85dvh] overflow-y-auto px-0"><SheetHeader className="px-3"><SheetTitle>Fortschritt</SheetTitle></SheetHeader><ProgressPanel /></SheetContent></Sheet>
         <main className="game-main pb-28 pt-[calc(6.25rem+env(safe-area-inset-top))]">{loaded ? <><div className="management-switch" aria-label="Managementbereiche">{SECTIONS[tab].map(([id, label]) => <Button key={id} variant={section === id ? 'secondary' : 'ghost'} aria-pressed={section === id} onClick={() => setSection(id)}>{label}</Button>)}</div><div className="management-content" key={section} onTouchStart={swipeStart} onTouchEnd={e => swipeEnd(e, SECTIONS[tab].map(([id]) => id))}>{content}</div></> : <div className="loading-game">Bean Baron Tycoon …</div>}</main>
         <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card/95 backdrop-blur pb-[env(safe-area-inset-bottom)]">
-          <div className="mx-auto grid max-w-3xl grid-cols-5">
-            {TABS.map((t) => (
-              <Button variant="ghost" aria-label={t.label} aria-current={tab === t.id ? 'page' : undefined} key={t.id} onClick={() => { setTab(t.id); setSection(SECTIONS[t.id][0][0]); setPlace('cafe'); window.scrollTo(0, 0); }} className={`nav-tab flex h-16 flex-col items-center gap-1 py-2.5 text-[11px] transition ${tab === t.id ? "text-primary" : "text-muted-foreground"}`}>
+          <div className="mx-auto grid max-w-3xl grid-cols-6">
+            {TABS.map((t, i) => (<Fragment key={t.id}>{i === 2 && <NextWeekButton />}
+              <Button variant="ghost" aria-label={t.label} aria-current={tab === t.id ? 'page' : undefined} onClick={() => { setTab(t.id); setSection(SECTIONS[t.id][0][0]); setPlace('cafe'); window.scrollTo(0, 0); }} className={`nav-tab flex h-16 flex-col items-center gap-1 py-2.5 text-[11px] transition ${tab === t.id ? "text-primary" : "text-muted-foreground"}`}>
                 <><t.icon className="h-6 w-6" />{t.label}</>
-              </Button>
+              </Button></Fragment>
             ))}
           </div>
         </nav>
