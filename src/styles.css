@@ -946,3 +946,9 @@ html[data-contrast="high"] { --muted-foreground: var(--foreground); --border: va
 @keyframes week-pulse { 50% { box-shadow: 0 0 0 8px color-mix(in oklab, var(--primary) 0%, transparent), 0 0 0 4px color-mix(in oklab, var(--primary) 35%, transparent); } }
 @media(prefers-reduced-motion:reduce) { .next-week-dock[data-pending="true"] .next-week-orb { animation: none; } }
 .nav-tab { font-size: 10px !important; padding-inline: 2px; }
+
+/* Coffee-Van als eingebettete Aktionskarte */
+.van-card { display: grid; gap: .75rem; padding: .9rem; border-radius: 1rem; border: 1px solid var(--border); background: radial-gradient(ellipse 80% 90% at 0% 30%, color-mix(in oklab, var(--primary) 22%, transparent), transparent 70%), var(--card); }
+.van-card .master-heading { border-bottom: 0; padding: 0; }
+.van-card .master-art { width: 132px; height: 112px; }
+.van-card button { min-height: 44px; }
