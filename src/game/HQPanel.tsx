@@ -1,47 +1,46 @@
-import { Building2, BriefcaseBusiness, UserMinus, UserPlus } from 'lucide-react';
+import { Megaphone, UserMinus, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
-import { createManagement, EXECUTIVES, financialForecast, hasExecutive, hireExecutive, releaseExecutive } from '@/engine/management';
+import { createManagement, EXECUTIVES, financialForecast, hasExecutive, releaseExecutive } from '@/engine/management';
 import { eur, useGame } from './GameContext';
-import { SCENES } from './sceneAssets';
-import { catalogAction, dismissCandidate } from '@/engine/world';
-import { useState } from 'react';
-import { MASTER } from '@/data/master';
+import { HubHeader } from './HubHeader';
+import { EXEC_ROLES, JOB_POSTINGS, hireApplicant, postJob, roleTaken } from '@/engine/recruiting';
+import { candidateOf, dismissCandidate, type Candidate } from '@/engine/world';
 
 export function HQPanel() {
   const { state, set, setBoth, perform } = useGame();
-  const [choices, setChoices] = useState<Record<string,string>>({});
   const forecast = financialForecast(state);
   const latest = state.management?.history.at(-1);
+  const salaries = state.management.executives.reduce((n, e) => n + EXECUTIVES[e.role].salary, 0) + state.world.candidates.reduce((n, id) => n + (candidateOf(state, id)?.weeklySalary ?? 0), 0);
+  const seats = EXEC_ROLES.filter(r => roleTaken(state, r)).length;
   return <section>
-    <div className="scene-heading"><div><p className="eyebrow">Coffee Empire · Konzern</p><h1>Headquarters</h1></div><Building2 className="h-8 w-8 text-primary" /></div>
-    <img src={SCENES.office.url} alt="Isometrisches Coffee Empire Hauptquartier" className="hq-scene" />
-    <div className="scene-metrics"><div><span>Filialen</span><strong>{state.stores.length}</strong></div><div><span>HQ-Gehälter / Woche</span><strong>{eur(state.management.executives.reduce((n, e) => n + EXECUTIVES[e.role].salary, 0) + state.world.candidates.reduce((n, id) => n + (MASTER.cSuiteCandidates.find(c => c.id === id)?.weeklySalary ?? 0), 0))}</strong></div><div><span>C-Level</span><strong>{state.management.executives.length + state.world.candidates.length} / 4</strong></div></div>
-    <h2 className="my-4 font-display text-lg font-bold">Konzernleitung</h2>
-    <div className="grid gap-3 md:grid-cols-2">{(['coo', 'cfo'] as const).map(role => {
-      const candidate = MASTER.cSuiteCandidates.find(c => state.world.candidates.includes(c.id) && c.role.toLowerCase() === role);
-      const c = candidate ? { name: candidate.name, title: candidate.specialty, fee: candidate.signingBonus, salary: candidate.weeklySalary } : EXECUTIVES[role], hired = hasExecutive(state, role);
-      return <article key={role} className="rounded-lg border border-border bg-card p-4">
-        <div className="flex items-start gap-3"><BriefcaseBusiness className="h-8 w-8 shrink-0 text-primary" /><div><h3 className="font-display text-lg font-bold">{role.toUpperCase()} · {c.name}</h3><p className="text-xs text-muted-foreground">{c.title}</p></div></div>
-        <p className="my-3 text-sm">{role === 'coo' ? 'Delegation: ergänzt Baristas bis zur Sollbesetzung jeder Filiale und aktiviert den automatischen Bohnennachkauf in deiner Rösterei. Personal wird regulär bezahlt; keine automatischen Ausbauten.' : 'Senkt den effektiven Kreditzins um 20 % und liefert eine Vier-Wochen-Liquiditätsprognose. Bestehende und neue Kredite profitieren, solange der CFO angestellt ist.'}</p>
-        <dl className="financial-ledger text-xs"><div><dt>Einmalige Einstellung</dt><dd>{eur(c.fee)}</dd></div><div><dt>Gehalt pro Woche</dt><dd>{eur(c.salary)}</dd></div></dl>
-        <Button className="mt-3 w-full" variant={hired ? 'outline' : 'default'} disabled={!hired && state.cash < c.fee} onClick={() => setBoth((game, exp) => { const result = hired ? releaseExecutive(game, role) : hireExecutive(game, role); return typeof result === 'string' ? result : { game: result, exp }; })}>{hired ? <UserMinus /> : <UserPlus />}{hired ? `${role.toUpperCase()} entlassen` : `${role.toUpperCase()} einstellen`}</Button>
-        {hired && role === 'coo' && <div className="mt-4 flex items-center justify-between gap-3"><label htmlFor="coo-delegation" className="text-sm">Filialbetrieb delegieren</label><Switch id="coo-delegation" checked={state.management?.delegation ?? false} onCheckedChange={delegation => set(game => ({ ...game, management: { ...(game.management ?? createManagement(game.cash)), delegation } }))} /></div>}
-        {hired && role === 'coo' && latest && <p className="mt-3 text-xs text-muted-foreground">Letzte Woche: {latest.cooHires} Baristas eingestellt.</p>}
-      </article>;
-    })}</div>
-    <div className="grid gap-3 md:grid-cols-2 mt-3">{(['CMO','CTO'] as const).map(role => {
-      const candidates = MASTER.cSuiteCandidates.filter(c => c.role === role);
-      const hired = candidates.find(c => state.world.candidates.includes(c.id));
-      const c = hired ?? candidates.find(c => c.id === choices[role]) ?? candidates[0];
-      if (!c) return null;
-      return <article key={role} className="rounded-lg border border-border bg-card p-4"><h3 className="font-display text-lg font-bold">{role} · {c.name}</h3><p className="text-sm text-muted-foreground">{c.specialty}</p>
-        {!hired && <select className="executive-select" aria-label={`${role} auswählen`} value={c.id} onChange={e=>setChoices(v=>({...v,[role]:e.target.value}))}>{candidates.map(x=><option key={x.id} value={x.id}>{x.name} · {eur(x.weeklySalary)}/Wo</option>)}</select>}
-        <p className="my-3 text-sm">{role === 'CMO' ? `Kampagnenwirkung +${Math.round(Number((c.perks as Record<string,number>)['campaignEffectivenessBonus'] ?? 0)*100)} %; zusätzliches wöchentliches Markenwachstum.` : `Forschungspunkte beschleunigen neue Projekte; 6 Wochen Basis dauern mit diesem CTO ${Math.max(1,Math.ceil(6/(1+Number((c.perks as Record<string,number>)['weeklyResearchPoints'] ?? 0)/100)))} Wochen.`}</p>
-        <dl className="financial-ledger"><div><dt>Einstellung</dt><dd>{eur(c.signingBonus)}</dd></div><div><dt>Wochengehalt</dt><dd>{eur(c.weeklySalary)}</dd></div></dl>
-        <Button className="w-full mt-3" disabled={!hired && state.cash<c.signingBonus} onClick={()=>perform(g=>hired ? dismissCandidate(g,c.id) : catalogAction(g,'candidate',c.id))}>{hired ? <UserMinus/> : <UserPlus/>}{role} {hired ? 'entlassen' : 'einstellen'}</Button>
+    <HubHeader art="hq" eyebrow="Coffee Empire · Konzern" title="Headquarters"><p className="text-xs text-muted-foreground">{state.stores.length} Filialen · HQ-Gehälter {eur(salaries)}/Wo · C-Level {seats}/4</p></HubHeader>
+    <h2 className="master-title">Konzernleitung & Recruiting</h2>
+    <p className="text-xs text-muted-foreground">Schreibe eine Position aus. Mehr Budget bringt mehr und stärkere Bewerbungen – jede mit eigenen Werten.</p>
+    <div className="exec-grid">{EXEC_ROLES.map(role => {
+      const hiredId = state.world.candidates.find(id => candidateOf(state, id)?.role === role);
+      const hired = hiredId ? candidateOf(state, hiredId) : undefined;
+      const legacy = !hired && (state.management?.executives ?? []).some(e => e.role === role.toLowerCase());
+      const apps = (state.world.applicants ?? []).filter(a => a.role === role);
+      return <article key={role} className="exec-card"><header><span className="exec-role">{role}</span><div><strong>{hired?.name ?? (legacy ? EXECUTIVES[role.toLowerCase() as 'coo'].name : 'Unbesetzt')}</strong><small>{ROLE_INFO[role]}</small></div></header>
+        {hired ? <><ApplicantStats c={hired} /><Button className="w-full" variant="outline" onClick={() => setBoth((game, exp) => ({ game: releaseExecutive(dismissCandidate(game, hired.id).state, role.toLowerCase() as 'coo'), exp }))}><UserMinus />Entlassen</Button></>
+        : legacy ? <Button className="w-full" variant="outline" onClick={() => set(game => releaseExecutive(game, role.toLowerCase() as 'coo'))}><UserMinus />Entlassen</Button>
+        : <><div className="posting-row">{JOB_POSTINGS.map(p => <Button key={p.id} size="sm" variant="outline" disabled={state.cash < p.cost} onClick={() => perform(g => postJob(g, role, p.id))}><Megaphone />{p.name}<small>{eur(p.cost)} · {p.count}×</small></Button>)}</div>
+          {apps.map(a => <div key={a.id} className="applicant"><div><strong>{a.name}</strong><small>{a.age} J. · {a.nationality} · {a.personality}</small></div><ApplicantStats c={a} /><Button size="sm" disabled={state.cash < a.signingBonus} onClick={() => perform(g => hireApplicant(g, a.id))}><UserPlus />Einstellen · {eur(a.signingBonus)}</Button></div>)}</>}
+        {(hired || legacy) && role === 'COO' && <div className="mt-3 flex items-center justify-between gap-3"><label htmlFor="coo-delegation" className="text-sm">Filialbetrieb delegieren</label><Switch id="coo-delegation" checked={state.management?.delegation ?? false} onCheckedChange={delegation => set(game => ({ ...game, management: { ...(game.management ?? createManagement(game.cash)), delegation } }))} /></div>}
+        {(hired || legacy) && role === 'COO' && latest && <p className="mt-2 text-xs text-muted-foreground">Letzte Woche: {latest.cooHires} Baristas eingestellt.</p>}
       </article>;
     })}</div>
     {hasExecutive(state, 'cfo') && <section className="mt-6 border-t border-border pt-4"><h2 className="font-display text-lg font-bold">CFO · Liquiditätsausblick</h2><dl className="financial-ledger"><div><dt>Operativer Cashflow / Woche</dt><dd>{eur(forecast.weekly)}</dd></div><div><dt>Barvermögen in 4 Wochen</dt><dd>{eur(forecast.cashInFourWeeks)}</dd></div><div><dt>Zinsen nächste Woche</dt><dd>{eur(forecast.interest)}</dd></div><div><dt>Zinsersparnis letzte Woche</dt><dd>{eur(latest?.interestSaved ?? 0)}</dd></div></dl><p className="mt-3 text-xs text-muted-foreground">{latest ? 'Fortschreibung der letzten Woche ohne einmalige Ausgaben. Keine Zusage: Nachfrage, Ereignisse und neue Investitionen können abweichen.' : 'Vorläufig: berücksichtigt bisher nur HQ-Gehälter. Der erste Wochenabschluss liefert die operative Basis.'}</p></section>}
   </section>;
+}
+const ROLE_INFO = { COO: 'Betrieb · Durchsatz & Wartung', CFO: 'Finanzen · Zinsen & Steuern', CMO: 'Marketing · Kampagnen & Marke', CTO: 'Technik · Forschung & Kosten' } as const;
+const PERK_LABEL: Record<string, [string, (v: number) => string]> = {
+  storeThroughputBonus: ['Durchsatz', v => `+${Math.round(v * 100)} %`], storeMaintenanceDiscount: ['Wartung', v => `−${Math.round(v * 100)} %`],
+  loanInterestDiscount: ['Zins', v => `−${(v * 100).toFixed(1)} Pkt`], taxRateDiscount: ['Steuer', v => `−${(v * 100).toFixed(1)} Pkt`],
+  campaignEffectivenessBonus: ['Kampagnen', v => `+${Math.round(v * 100)} %`], brandAwarenessGrowthBonus: ['Marke/Wo', v => `+${v.toFixed(2)}`],
+  weeklyResearchPoints: ['Forschung', v => `+${Math.round(v)} P`], techCostDiscount: ['Tech-Kosten', v => `−${Math.round(v * 100)} %`],
+};
+function ApplicantStats({ c }: { c: Candidate }) {
+  return <dl className="applicant-stats"><div><dt>Können</dt><dd className="text-gold">{'★'.repeat(c.skillLevel)}{'☆'.repeat(5 - c.skillLevel)}</dd></div><div><dt>Gehalt</dt><dd>{eur(c.weeklySalary)}/Wo</dd></div>{Object.entries(c.perks as Record<string, number>).map(([k, v]) => <div key={k}><dt>{PERK_LABEL[k]?.[0] ?? k}</dt><dd>{PERK_LABEL[k]?.[1](v) ?? v}</dd></div>)}</dl>;
 }

@@ -11,7 +11,7 @@ export function CafeRoom({ store, design, view = 'room' }: { store: Store; desig
   const { state } = useGame();
   const stage = leversOf(state, store).stage;
   const d = design ?? designOf(storeCafe(state, store));
-  const src = view === 'terrace' ? terraceScene(d.terrace) : roomScene(stage, d.style);
+  const src = view === 'terrace' ? terraceScene(d.terrace, DESIGN_STYLES[d.style]?.mood) : roomScene(stage, d.style);
   const label = view === 'terrace' ? `Terrasse · ${TERRACE_STYLES[d.terrace]?.name}` : `${stg(stage - 1).label} · ${DESIGN_MOODS[DESIGN_STYLES[d.style]?.mood ?? 0]} · ${DESIGN_STYLES[d.style]?.name}`;
   return <div className="cafe-room cafe-room-scene" data-stage={stage} aria-label={`${store.name} · ${label}`}>
     <img className="room-base" src={src} alt={label} width={1024} height={768} />

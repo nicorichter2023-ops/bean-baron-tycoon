@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { HubHeader } from '@/game/HubHeader';
 import { Banknote, Building, Lock, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { buyShares, repayLoan, resetGame, sellShares, takeLoan } from "@/engine";
@@ -31,12 +32,7 @@ export function FinanceTab() {
       </Section>
 
       <Section title={`Aktienmarkt · ${state.capitalMarkets.rivals.length} Firmen`}>
-        <Panel>
-          <div className="flex items-center gap-3">
-            <img src={COMPANY_ARTWORK.stockExchange} alt="Isometrische Börse von Coffee Empire" className="h-24 w-28 shrink-0 rounded-lg bg-artwork object-contain p-1" />
-            <div className="text-sm"><div className="font-semibold">Börse & Beteiligungen</div><div className="mt-1 text-xs text-muted-foreground">Handle Aktien, übernimm Konkurrenten und baue deine Holding aus.</div></div>
-          </div>
-        </Panel>
+        <HubHeader art="stocks" eyebrow="Kapitalmarkt" title="Börse & Beteiligungen"><p className="text-xs text-muted-foreground">Handle Aktien, übernimm Konkurrenten und baue deine Holding aus.</p></HubHeader>
         <label className="master-form">Aktien pro Auftrag<input aria-label="Aktien pro Auftrag" type="number" min={1} step={1} value={shareCount} onChange={e => setShareCount(Math.max(1, Math.floor(Number(e.target.value) || 1)))} /></label>
         {state.capitalMarkets.isPublic && <div className="flex flex-wrap gap-2 py-3">{([0, .1, .25] as const).map(rate => <Button key={rate} variant={tycoonOf(state).dividendRate === rate ? 'secondary' : 'outline'} onClick={() => perform(g => setDividend(g, rate))}>{rate * 100} % Gewinn als Dividende</Button>)}</div>}
         {!marketsUnlocked && <Empty><Lock className="mx-auto mb-1 h-4 w-4" />Handel und Übernahmen ab Firmenwert {eur(15_000_000)}. Alle Kurse sind bereits sichtbar.</Empty>}
