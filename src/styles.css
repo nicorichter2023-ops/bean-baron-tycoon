@@ -169,23 +169,24 @@
 }
 @utility shadow-glow { box-shadow: var(--shadow-glow); }
 
-/* The scene art carries warmth; the interface uses graphite, mint and gold. */
+/* Coffee Empire 2.0: anthracite + midnight blue base, gold only for actions/stars. */
 .dark {
-  --background: oklch(0.19 0.012 165);
-  --foreground: oklch(0.95 0.008 110);
-  --card: oklch(0.235 0.013 165);
+  --background: oklch(0.17 0.006 265);
+  --foreground: oklch(0.95 0.008 85);
+  --card: oklch(0.215 0.012 260);
   --card-foreground: var(--foreground);
-  --popover: oklch(0.235 0.013 165);
+  --popover: oklch(0.215 0.012 260);
   --popover-foreground: var(--foreground);
-  --primary: oklch(0.82 0.11 85);
-  --primary-foreground: oklch(0.2 0.018 100);
-  --secondary: oklch(0.31 0.045 165);
-  --secondary-foreground: oklch(0.94 0.03 165);
-  --muted: oklch(0.27 0.012 165);
-  --muted-foreground: oklch(0.72 0.015 165);
-  --accent: oklch(0.32 0.03 165);
+  --primary: oklch(0.8 0.13 80);
+  --primary-foreground: oklch(0.18 0.01 265);
+  --secondary: oklch(0.28 0.04 255);
+  --secondary-foreground: oklch(0.94 0.02 250);
+  --muted: oklch(0.25 0.012 260);
+  --muted-foreground: oklch(0.7 0.015 255);
+  --accent: oklch(0.3 0.035 255);
   --accent-foreground: var(--foreground);
-  --border: oklch(0.38 0.015 165);
+  --copper: oklch(0.66 0.12 50);
+  --border: oklch(0.34 0.018 258);
   --input: var(--border);
   --ring: var(--primary);
   --radius: 0.5rem;
