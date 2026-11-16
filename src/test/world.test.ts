@@ -75,3 +75,19 @@ describe('Masterdaten und internationale Standorte', () => {
     expect(r.cups+r.b2b+r.other-r.ingredients-r.salaries-r.rent-r.beans-r.interest-r.upkeep-r.tax-r.oneOff+r.inventoryChange).toBeCloseTo(r.profit,2);
   });
 });
+import { postJob, hireApplicant } from '@/engine/recruiting';
+import { candidateOf } from '@/engine/world';
+describe('Recruiting per Stellenausschreibung', () => {
+  it('Headhunter kostet 6000 € und liefert 3 Bewerbungen', () => {
+    const g = { ...createInitialState(), cash: 100000 };
+    const r = postJob(g, 'CMO', 'headhunter');
+    expect(r.ok).toBe(true); expect(r.state.cash).toBe(94000);
+    expect(r.state.world.applicants?.filter(a => a.role === 'CMO')).toHaveLength(3);
+  });
+  it('Einstellung zahlt Antrittsbonus, besetzt die Stelle und wirkt über candidateOf', () => {
+    const g = postJob({ ...createInitialState(), cash: 100000 }, 'CTO', 'local').state;
+    const a = g.world.applicants![0]!; const h = hireApplicant(g, a.id);
+    expect(h.state.cash).toBe(g.cash - a.signingBonus); expect(candidateOf(h.state, a.id)?.name).toBe(a.name);
+    expect(postJob(h.state, 'CTO', 'local').ok).toBe(false);
+  });
+});
