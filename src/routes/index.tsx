@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Fragment } from "react";
 import { Map, Coffee, Ship, Building2, Briefcase } from 'lucide-react';
 import { HUD } from "@/game/sheetArt";
 import { GameProvider, useGame } from "@/game/GameContext";
 import { Button } from "@/components/ui/button";
 import { SceneView, type Place } from "@/game/SceneView";
-import { TopBar } from "@/game/TopBar";
+import { TopBar, NextWeekButton } from "@/game/TopBar";
 import { MapTab } from "@/game/tabs/MapTab";
 import { EventDialog } from "@/game/EventDialog";
 import { EmpireTab } from '@/game/tabs/EmpireTab';
