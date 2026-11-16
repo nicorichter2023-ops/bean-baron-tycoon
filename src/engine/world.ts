@@ -15,7 +15,7 @@ export function createWorld(): WorldState {
 }
 export type Candidate = (typeof MASTER.cSuiteCandidates)[number];
 /** Hired generated applicants live in the save; legacy IDs still resolve from the master list. */
-export const candidateOf = (g: { world?: WorldState }, id: string): Candidate | undefined => g.world?.hired?.find(c => c.id === id) ?? candidateOf(g, id);
+export const candidateOf = (g: { world?: WorldState }, id: string): Candidate | undefined => g.world?.hired?.find(c => c.id === id) ?? MASTER.cSuiteCandidates.find(c => c.id === id);
 const outcome = (state: GameState, reason: string, ok = false): ActionResult => ({ state, reason, ok });
 export function travelToCity(g: GameState, cityId: string, cabin: 'economy' | 'business'): ActionResult {
   const airport = MASTER.airports.find(a => a.cityId === cityId), city = g.cities.find(c => c.id === cityId);
