@@ -882,3 +882,19 @@ html[data-contrast="high"] { --muted-foreground: var(--foreground); --border: va
 .next-week-fab { bottom: calc(4.4rem + env(safe-area-inset-bottom)); right: .6rem; height: 42px; min-height: 42px; }.game-world > nav { padding-top: 3.3rem; }.game-main { padding-bottom: calc(11rem + env(safe-area-inset-bottom)); }
 
 [data-sonner-toaster] { top: calc(7rem + env(safe-area-inset-top)) !important; }.logistics-map svg.system-icon { width: 18px; height: 18px; }
+
+/* Kompakte HUD, Bildzuschnitt, globaler Wochenknopf */
+.master-art { width: 136px; background: transparent; border-radius: 10px; box-shadow: 0 2px 10px color-mix(in oklab, var(--foreground) 15%, transparent); }
+.master-art-cell { position: absolute; inset: 0; transform: scale(1.14); }
+.master-art img { position: absolute; top: 0; left: 0; width: 500%; height: 200%; max-width: none; }
+@media(min-width:900px) { .master-heading .master-art { width: 176px; } }
+.hud-row { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+.hud-cash { font-size: .95rem; display: flex; gap: .3rem; align-items: baseline; }.hud-cash small { font-size: .68rem; }
+.hud-chip { height: 34px; min-height: 34px !important; gap: .5rem; padding: 0 .6rem; border-radius: 999px; background: var(--muted); font-size: .72rem; }
+.hud-stars { color: oklch(0.8 0.17 75); font-weight: 700; }
+.hud-mini-meter { height: 3px; margin-top: .2rem; }
+.hud-panel { display: grid; gap: .5rem; padding: .5rem 0 .25rem; animation: reward-pop .3s ease; }
+.hud-kpis { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: .4rem; }
+.hud-kpis div { display: grid; background: var(--muted); border-radius: .5rem; padding: .35rem .4rem; }.hud-kpis small { font-size: .6rem; color: var(--muted-foreground); }.hud-kpis strong { font-size: .8rem; }
+.game-main { padding-top: calc(4.2rem + env(safe-area-inset-top)); }
+.next-week-fab { position: fixed; z-index: 80; height: 38px; min-height: 38px !important; min-width: 0; padding: 0 .8rem; bottom: calc(4.5rem + env(safe-area-inset-bottom)); right: .6rem; border-radius: 999px; pointer-events: auto; }
