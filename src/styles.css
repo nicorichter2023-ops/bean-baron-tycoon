@@ -898,3 +898,12 @@ html[data-contrast="high"] { --muted-foreground: var(--foreground); --border: va
 .hud-kpis div { display: grid; background: var(--muted); border-radius: .5rem; padding: .35rem .4rem; }.hud-kpis small { font-size: .6rem; color: var(--muted-foreground); }.hud-kpis strong { font-size: .8rem; }
 .game-main { padding-top: calc(4.2rem + env(safe-area-inset-top)); }
 .next-week-fab { position: fixed; z-index: 80; height: 38px; min-height: 38px !important; min-width: 0; padding: 0 .8rem; bottom: calc(4.5rem + env(safe-area-inset-bottom)); right: .6rem; border-radius: 999px; pointer-events: auto; }
+
+/* Freigestellte Motive, kompakte Kopfzeilen */
+.master-heading { gap: .75rem; padding: .25rem 0 .75rem; }
+.master-heading h1 { font-size: 1.15rem; }
+.master-heading p { margin-top: .25rem; font-size: .75rem; }
+.master-art { width: 84px; aspect-ratio: 1/1; background: transparent; box-shadow: none; border-radius: 0; }
+.master-art-cell { transform: none; }
+.master-art img { width: 500%; height: auto; aspect-ratio: 1536/1024; top: -20%; }
+@media(min-width:900px) { .master-heading .master-art { width: 110px; } }
