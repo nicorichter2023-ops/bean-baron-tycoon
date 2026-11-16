@@ -6,13 +6,16 @@ import type { ActionResult, GameState } from './types';
 export interface WorldState {
   occupants: Record<string, string>; travelHistory: { from: string; to: string; cabin: string; cost: number; week: number }[];
   research: { id: string; finishWeek: number }[]; technologies: string[];
-  candidates: string[]; assets: { kind: string; id: string; cityId: string; startWeek: number; endWeek: number; bookValue: number; remainingKg: number }[];
+  candidates: string[]; hired?: Candidate[]; applicants?: Candidate[]; assets: { kind: string; id: string; cityId: string; startWeek: number; endWeek: number; bookValue: number; remainingKg: number }[];
   appTier: number; news: string[];
 }
 export function createWorld(): WorldState {
   return { occupants: Object.fromEntries(MASTER.cities.flatMap(c => c.buildings.filter(b => b.initialOccupant).map(b => [b.id, b.initialOccupant ?? '']))),
     travelHistory: [], research: [], technologies: [], candidates: [], assets: [], appTier: 0, news: [] };
 }
+export type Candidate = (typeof MASTER.cSuiteCandidates)[number];
+/** Hired generated applicants live in the save; legacy IDs still resolve from the master list. */
+export const candidateOf = (g: { world?: WorldState }, id: string): Candidate | undefined => g.world?.hired?.find(c => c.id === id) ?? candidateOf(g, id);
 const outcome = (state: GameState, reason: string, ok = false): ActionResult => ({ state, reason, ok });
 export function travelToCity(g: GameState, cityId: string, cabin: 'economy' | 'business'): ActionResult {
   const airport = MASTER.airports.find(a => a.cityId === cityId), city = g.cities.find(c => c.id === cityId);
@@ -40,7 +43,7 @@ export function worldEffects(g: GameState) {
   }
   const app = MASTER.digitalEcosystem.appTiers.find(a => a.tier === g.world.appTier); capacity *= app?.orderSpeedBuff ?? 1;
   for (const id of g.world.candidates) {
-    const c = MASTER.cSuiteCandidates.find(c => c.id === id); if (!c) continue;
+    const c = candidateOf(g, id); if (!c) continue;
     const perks = c.perks as Record<string, number>;
     capacity *= 1 + (perks['storeThroughputBonus'] ?? 0); 
   }
@@ -50,7 +53,7 @@ export function worldEffects(g: GameState) {
   return { capacity, quality: Math.min(30, quality), beanFactor: Math.max(.3, beanFactor), demand };
 }
 export function executivePerk(g: GameState, role: string, perk: string): number {
-  return g.world.candidates.reduce((n, id) => { const c = MASTER.cSuiteCandidates.find(c => c.id === id && c.role === role); return Math.max(n, (c?.perks as Record<string, number> | undefined)?.[perk] ?? 0); }, 0);
+  return g.world.candidates.reduce((n, id) => { const c = [candidateOf(g, id)].find(c => c?.role === role); return Math.max(n, (c?.perks as Record<string, number> | undefined)?.[perk] ?? 0); }, 0);
 }
 export function researchDuration(g: GameState, weeks: number) { return Math.max(1, Math.ceil(weeks / (1 + executivePerk(g, 'CTO', 'weeklyResearchPoints') / 100))); }
 export const campaignMultiplier = (g: GameState) => 1 + executivePerk(g, 'CMO', 'campaignEffectivenessBonus');
@@ -64,12 +67,12 @@ export function catalogAction(g: GameState, kind: CatalogKind, id: string): Acti
     const t = MASTER.techTree.find(t => t.id === id); if (!t) return outcome(g, 'Forschung nicht gefunden.');
     if (world.technologies.includes(id) || world.research.some(r => r.id === id)) return outcome(g, 'Bereits erforscht oder in Arbeit.');
     if (t.prerequisiteId && !world.technologies.includes(t.prerequisiteId)) return outcome(g, 'Voraussetzung noch nicht erforscht.');
-    const discount = world.candidates.reduce((n, id) => Math.max(n, (MASTER.cSuiteCandidates.find(c => c.id === id)?.perks as Record<string, number> | undefined)?.['techCostDiscount'] ?? 0), 0);
+    const discount = world.candidates.reduce((n, id) => Math.max(n, (candidateOf(g, id)?.perks as Record<string, number> | undefined)?.['techCostDiscount'] ?? 0), 0);
     cost = Math.round(t.researchCost * (1 - discount)); name = t.name;
     world.research = [...world.research, { id, finishWeek: g.week + researchDuration(g, t.researchWeeks) }];
   } else if (kind === 'candidate') {
-    const c = MASTER.cSuiteCandidates.find(c => c.id === id); if (!c) return outcome(g, 'Kandidat nicht gefunden.');
-    if (world.candidates.some(id => MASTER.cSuiteCandidates.find(x => x.id === id)?.role === c.role) || g.management.executives.some(e => e.role === c.role.toLowerCase())) return outcome(g, 'Position bereits besetzt.');
+    const c = candidateOf(g, id); if (!c) return outcome(g, 'Kandidat nicht gefunden.');
+    if (world.candidates.some(id => candidateOf(g, id)?.role === c.role) || g.management.executives.some(e => e.role === c.role.toLowerCase())) return outcome(g, 'Position bereits besetzt.');
     cost = c.signingBonus; name = c.name; world.candidates = [...world.candidates, id];
   } else if (kind === 'app') {
     const a = MASTER.digitalEcosystem.appTiers.find(a => String(a.tier) === id); if (!a) return outcome(g, 'App nicht gefunden.');
@@ -123,7 +126,7 @@ export function advanceWorld(g: GameState): GameState {
   const completed = world.research.filter(r => r.finishWeek <= g.week);
   world.technologies = [...world.technologies, ...completed.map(r => r.id)]; world.research = world.research.filter(r => r.finishWeek > g.week);
   let reputation = g.brandReputation;
-  for (const id of world.candidates) reputation += ((MASTER.cSuiteCandidates.find(c => c.id === id)?.perks as Record<string, number> | undefined)?.['brandAwarenessGrowthBonus'] ?? 0);
+  for (const id of world.candidates) reputation += ((candidateOf(g, id)?.perks as Record<string, number> | undefined)?.['brandAwarenessGrowthBonus'] ?? 0);
   for (const r of completed) { const t = MASTER.techTree.find(t => t.id === r.id); reputation += t?.effects.reputationBonus ?? 0; world.news.push(`${t?.name}: Forschung abgeschlossen.`); }
   for (const c of MASTER.cities) {
     const rival = MASTER.competitors[(g.week + stableHash(c.cityId)) % MASTER.competitors.length]; if (!rival || g.capitalMarkets.rivals.find(r => r.id === rival.id)?.acquired) continue;
@@ -136,7 +139,7 @@ export function advanceWorld(g: GameState): GameState {
 }
 export function worldWeeklyFlows(g: GameState) {
   let income = g.tycoon ? 0 : MASTER.digitalEcosystem.appTiers.find(a => a.tier === g.world.appTier)?.weeklyFloatInterest ?? 0, upkeep = 0, salaries = 0, harvest = 0;
-  for (const id of g.world.candidates) salaries += MASTER.cSuiteCandidates.find(c => c.id === id)?.weeklySalary ?? 0;
+  for (const id of g.world.candidates) salaries += candidateOf(g, id)?.weeklySalary ?? 0;
   for (const a of g.world.assets.filter(a => a.startWeek < g.week && a.endWeek >= g.week)) {
     if (a.kind === 'plantation') { const p = MASTER.plantations.find(p => p.id === a.id); if (p) { upkeep += p.weeklyOperatingCost; if ((g.week - a.startWeek) % p.harvestIntervalWeeks === 0) harvest += p.annualYieldKg * p.harvestIntervalWeeks / 52; } }
     if (a.kind === 'tenant') { const p = MASTER.officeTenants.find(p => p.id === a.id); if (p) income += p.requiredAreaSqm * p.rentPerSqmWeekly; }
