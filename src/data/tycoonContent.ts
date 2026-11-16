@@ -20,6 +20,12 @@ export const PATENTS = [
   { id: 'brew', name: 'Präzisions-Brühgruppe', cost: 180000, weeks: 12, income: 2200 },
   { id: 'drum', name: 'Sensor-Rösttrommel', cost: 240000, weeks: 16, income: 3200 },
   { id: 'energy', name: 'Eco-Siebträger', cost: 200000, weeks: 14, income: 2600 },
+  { id: 'grinder', name: 'Kühlmahlwerk', cost: 90000, weeks: 8, income: 1200 },
+  { id: 'milk', name: 'Auto-Milchtextur', cost: 120000, weeks: 10, income: 1600 },
+  { id: 'capsule', name: 'Kompostierbare Kapsel', cost: 260000, weeks: 18, income: 3800 },
+  { id: 'cold', name: 'Nitro-Cold-Brew-Zapfanlage', cost: 150000, weeks: 11, income: 2000 },
+  { id: 'robot', name: 'Barista-Roboterarm', cost: 420000, weeks: 24, income: 6200 },
+  { id: 'aiRoast', name: 'KI-Röstprofile', cost: 320000, weeks: 20, income: 4600 },
 ] as const;
 export const PERKS = [
   { id: 'diplomat', name: 'Diplomaten-Familie', effect: 'Keine Importzölle · +25 % Lobby-Einfluss' },

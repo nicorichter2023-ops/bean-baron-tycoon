@@ -52,7 +52,7 @@ export function CafeDetail({ store, address, onClose }: { store: Store; address:
             : propertyPrice(store.districtId) > 0 && <Button className="min-h-11 w-full" disabled={state.cash < propertyPrice(store.districtId)} onClick={() => perform(g => buyProperty(g, store.id))}>Gebäude kaufen · {eur(propertyPrice(store.districtId))} (keine Miete mehr)</Button>}</>}
       </section>
       <section className="cafe-reviews"><h2>KUNDENBEWERTUNGEN</h2><div className="cafe-reviews-grid">
-        <div><strong className="text-4xl">{r.overall.toFixed(1)}</strong><Stars v={r.overall} /><small>{r.count} Bewertungen</small></div>
+        <div><strong className={`text-4xl ${r.overall >= 4 ? 'text-success' : r.overall >= 3 ? 'text-[var(--system-gold)]' : 'text-destructive'}`}>{r.overall.toFixed(1)}</strong><Stars v={r.overall} /><small>{r.count} Bewertungen</small></div>
         <dl>{([['Preis',r.price],['Produkt',r.product],['Service',r.service],['Atmosphäre',r.atmosphere]] as const).map(([l,v]) => <div key={l}><dt>{l}</dt><dd><Stars v={v} /> {v.toFixed(1)}</dd></div>)}</dl>
       </div>
       <div className="cafe-comments">{cafeComments(store).map((c,i) => <article key={i}><Stars v={c.stars} /><p>„{c.text}“</p></article>)}</div></section>

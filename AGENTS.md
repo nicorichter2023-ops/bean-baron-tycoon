@@ -54,3 +54,4 @@ use the editor.
 - The production weekly entry point is processTycoonWeek in src/engine/tycoon.ts, wrapping the existing empire/progression/management chain and patching its one accounting row; schema-versioned tycoon state and pure tycoonContent keep new channels, customer liabilities and legacy saves coherent.
 - Five primary navigation groups mount each economic hub once; store details are shared across maps, menus and store lists to prevent presentation-specific upgrade actions.
 - Master motifs are individually trimmed transparent files (src/assets/hubs/master/<kind>.webp via masterArt.ts) instead of an atlas, so each fills its frame without white edges. The next-week control lives as the centre item of the bottom nav, so it adds no extra height.
+- C-level hiring runs through job postings in src/engine/recruiting.ts; generated hires persist in world.hired and every perk lookup uses candidateOf, so legacy master-candidate saves keep working.

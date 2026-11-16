@@ -24,12 +24,7 @@ export function MarketTab() {
   return (
     <>
       <Section title="Kaffee-Futures">
-        <Panel>
-          <div className="flex items-center gap-3">
-            <img src={COMPANY_ARTWORK.port} alt="Isometrischer Kaffee-Handelshafen" className="h-24 w-32 shrink-0 rounded-lg bg-artwork object-contain p-1" />
-            <div className="text-sm"><div className="font-semibold">Hafen & Terminmarkt</div></div>
-          </div>
-        </Panel>
+        
         <Panel>
           <div className="flex h-20 items-end gap-0.5">{history.slice(-40).map((price, index) => <div key={index} className="flex-1 rounded-t bg-primary/70" style={{ height: `${20 + ((price - min) / (max - min || 1)) * 80}%` }} />)}</div>
           <div className="mt-2 flex justify-between text-xs text-muted-foreground"><span>Volatilität {state.market.volatility}%/Wo</span><span>Extern geröstet: {externalRoastedPricePerKg(state.market.futuresPricePerKg).toFixed(2)} €/kg</span></div>
