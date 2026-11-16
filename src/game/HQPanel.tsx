@@ -42,5 +42,5 @@ const PERK_LABEL: Record<string, [string, (v: number) => string]> = {
   weeklyResearchPoints: ['Forschung', v => `+${Math.round(v)} P`], techCostDiscount: ['Tech-Kosten', v => `−${Math.round(v * 100)} %`],
 };
 function ApplicantStats({ c }: { c: Candidate }) {
-  return <dl className="applicant-stats"><div><dt>Können</dt><dd className="text-gold">{'★'.repeat(c.skillLevel)}{'☆'.repeat(5 - c.skillLevel)}</dd></div><div><dt>Gehalt</dt><dd>{eur(c.weeklySalary)}/Wo</dd></div>{Object.entries(c.perks as Record<string, number>).map(([k, v]) => <div key={k}><dt>{PERK_LABEL[k]?.[0] ?? k}</dt><dd>{PERK_LABEL[k]?.[1](v) ?? v}</dd></div>)}</dl>;
+  return <dl className="applicant-stats"><div><dt>Können</dt><dd className="text-[var(--system-gold)]">{'★'.repeat(c.skillLevel)}{'☆'.repeat(5 - c.skillLevel)}</dd></div><div><dt>Gehalt</dt><dd>{eur(c.weeklySalary)}/Wo</dd></div>{Object.entries(c.perks as Record<string, number>).map(([k, v]) => <div key={k}><dt>{PERK_LABEL[k]?.[0] ?? k}</dt><dd>{PERK_LABEL[k]?.[1](v) ?? v}</dd></div>)}</dl>;
 }

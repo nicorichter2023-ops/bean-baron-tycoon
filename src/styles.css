@@ -952,3 +952,21 @@ html[data-contrast="high"] { --muted-foreground: var(--foreground); --border: va
 .van-card .master-heading { border-bottom: 0; padding: 0; }
 .van-card .master-art { width: 132px; height: 112px; }
 .van-card button { min-height: 44px; }
+
+/* HQ recruiting */
+.exec-grid { display:grid; gap:.75rem; margin-top:.75rem; }
+@media (min-width:768px){ .exec-grid { grid-template-columns:1fr 1fr; } }
+.exec-card { border:1px solid var(--border); background:var(--card); border-radius:1rem; padding:.9rem; display:grid; gap:.6rem; }
+.exec-card > header { display:flex; gap:.7rem; align-items:center; }
+.exec-card > header small { display:block; font-size:.72rem; color:var(--muted-foreground); }
+.exec-role { display:grid; place-items:center; width:2.75rem; height:2.75rem; border-radius:.8rem; background:color-mix(in oklab, var(--primary) 16%, transparent); color:var(--primary); font-weight:800; font-size:.8rem; }
+.posting-row { display:grid; grid-template-columns:repeat(3,1fr); gap:.4rem; }
+.posting-row button { height:auto; min-height:44px; flex-direction:column; gap:0; white-space:normal; font-size:.72rem; padding:.35rem; }
+.posting-row button svg { display:none; }
+.posting-row small { color:var(--muted-foreground); font-size:.65rem; }
+.applicant { border-top:1px dashed var(--border); padding-top:.6rem; display:grid; gap:.4rem; }
+.applicant small { display:block; font-size:.7rem; color:var(--muted-foreground); }
+.applicant-stats { display:grid; grid-template-columns:repeat(2,1fr); gap:.15rem .75rem; font-size:.74rem; }
+.applicant-stats div { display:flex; justify-content:space-between; }
+.applicant-stats dt { color:var(--muted-foreground); }
+.applicant-stats dd { font-weight:700; }
