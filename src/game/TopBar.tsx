@@ -1,5 +1,6 @@
 import { compact, useGame } from "./GameContext";
 import { Button } from '@/components/ui/button';
+import { FastForward, Zap } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { progressOf, rankProgress } from '@/engine/progression';
 import { rk } from '@/engine/unlocks';
@@ -8,7 +9,7 @@ import { WeatherRadar } from './MenuTrendBoard';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 
 export function TopBar({ onProgress }: { onProgress?: () => void }) {
-  const { state, nextWeek } = useGame();
+  const { state } = useGame();
   const [flash, setFlash] = useState(false);
   const [open, setOpen] = useState(false);
   const [radar, setRadar] = useState(false), weather = weatherAt(state.week, state.city.id), t = tycoonOf(state);
@@ -50,8 +51,16 @@ export function TopBar({ onProgress }: { onProgress?: () => void }) {
       </div>
     </header>
     <Sheet open={radar} onOpenChange={setRadar}><SheetContent side="bottom"><SheetHeader><SheetTitle>Wetter & Saison · {state.city.name}</SheetTitle></SheetHeader><WeatherRadar /></SheetContent></Sheet>
-      <Button aria-label="Nächste Woche" onClick={nextWeek} disabled={Boolean(state.pendingEvent)} className="next-week-fab flex items-center gap-1 bg-primary px-3 font-display text-xs font-bold text-primary-foreground shadow-glow active:scale-95 transition disabled:opacity-60">
-        {state.pendingEvent ? '⚡ Ereignis' : `Wo ${state.week + 1}`} ▶
-      </Button>
   </>);
+}
+
+
+/** Round "advance" control docked in the bottom bar: reachable from every menu without adding height. */
+export function NextWeekButton() {
+  const { state, nextWeek } = useGame();
+  const pending = Boolean(state.pendingEvent);
+  return <button type="button" aria-label={pending ? 'Erst Ereignis entscheiden' : 'Nächste Woche starten'} onClick={nextWeek} disabled={pending} className="next-week-dock" data-pending={pending}>
+    <span className="next-week-orb">{pending ? <Zap aria-hidden /> : <FastForward aria-hidden />}</span>
+    <span className="next-week-label">{pending ? 'Ereignis' : 'Weiter'}</span>
+  </button>;
 }

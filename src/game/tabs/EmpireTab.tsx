@@ -39,10 +39,10 @@ export function EmpireTab() {
         <p className="mb-2 text-xs text-muted-foreground">Tippe eine Filiale an – es öffnet sich dieselbe Café-Ansicht wie auf der Karte. Neue Filialen eröffnest du auf der Stadtkarte.</p>
         <ul className="store-list">{state.stores.filter((store) => !selectedStore || store.id === selectedStore).map((store) => {
           const city = state.cities.find((item) => item.id === store.cityId);
-          return <li key={store.id}><button type="button" className="store-row" onClick={() => setOpenId(store.id)} aria-label={`${store.name} öffnen`}>
-            <img src={roomScene(leversOf(state, store).stage, designOf(storeCafe(state, store)).style)} alt="" loading="lazy" decoding="async" width={72} height={54} />
-            <span className="min-w-0 flex-1"><strong>{store.name}</strong><small>{city?.name} · {store.employees.length} im Team{store.propertyBookValue ? ' · Eigentum' : ''}</small></span>
-            <span className="text-right"><strong className="font-mono">{eur(store.weeklyRevenue)}</strong><small>{store.employees.length ? `${store.customersServedLastWeek} Gäste` : 'kein Personal!'}</small></span>
+          return <li key={store.id}><button type="button" className="store-card" onClick={() => setOpenId(store.id)} aria-label={`${store.name} öffnen`}>
+            <span className="store-card-art"><img src={roomScene(leversOf(state, store).stage, designOf(storeCafe(state, store)).style)} alt="" loading="lazy" decoding="async" width={1024} height={768} /><em>Stufe {leversOf(state, store).stage}</em></span>
+            <span className="store-card-body"><strong>{store.name}</strong><small>{city?.name} · {store.employees.length} im Team{store.propertyBookValue ? ' · Eigentum' : ''}</small>
+            <span className="store-card-kpi"><b className="font-mono">{eur(store.weeklyRevenue)}</b><small className={store.employees.length ? '' : 'text-destructive'}>{store.employees.length ? `${store.customersServedLastWeek} Gäste` : 'kein Personal!'}</small></span></span>
           </button></li>;
         })}</ul>
       </Section>
@@ -61,7 +61,7 @@ export function EmpireTab() {
       </Section>
 
       <Section title="Letzte Woche">
-        {!report ? <Empty>Tippe auf „Nächste Woche“, um zu starten. Danach erwartet dich dein erstes Ereignis.</Empty> : (
+        {!report ? <Empty>Tippe unten auf „Weiter“, um zu starten. Danach erwartet dich dein erstes Ereignis.</Empty> : (
           <Panel><dl className="grid grid-cols-2 gap-y-1 text-xs">
             <dt className="text-muted-foreground">Umsatz</dt><dd className="text-right font-mono">{eur(report.revenueTotal)}</dd>
             <dt className="text-muted-foreground">Kosten</dt><dd className="text-right font-mono">{eur(report.costTotal)}</dd>
