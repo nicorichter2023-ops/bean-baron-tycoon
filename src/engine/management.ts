@@ -25,7 +25,7 @@ export interface ManagementState {
 const money = (n: number) => Math.round(n * 100) / 100;
 export const createManagement = (cash: number, inventory = 0): ManagementState => ({ executives: [], delegation: false, openingCash: cash, openingInventory: inventory, journal: { operating: 0, investing: 0, financing: 0 }, oneOff: 0, beanPurchases: 0, history: [] });
 export const hasExecutive = (g: GameState, role: ExecutiveRole) => (g.management?.executives.some(e => e.role === role) ?? false) || (g.world?.candidates.some(id => candidateOf(g, id)?.role.toLowerCase() === role) ?? false);
-export const effectiveInterestRate = (g: GameState) => Math.max(0, Math.min(GAME_CONFIG.MAX_WEEKLY_INTEREST, Math.max(0, g.weeklyInterestRate)) * (g.management.executives.some(e => e.role === 'cfo') ? 0.8 : 1) - g.world.candidates.reduce((n, id) => n + ((candidateOf(state, id)?.perks as Record<string, number> | undefined)?.['loanInterestDiscount'] ?? 0) / 52, 0));
+export const effectiveInterestRate = (g: GameState) => Math.max(0, Math.min(GAME_CONFIG.MAX_WEEKLY_INTEREST, Math.max(0, g.weeklyInterestRate)) * (g.management.executives.some(e => e.role === 'cfo') ? 0.8 : 1) - g.world.candidates.reduce((n, id) => n + ((candidateOf(g, id)?.perks as Record<string, number> | undefined)?.['loanInterestDiscount'] ?? 0) / 52, 0));
 export function hireExecutive(game: GameState, role: ExecutiveRole) {
   if (hasExecutive(game, role)) return 'Diese Position ist bereits besetzt.';
   const candidate = EXECUTIVES[role];
