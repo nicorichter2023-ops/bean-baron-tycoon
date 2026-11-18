@@ -25,7 +25,7 @@ describe('Coffee Empire 2.0 data', () => {
     expect(Object.keys(EDITOR_SLOTS)).toHaveLength(5);
     Object.values(EDITOR_SLOTS).forEach(s => {
       expect(s.stufen).toHaveLength(5);
-      s.stufen.slice(1).forEach((l, i) => expect(l.kostenEinmalig).toBeGreaterThan(s.stufen[i].kostenEinmalig));
+      s.stufen.slice(1).forEach((l, i) => expect(l.kostenEinmalig).toBeGreaterThan(s.stufen[i]!.kostenEinmalig));
     });
   });
 });
@@ -34,6 +34,6 @@ describe('ledger', () => {
   it('totals and groups entries', () => {
     const e = [book('umsatz', 3000, 'Café'), book('miete', -800, 'Miete'), book('umsatz', 500.005, 'Snack')];
     expect(ledgerTotal(e)).toBe(2700.01);
-    expect(byAccount(e).umsatz).toBeCloseTo(3500.01, 2);
+    expect(byAccount(e)['umsatz']).toBeCloseTo(3500.01, 2);
   });
 });
