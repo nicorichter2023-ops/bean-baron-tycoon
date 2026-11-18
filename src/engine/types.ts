@@ -6,7 +6,7 @@ import type { ManagementState } from './management';
 import type { StoreEquipment } from './equipment';
 import type { WorldState } from './world';
 import type { ProgressState } from './progression';
-export type SchemaVersion = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+export type SchemaVersion = 9;
 
 export type ModuleId = 'core_cafe' | 'roastery' | 'b2b_trade' | 'capital_markets';
 export type Biome = 'european_classic' | 'modern_industrial' | 'asian_zen' | 'tropical_colonial';

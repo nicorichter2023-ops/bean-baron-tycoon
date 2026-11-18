@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { createInitialState } from '@/data/initialState';
 import { cafeWeek, gearUpgradeCost, setDecor, startResearch, storeCafe, storeCafeEffect, toggleMenuItem, upgradeGear, defaultStoreCafe } from '@/engine/cafe';
-import { migrateV6ToV7 } from '@/engine/save';
 import { processProgressWeek } from '@/engine/progression';
 import { createExpansion } from '@/engine/expansion';
 import { RESEARCH } from '@/engine/cafeContent';
@@ -25,11 +24,6 @@ describe('Café-Tiefe', () => {
     expect(storeCafe(g, g.stores[0]!).gear.espresso).toBe(4);
     expect(upgradeGear(g, s.id, 'espresso').ok).toBe(false);
     expect(g.stores[0]!.equipment?.espresso).toBe(2);
-  });
-  it('Migration v6→v7 übernimmt alte Maschinen als Stufe 0/2/4', () => {
-    const g = createInitialState(); const s = { ...g.stores[0]!, equipment: { espresso: 2 as const, grinder: 1 as const, interior: 1 as const, bookValue: 0 } };
-    const m = migrateV6ToV7({ ...g, cafe: undefined, stores: [s] } as unknown as GameState);
-    expect(m.schemaVersion).toBe(7); expect(m.cafe!.stores[s.id]!.gear).toMatchObject({ espresso: 4, grinder: 2, seating: 2 });
   });
   it('Gestaltung kostet Geld und bringt höchstens +6 %', () => {
     let g = rich(); const s = g.stores[0]!;

@@ -5,7 +5,7 @@ import { advanceWorld, catalogAction, locationEffects, travelToCity, worldEffect
 import { openStore, processTurn, storeOpeningCost } from '@/engine/engine';
 import { balanceSheet, hasExecutive, recordManagementAction, processManagementWeek } from '@/engine/management';
 import { createExpansion } from '@/engine/expansion';
-import { loadGame, migrateV4ToV5, saveGame } from '@/engine/save';
+import { loadGame, saveGame } from '@/engine/save';
 
 describe('Masterdaten und internationale Standorte', () => {
   it('bindet exakt 20 Städte mit jeweils 30 Gebäuden und alle Datenkategorien ein', () => {
@@ -64,10 +64,6 @@ describe('Masterdaten und internationale Standorte', () => {
     expect(Object.keys(next.world.occupants).length).toBeGreaterThan(Object.keys(g.world.occupants).length);
     expect(next.world.occupants['berlin-09']).toBeUndefined(); expect(g.world.news).toEqual([]);
   });
-  it('Alte Filialen, Bargeld und Geräte bleiben bei Migration erhalten', () => {
-    const g=createInitialState(),legacy={...g,schemaVersion:4 as const,stores:g.stores.map(s=>({...s,districtId:'berlin-kreuzberg'})),cities:g.cities.map(c=>c.id==='berlin'?{...c,districts:[...c.districts,{id:'berlin-kreuzberg',name:'Kreuzberg',footTraffic:70,rentWeekly:550,competition:40,maxStoreTier:3 as const}]}:c)};
-    const next=migrateV4ToV5(legacy); expect(next.cash).toBe(50000); expect(next.stores).toEqual(legacy.stores); expect(next.city.districts.some(d=>d.id==='berlin-kreuzberg')).toBe(true);
-  });
   it('Neue Vertragskosten, Gehälter und Einnahmen stimmen mit Cashflow und GuV überein', () => {
     const g=createInitialState(),next=recordManagementAction(g,catalogAction(g,'candidate','cand_coo_01').state);
     const end=processManagementWeek(next,createExpansion()).game,r=end.management.history.at(-1); if(!r) throw Error('Bericht fehlt');
@@ -89,5 +85,13 @@ describe('Recruiting per Stellenausschreibung', () => {
     const a = g.world.applicants![0]!; const h = hireApplicant(g, a.id);
     expect(h.state.cash).toBe(g.cash - a.signingBonus); expect(candidateOf(h.state, a.id)?.name).toBe(a.name);
     expect(postJob(h.state, 'CTO', 'local').ok).toBe(false);
+  });
+});
+
+describe('Neustart 2.0', () => {
+  it('alte Spielstände (Version 8) werden einmalig verworfen', () => {
+    localStorage.setItem('coffee-empire-save', JSON.stringify({ ...createInitialState(), schemaVersion: 8, cash: 999 }));
+    expect(loadGame().cash).not.toBe(999);
+    expect(localStorage.getItem('coffee-empire-save')).toBeNull();
   });
 });

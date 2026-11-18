@@ -89,13 +89,4 @@ describe('Filial-Ausstattung', () => {
     expect(result.state.stores.every(s => s.equipment.grinder === 1 && s.equipment.interior === 1)).toBe(true);
     expect(retrofitStandardEquipment(result.state).ok).toBe(false);
   });
-  it('Schema-3-Spielstände erhalten Daten und kostenlose Standards; Upgrades bleiben nach Laden erhalten', () => {
-    const g = createInitialState();
-    localStorage.setItem('coffee-empire-save', JSON.stringify({ ...g, schemaVersion: 3, stores: g.stores.map(({ equipment: _equipment, ...s }) => s) }));
-    const migrated = loadGame(); expect(migrated.schemaVersion).toBe(8); expect(migrated.cash).toBe(50000);
-    expect(migrated.management).toEqual(g.management); expect(migrated.stores[0]?.equipment.bookValue).toBe(0);
-    const upgraded = upgrade(migrated, 'grinder', 1); saveGame(upgraded);
-    expect(loadGame().stores[0]?.equipment).toEqual(upgraded.stores[0]?.equipment);
-    expect(EQUIPMENT.grinder[1].price).toBe(2500);
-  });
 });

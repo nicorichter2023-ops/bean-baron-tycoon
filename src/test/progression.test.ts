@@ -4,7 +4,6 @@ import { createExpansion } from '@/engine/expansion';
 import { hireEmployee, openStore } from '@/engine/engine';
 import { EVENT_RULES, leversOf, processProgressWeek, progressOf, setLever, setSettings, stageUpgrade, ACHIEVEMENTS, leverEffect, defaultLevers } from '@/engine/progression';
 import { RANKS, UNLOCK_GRAPH, legacyStage, openCityIds } from '@/engine/unlocks';
-import { migrateV5ToV6 } from '@/engine/save';
 import { travelToCity } from '@/engine/world';
 import type { GameState } from '@/engine/types';
 
@@ -14,12 +13,6 @@ const staffed = () => { const g = createInitialState(); const r = hireEmployee(g
 describe('Fortschritt', () => {
   it('es gibt 10 Ränge, 7 Stufen und 40 Erfolge', () => { expect(RANKS).toHaveLength(10); expect(ACHIEVEMENTS).toHaveLength(40); });
   it('alte Stufen 1/2/3 werden zu 2/4/7', () => { expect([1, 2, 3].map(legacyStage)).toEqual([2, 4, 7]); });
-  it('Migration behält Filialen und markiert die Startstadt als offen', () => {
-    const g = createInitialState(); const { progress: _, ...old } = g;
-    const m = migrateV5ToV6({ ...old, schemaVersion: 5 } as GameState);
-    expect(m.schemaVersion).toBe(6); expect(m.stores).toHaveLength(g.stores.length);
-    expect(leversOf(m, m.stores[0]!).stage).toBe(legacyStage(g.stores[0]!.tier));
-  });
   it('Abhängigkeiten sind ohne Kreise erreichbar', () => {
     const seen = new Set<string>(); const visit = (n: string, path: string[]): void => { expect(path).not.toContain(n); seen.add(n); UNLOCK_GRAPH[n]!.forEach(d => visit(d, [...path, n])); };
     Object.keys(UNLOCK_GRAPH).forEach(n => visit(n, [])); expect(seen.size).toBe(10);

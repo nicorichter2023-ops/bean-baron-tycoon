@@ -3,7 +3,6 @@ import { createInitialState } from '@/data';
 import { createExpansion, startCampaign } from '@/engine/expansion';
 import { balanceSheet, effectiveInterestRate, hireExecutive, processManagementWeek, recordManagementAction, releaseExecutive } from '@/engine/management';
 import { openStore, takeLoan, processTurn } from '@/engine/engine';
-import { migrateV2ToV3 } from '@/engine/save';
 import type { GameState } from '@/engine/types';
 
 function hire(g: GameState, role: 'coo' | 'cfo') { const r = hireExecutive(g, role); if (typeof r === 'string') throw new Error(r); return recordManagementAction(g, r); }
@@ -59,13 +58,6 @@ describe('Management & Accounting', () => {
     expect(b.assets).toBe(90000);
     expect(b.equity).toBe(80000);
     expect(b.debt + b.equity).toBe(b.assets);
-  });
-  it('Migration erhält alten Spielstand und startet keine erfundenen Berichte', () => {
-    const { management: _management, ...old } = createInitialState();
-    const g = { ...old, schemaVersion: 2 as const, cash: 12345 };
-    const next = migrateV2ToV3(g);
-    expect(next.cash).toBe(12345); expect(next.stores).toEqual(g.stores);
-    expect(next.schemaVersion).toBe(3); expect(next.management?.history).toHaveLength(0);
   });
   it('offene Ereignisse verhindern doppelte Gehälter und Berichte', () => {
     const g = hire(createInitialState(), 'cfo');
