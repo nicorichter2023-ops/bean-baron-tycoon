@@ -41,3 +41,5 @@
 - [x] Fehler: Café-Upgrades setzten sich jede Woche zurück
 - [x] Editor: 3 Grundstimmungen × 4 Designs = 12 je Bildgruppe (4 Gruppen, 48 Bilder), Farbfilter entfernt
 - [x] Menüs zusammenfassen, Wischen zwischen Bereichen, Entwicklung mit Forschung zusammenlegen, CTO startet automatisch
+- [x] 2.0 Schritt 2a: neue Daten (20 Städte, 80 Ereignisse, Firmenregeln, Editor) eingebunden, 40 ungenutzte Bausteine entfernt, zentraler Wochen-Einstieg
+- [ ] 2.0 Schritt 2b: innere Wochenkette auflösen, ein Filialmodell, gestrichene Menüs entfernen

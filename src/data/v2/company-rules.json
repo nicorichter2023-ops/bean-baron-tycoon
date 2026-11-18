@@ -1,0 +1,44 @@
+{
+  "branchen": [
+    { "id": "kaffee-anbau", "name": "Kaffee-Anbau", "basisWachstumJaehrlich": 0.04, "volatilitaet": 0.45, "ausfallRisiko": 0.18, "typischeEbitdaMarge": 0.14, "synergie": { "bereich": "bohnenkosten", "wirkungProzent": -15 } },
+    { "id": "spezialitaeten-roesterei", "name": "Spezialitaeten-Roesterei", "basisWachstumJaehrlich": 0.09, "volatilitaet": 0.30, "ausfallRisiko": 0.15, "typischeEbitdaMarge": 0.18, "synergie": { "bereich": "marketingbonus", "wirkungProzent": 12 } },
+    { "id": "espressomaschinenbau", "name": "Espressomaschinenbau", "basisWachstumJaehrlich": 0.05, "volatilitaet": 0.22, "ausfallRisiko": 0.10, "typischeEbitdaMarge": 0.16, "synergie": { "bereich": "maschinenverschleiss", "wirkungProzent": -12 } },
+    { "id": "gastro-software-kasse", "name": "Gastro-Software & Kasse", "basisWachstumJaehrlich": 0.16, "volatilitaet": 0.40, "ausfallRisiko": 0.25, "typischeEbitdaMarge": 0.28, "synergie": { "bereich": "filialtempo", "wirkungProzent": 10 } },
+    { "id": "hafermilch-foodtech", "name": "Hafermilch-Foodtech", "basisWachstumJaehrlich": 0.14, "volatilitaet": 0.50, "ausfallRisiko": 0.30, "typischeEbitdaMarge": 0.10, "synergie": { "bereich": "marketingbonus", "wirkungProzent": 8 } },
+    { "id": "logistik-kuehlkette", "name": "Logistik & Kuehlkette", "basisWachstumJaehrlich": 0.06, "volatilitaet": 0.20, "ausfallRisiko": 0.12, "typischeEbitdaMarge": 0.09, "synergie": { "bereich": "bohnenkosten", "wirkungProzent": -8 } },
+    { "id": "mehrweg-systeme", "name": "Mehrweg-Systeme", "basisWachstumJaehrlich": 0.12, "volatilitaet": 0.35, "ausfallRisiko": 0.22, "typischeEbitdaMarge": 0.12, "synergie": { "bereich": "marketingbonus", "wirkungProzent": 10 } },
+    { "id": "backwaren-patisserie", "name": "Backwaren & Patisserie", "basisWachstumJaehrlich": 0.05, "volatilitaet": 0.18, "ausfallRisiko": 0.14, "typischeEbitdaMarge": 0.11, "synergie": { "bereich": "snackumsatz", "wirkungProzent": 20 } },
+    { "id": "to-go-ketten", "name": "To-Go-Ketten", "basisWachstumJaehrlich": 0.08, "volatilitaet": 0.28, "ausfallRisiko": 0.20, "typischeEbitdaMarge": 0.13, "synergie": { "bereich": "gaeste_pendler", "wirkungProzent": 18 } },
+    { "id": "gourmet-tee-matcha", "name": "Gourmet-Tee & Matcha", "basisWachstumJaehrlich": 0.11, "volatilitaet": 0.32, "ausfallRisiko": 0.17, "typischeEbitdaMarge": 0.20, "synergie": { "bereich": "marketingbonus", "wirkungProzent": 9 } },
+    { "id": "automaten-tech", "name": "Automaten-Tech", "basisWachstumJaehrlich": 0.10, "volatilitaet": 0.33, "ausfallRisiko": 0.21, "typischeEbitdaMarge": 0.17, "synergie": { "bereich": "filialtempo", "wirkungProzent": 14 } },
+    { "id": "agrar-biotech", "name": "Agrar-Biotech", "basisWachstumJaehrlich": 0.13, "volatilitaet": 0.60, "ausfallRisiko": 0.35, "typischeEbitdaMarge": 0.06, "synergie": { "bereich": "bohnenkosten", "wirkungProzent": -12 } }
+  ],
+  "lebenszyklusPhasen": {
+    "seed": { "dauerWochenMin": 12, "dauerWochenMax": 36, "naechstePhaseChance": { "series_a": 0.45, "pleite": 0.55 } },
+    "series_a": { "dauerWochenMin": 24, "dauerWochenMax": 52, "naechstePhaseChance": { "growth": 0.50, "pleite": 0.35, "uebernahme": 0.15 } },
+    "growth": { "dauerWochenMin": 36, "dauerWochenMax": 78, "naechstePhaseChance": { "ipo_reif": 0.40, "stabil": 0.35, "krise": 0.25 } },
+    "ipo_reif": { "dauerWochenMin": 12, "dauerWochenMax": 26, "naechstePhaseChance": { "ag": 0.70, "uebernahme": 0.30 } },
+    "stabil": { "dauerWochenMin": 52, "dauerWochenMax": 150, "naechstePhaseChance": { "stabil": 0.70, "wachstum": 0.15, "krise": 0.15 } },
+    "krise": { "dauerWochenMin": 8, "dauerWochenMax": 24, "naechstePhaseChance": { "pleite": 0.50, "turnaround": 0.30, "billig_uebernahme": 0.20 } }
+  },
+  "namensbausteine": {
+    "praefixe": [
+      "Aura", "Nova", "Barista", "Nordic", "Veloce", "Terra", "Alba", "Cresta", "Sol", "Luna",
+      "Arabica", "Mocca", "Zenith", "Origo", "Kappa", "Vita", "Orion", "Atlas", "Helio", "Verde",
+      "Brio", "Ember", "Fjord", "Gaia", "Hanse", "Imperia", "Jade", "Kilima", "Lumen", "Meridian",
+      "Nimbus", "Oasis", "Pinnacle", "Quanta", "Regal", "Sierra", "Tempo", "Umbra", "Vertex", "Willow"
+    ],
+    "suffixe": [
+      "Roasters", "Technologies", "Logistics", "Bean Labs", "Craft", "Systems", "Holdings", "Group", "Brands", "Works",
+      "Collective", "Ventures", "Industries", "Foods", "Dynamics", "Solutions", "Estates", "Farms", "Co.", "Partners",
+      "Digital", "Robotics", "Supply", "Provisions", "Bakehouse", "Tea House", "Cold Chain", "Reuse", "Labs", "Capital",
+      "International", "Trading", "Cafe Group", "Machines", "Biotech", "Networks", "Harvest", "Origins", "Brewing", "Express"
+    ]
+  },
+  "finanzierungsrunden": {
+    "seed": { "bewertungMin": 250000, "bewertungMax": 1000000, "typischesTicket": 50000, "anteilProzent": 10 },
+    "series_a": { "bewertungMin": 1500000, "bewertungMax": 5000000, "typischesTicket": 300000, "anteilProzent": 12 },
+    "growth_pe": { "bewertungMin": 6000000, "bewertungMax": 25000000, "typischesTicket": 1500000, "anteilProzent": 15 },
+    "ipo": { "mindestMarktkapitalisierung": 30000000, "freeFloatProzent": 25 }
+  }
+}

@@ -1,0 +1,192 @@
+[
+  {
+    "id": "paris",
+    "name": "Paris",
+    "land": "Frankreich",
+    "region": "EMEA",
+    "bevoelkerung": 2160000,
+    "kaufkraft": 1.3,
+    "kaffeekultur": 1.5,
+    "mietindex": 1.7,
+    "gaestemix": { "pendler": 0.28, "studenten": 0.17, "geniesser": 0.25, "touristen": 0.30 },
+    "nachbarschaften": [
+      { "id": "paris-marais", "name": "Le Marais", "typ": "altstadt", "gaestemix": { "pendler": 0.15, "studenten": 0.10, "geniesser": 0.35, "touristen": 0.40 }, "mieteBasisWoche": 1900, "passantenFrequenz": 92 },
+      { "id": "paris-latin-quarter", "name": "Quartier Latin", "typ": "uni", "gaestemix": { "pendler": 0.12, "studenten": 0.45, "geniesser": 0.18, "touristen": 0.25 }, "mieteBasisWoche": 1500, "passantenFrequenz": 85 },
+      { "id": "paris-la-defense", "name": "La Défense", "typ": "buero", "gaestemix": { "pendler": 0.70, "studenten": 0.05, "geniesser": 0.20, "touristen": 0.05 }, "mieteBasisWoche": 1700, "passantenFrequenz": 88 },
+      { "id": "paris-montmartre", "name": "Montmartre", "typ": "altstadt", "gaestemix": { "pendler": 0.10, "studenten": 0.10, "geniesser": 0.25, "touristen": 0.55 }, "mieteBasisWoche": 1400, "passantenFrequenz": 90 },
+      { "id": "paris-champs-elysees", "name": "Champs-Élysées", "typ": "innenstadt", "gaestemix": { "pendler": 0.20, "studenten": 0.05, "geniesser": 0.25, "touristen": 0.50 }, "mieteBasisWoche": 2200, "passantenFrequenz": 98 },
+      { "id": "paris-canal-saint-martin", "name": "Canal Saint-Martin", "typ": "wohnen", "gaestemix": { "pendler": 0.20, "studenten": 0.25, "geniesser": 0.40, "touristen": 0.15 }, "mieteBasisWoche": 1100, "passantenFrequenz": 68 }
+    ]
+  },
+  {
+    "id": "wien",
+    "name": "Wien",
+    "land": "Österreich",
+    "region": "EMEA",
+    "bevoelkerung": 2000000,
+    "kaufkraft": 1.2,
+    "kaffeekultur": 1.9,
+    "mietindex": 1.1,
+    "gaestemix": { "pendler": 0.25, "studenten": 0.20, "geniesser": 0.35, "touristen": 0.20 },
+    "nachbarschaften": [
+      { "id": "wien-innere-stadt", "name": "Innere Stadt", "typ": "altstadt", "gaestemix": { "pendler": 0.15, "studenten": 0.05, "geniesser": 0.35, "touristen": 0.45 }, "mieteBasisWoche": 1600, "passantenFrequenz": 96 },
+      { "id": "wien-neubau", "name": "Neubau", "typ": "innenstadt", "gaestemix": { "pendler": 0.20, "studenten": 0.20, "geniesser": 0.45, "touristen": 0.15 }, "mieteBasisWoche": 1000, "passantenFrequenz": 78 },
+      { "id": "wien-alsergrund", "name": "Alsergrund", "typ": "uni", "gaestemix": { "pendler": 0.15, "studenten": 0.50, "geniesser": 0.25, "touristen": 0.10 }, "mieteBasisWoche": 800, "passantenFrequenz": 70 },
+      { "id": "wien-donau-city", "name": "Donau City", "typ": "buero", "gaestemix": { "pendler": 0.65, "studenten": 0.05, "geniesser": 0.25, "touristen": 0.05 }, "mieteBasisWoche": 1100, "passantenFrequenz": 64 },
+      { "id": "wien-naschmarkt", "name": "Naschmarkt", "typ": "innenstadt", "gaestemix": { "pendler": 0.10, "studenten": 0.15, "geniesser": 0.35, "touristen": 0.40 }, "mieteBasisWoche": 1300, "passantenFrequenz": 88 },
+      { "id": "wien-josefstadt", "name": "Josefstadt", "typ": "wohnen", "gaestemix": { "pendler": 0.20, "studenten": 0.20, "geniesser": 0.50, "touristen": 0.10 }, "mieteBasisWoche": 750, "passantenFrequenz": 55 }
+    ]
+  },
+  {
+    "id": "mailand",
+    "name": "Mailand",
+    "land": "Italien",
+    "region": "EMEA",
+    "bevoelkerung": 1370000,
+    "kaufkraft": 1.2,
+    "kaffeekultur": 2.0,
+    "mietindex": 1.3,
+    "gaestemix": { "pendler": 0.32, "studenten": 0.15, "geniesser": 0.30, "touristen": 0.23 },
+    "nachbarschaften": [
+      { "id": "mailand-duomo", "name": "Duomo", "typ": "innenstadt", "gaestemix": { "pendler": 0.20, "studenten": 0.05, "geniesser": 0.25, "touristen": 0.50 }, "mieteBasisWoche": 2100, "passantenFrequenz": 100 },
+      { "id": "mailand-brera", "name": "Brera", "typ": "altstadt", "gaestemix": { "pendler": 0.15, "studenten": 0.10, "geniesser": 0.45, "touristen": 0.30 }, "mieteBasisWoche": 1600, "passantenFrequenz": 80 },
+      { "id": "mailand-porta-nuova", "name": "Porta Nuova", "typ": "buero", "gaestemix": { "pendler": 0.65, "studenten": 0.05, "geniesser": 0.25, "touristen": 0.05 }, "mieteBasisWoche": 1800, "passantenFrequenz": 90 },
+      { "id": "mailand-navigli", "name": "Navigli", "typ": "hafen", "gaestemix": { "pendler": 0.10, "studenten": 0.25, "geniesser": 0.40, "touristen": 0.25 }, "mieteBasisWoche": 1300, "passantenFrequenz": 82 },
+      { "id": "mailand-citta-studi", "name": "Città Studi", "typ": "uni", "gaestemix": { "pendler": 0.15, "studenten": 0.60, "geniesser": 0.15, "touristen": 0.10 }, "mieteBasisWoche": 750, "passantenFrequenz": 66 },
+      { "id": "mailand-isola", "name": "Isola", "typ": "wohnen", "gaestemix": { "pendler": 0.30, "studenten": 0.15, "geniesser": 0.45, "touristen": 0.10 }, "mieteBasisWoche": 950, "passantenFrequenz": 58 }
+    ]
+  },
+  {
+    "id": "berlin",
+    "name": "Berlin",
+    "land": "Deutschland",
+    "region": "EMEA",
+    "bevoelkerung": 3680000,
+    "kaufkraft": 1.0,
+    "kaffeekultur": 1.4,
+    "mietindex": 1.0,
+    "gaestemix": { "pendler": 0.25, "studenten": 0.25, "geniesser": 0.25, "touristen": 0.25 },
+    "nachbarschaften": [
+      { "id": "berlin-mitte", "name": "Mitte", "typ": "innenstadt", "gaestemix": { "pendler": 0.25, "studenten": 0.10, "geniesser": 0.25, "touristen": 0.40 }, "mieteBasisWoche": 1500, "passantenFrequenz": 95 },
+      { "id": "berlin-kreuzberg", "name": "Kreuzberg", "typ": "wohnen", "gaestemix": { "pendler": 0.15, "studenten": 0.30, "geniesser": 0.35, "touristen": 0.20 }, "mieteBasisWoche": 900, "passantenFrequenz": 80 },
+      { "id": "berlin-prenzlauer-berg", "name": "Prenzlauer Berg", "typ": "wohnen", "gaestemix": { "pendler": 0.20, "studenten": 0.15, "geniesser": 0.50, "touristen": 0.15 }, "mieteBasisWoche": 850, "passantenFrequenz": 68 },
+      { "id": "berlin-charlottenburg", "name": "Charlottenburg", "typ": "uni", "gaestemix": { "pendler": 0.20, "studenten": 0.40, "geniesser": 0.25, "touristen": 0.15 }, "mieteBasisWoche": 950, "passantenFrequenz": 72 },
+      { "id": "berlin-potsdamer-platz", "name": "Potsdamer Platz", "typ": "buero", "gaestemix": { "pendler": 0.55, "studenten": 0.05, "geniesser": 0.15, "touristen": 0.25 }, "mieteBasisWoche": 1400, "passantenFrequenz": 88 },
+      { "id": "berlin-friedrichshain", "name": "Friedrichshain", "typ": "hafen", "gaestemix": { "pendler": 0.15, "studenten": 0.35, "geniesser": 0.25, "touristen": 0.25 }, "mieteBasisWoche": 800, "passantenFrequenz": 76 }
+    ]
+  },
+  {
+    "id": "london",
+    "name": "London",
+    "land": "Großbritannien",
+    "region": "EMEA",
+    "bevoelkerung": 8980000,
+    "kaufkraft": 1.4,
+    "kaffeekultur": 1.3,
+    "mietindex": 1.9,
+    "gaestemix": { "pendler": 0.35, "studenten": 0.15, "geniesser": 0.20, "touristen": 0.30 },
+    "nachbarschaften": [
+      { "id": "london-soho", "name": "Soho", "typ": "innenstadt", "gaestemix": { "pendler": 0.25, "studenten": 0.10, "geniesser": 0.25, "touristen": 0.40 }, "mieteBasisWoche": 2200, "passantenFrequenz": 98 },
+      { "id": "london-city", "name": "City of London", "typ": "buero", "gaestemix": { "pendler": 0.75, "studenten": 0.02, "geniesser": 0.18, "touristen": 0.05 }, "mieteBasisWoche": 2100, "passantenFrequenz": 94 },
+      { "id": "london-bloomsbury", "name": "Bloomsbury", "typ": "uni", "gaestemix": { "pendler": 0.15, "studenten": 0.50, "geniesser": 0.15, "touristen": 0.20 }, "mieteBasisWoche": 1600, "passantenFrequenz": 80 },
+      { "id": "london-covent-garden", "name": "Covent Garden", "typ": "altstadt", "gaestemix": { "pendler": 0.15, "studenten": 0.05, "geniesser": 0.25, "touristen": 0.55 }, "mieteBasisWoche": 2200, "passantenFrequenz": 99 },
+      { "id": "london-shoreditch", "name": "Shoreditch", "typ": "wohnen", "gaestemix": { "pendler": 0.30, "studenten": 0.20, "geniesser": 0.35, "touristen": 0.15 }, "mieteBasisWoche": 1400, "passantenFrequenz": 82 },
+      { "id": "london-canary-wharf", "name": "Canary Wharf", "typ": "hafen", "gaestemix": { "pendler": 0.70, "studenten": 0.03, "geniesser": 0.20, "touristen": 0.07 }, "mieteBasisWoche": 1900, "passantenFrequenz": 86 }
+    ]
+  },
+  {
+    "id": "kopenhagen",
+    "name": "Kopenhagen",
+    "land": "Dänemark",
+    "region": "EMEA",
+    "bevoelkerung": 660000,
+    "kaufkraft": 1.5,
+    "kaffeekultur": 1.6,
+    "mietindex": 1.4,
+    "gaestemix": { "pendler": 0.27, "studenten": 0.18, "geniesser": 0.33, "touristen": 0.22 },
+    "nachbarschaften": [
+      { "id": "kopenhagen-indre-by", "name": "Indre By", "typ": "innenstadt", "gaestemix": { "pendler": 0.25, "studenten": 0.10, "geniesser": 0.30, "touristen": 0.35 }, "mieteBasisWoche": 1700, "passantenFrequenz": 92 },
+      { "id": "kopenhagen-nyhavn", "name": "Nyhavn", "typ": "hafen", "gaestemix": { "pendler": 0.05, "studenten": 0.05, "geniesser": 0.30, "touristen": 0.60 }, "mieteBasisWoche": 1900, "passantenFrequenz": 95 },
+      { "id": "kopenhagen-norrebro", "name": "Nørrebro", "typ": "wohnen", "gaestemix": { "pendler": 0.20, "studenten": 0.30, "geniesser": 0.40, "touristen": 0.10 }, "mieteBasisWoche": 900, "passantenFrequenz": 72 },
+      { "id": "kopenhagen-vesterbro", "name": "Vesterbro", "typ": "wohnen", "gaestemix": { "pendler": 0.25, "studenten": 0.20, "geniesser": 0.35, "touristen": 0.20 }, "mieteBasisWoche": 1000, "passantenFrequenz": 76 },
+      { "id": "kopenhagen-orestad", "name": "Ørestad", "typ": "buero", "gaestemix": { "pendler": 0.55, "studenten": 0.20, "geniesser": 0.20, "touristen": 0.05 }, "mieteBasisWoche": 800, "passantenFrequenz": 50 },
+      { "id": "kopenhagen-latin-quarter", "name": "Latinerkvarteret", "typ": "uni", "gaestemix": { "pendler": 0.10, "studenten": 0.50, "geniesser": 0.20, "touristen": 0.20 }, "mieteBasisWoche": 1300, "passantenFrequenz": 80 }
+    ]
+  },
+  {
+    "id": "zuerich",
+    "name": "Zürich",
+    "land": "Schweiz",
+    "region": "EMEA",
+    "bevoelkerung": 440000,
+    "kaufkraft": 1.8,
+    "kaffeekultur": 1.5,
+    "mietindex": 2.0,
+    "gaestemix": { "pendler": 0.35, "studenten": 0.15, "geniesser": 0.32, "touristen": 0.18 },
+    "nachbarschaften": [
+      { "id": "zuerich-altstadt", "name": "Altstadt", "typ": "altstadt", "gaestemix": { "pendler": 0.20, "studenten": 0.10, "geniesser": 0.30, "touristen": 0.40 }, "mieteBasisWoche": 2200, "passantenFrequenz": 90 },
+      { "id": "zuerich-bahnhofstrasse", "name": "Bahnhofstrasse", "typ": "innenstadt", "gaestemix": { "pendler": 0.35, "studenten": 0.05, "geniesser": 0.30, "touristen": 0.30 }, "mieteBasisWoche": 2200, "passantenFrequenz": 98 },
+      { "id": "zuerich-oerlikon", "name": "Oerlikon", "typ": "buero", "gaestemix": { "pendler": 0.65, "studenten": 0.10, "geniesser": 0.20, "touristen": 0.05 }, "mieteBasisWoche": 1500, "passantenFrequenz": 70 },
+      { "id": "zuerich-hochschulquartier", "name": "Hochschulquartier", "typ": "uni", "gaestemix": { "pendler": 0.15, "studenten": 0.55, "geniesser": 0.20, "touristen": 0.10 }, "mieteBasisWoche": 1500, "passantenFrequenz": 74 },
+      { "id": "zuerich-zurich-west", "name": "Zürich West", "typ": "hafen", "gaestemix": { "pendler": 0.35, "studenten": 0.15, "geniesser": 0.40, "touristen": 0.10 }, "mieteBasisWoche": 1600, "passantenFrequenz": 68 },
+      { "id": "zuerich-wiedikon", "name": "Wiedikon", "typ": "wohnen", "gaestemix": { "pendler": 0.30, "studenten": 0.20, "geniesser": 0.45, "touristen": 0.05 }, "mieteBasisWoche": 1200, "passantenFrequenz": 50 }
+    ]
+  },
+  {
+    "id": "amsterdam",
+    "name": "Amsterdam",
+    "land": "Niederlande",
+    "region": "EMEA",
+    "bevoelkerung": 920000,
+    "kaufkraft": 1.3,
+    "kaffeekultur": 1.4,
+    "mietindex": 1.5,
+    "gaestemix": { "pendler": 0.25, "studenten": 0.20, "geniesser": 0.25, "touristen": 0.30 },
+    "nachbarschaften": [
+      { "id": "amsterdam-centrum", "name": "Centrum", "typ": "altstadt", "gaestemix": { "pendler": 0.15, "studenten": 0.05, "geniesser": 0.25, "touristen": 0.55 }, "mieteBasisWoche": 2000, "passantenFrequenz": 98 },
+      { "id": "amsterdam-jordaan", "name": "Jordaan", "typ": "wohnen", "gaestemix": { "pendler": 0.10, "studenten": 0.15, "geniesser": 0.40, "touristen": 0.35 }, "mieteBasisWoche": 1400, "passantenFrequenz": 78 },
+      { "id": "amsterdam-zuidas", "name": "Zuidas", "typ": "buero", "gaestemix": { "pendler": 0.70, "studenten": 0.05, "geniesser": 0.20, "touristen": 0.05 }, "mieteBasisWoche": 1700, "passantenFrequenz": 80 },
+      { "id": "amsterdam-de-pijp", "name": "De Pijp", "typ": "innenstadt", "gaestemix": { "pendler": 0.15, "studenten": 0.25, "geniesser": 0.35, "touristen": 0.25 }, "mieteBasisWoche": 1300, "passantenFrequenz": 84 },
+      { "id": "amsterdam-oost", "name": "Oost (Science Park)", "typ": "uni", "gaestemix": { "pendler": 0.15, "studenten": 0.55, "geniesser": 0.20, "touristen": 0.10 }, "mieteBasisWoche": 800, "passantenFrequenz": 56 },
+      { "id": "amsterdam-ij-oever", "name": "NDSM / IJ-Ufer", "typ": "hafen", "gaestemix": { "pendler": 0.20, "studenten": 0.20, "geniesser": 0.35, "touristen": 0.25 }, "mieteBasisWoche": 900, "passantenFrequenz": 60 }
+    ]
+  },
+  {
+    "id": "kapstadt",
+    "name": "Kapstadt",
+    "land": "Südafrika",
+    "region": "EMEA",
+    "bevoelkerung": 4770000,
+    "kaufkraft": 0.6,
+    "kaffeekultur": 1.2,
+    "mietindex": 0.6,
+    "gaestemix": { "pendler": 0.25, "studenten": 0.15, "geniesser": 0.25, "touristen": 0.35 },
+    "nachbarschaften": [
+      { "id": "kapstadt-waterfront", "name": "V&A Waterfront", "typ": "hafen", "gaestemix": { "pendler": 0.10, "studenten": 0.05, "geniesser": 0.25, "touristen": 0.60 }, "mieteBasisWoche": 900, "passantenFrequenz": 94 },
+      { "id": "kapstadt-city-bowl", "name": "City Bowl", "typ": "innenstadt", "gaestemix": { "pendler": 0.40, "studenten": 0.10, "geniesser": 0.25, "touristen": 0.25 }, "mieteBasisWoche": 650, "passantenFrequenz": 80 },
+      { "id": "kapstadt-bo-kaap", "name": "Bo-Kaap", "typ": "altstadt", "gaestemix": { "pendler": 0.10, "studenten": 0.10, "geniesser": 0.25, "touristen": 0.55 }, "mieteBasisWoche": 500, "passantenFrequenz": 62 },
+      { "id": "kapstadt-observatory", "name": "Observatory", "typ": "uni", "gaestemix": { "pendler": 0.15, "studenten": 0.55, "geniesser": 0.20, "touristen": 0.10 }, "mieteBasisWoche": 450, "passantenFrequenz": 58 },
+      { "id": "kapstadt-green-point", "name": "Green Point", "typ": "wohnen", "gaestemix": { "pendler": 0.20, "studenten": 0.10, "geniesser": 0.40, "touristen": 0.30 }, "mieteBasisWoche": 700, "passantenFrequenz": 66 },
+      { "id": "kapstadt-foreshore", "name": "Foreshore", "typ": "buero", "gaestemix": { "pendler": 0.65, "studenten": 0.05, "geniesser": 0.20, "touristen": 0.10 }, "mieteBasisWoche": 600, "passantenFrequenz": 64 }
+    ]
+  },
+  {
+    "id": "madrid",
+    "name": "Madrid",
+    "land": "Spanien",
+    "region": "EMEA",
+    "bevoelkerung": 3330000,
+    "kaufkraft": 0.9,
+    "kaffeekultur": 1.5,
+    "mietindex": 1.0,
+    "gaestemix": { "pendler": 0.30, "studenten": 0.20, "geniesser": 0.25, "touristen": 0.25 },
+    "nachbarschaften": [
+      { "id": "madrid-sol", "name": "Sol", "typ": "innenstadt", "gaestemix": { "pendler": 0.25, "studenten": 0.10, "geniesser": 0.20, "touristen": 0.45 }, "mieteBasisWoche": 1700, "passantenFrequenz": 100 },
+      { "id": "madrid-malasana", "name": "Malasaña", "typ": "wohnen", "gaestemix": { "pendler": 0.15, "studenten": 0.30, "geniesser": 0.35, "touristen": 0.20 }, "mieteBasisWoche": 900, "passantenFrequenz": 78 },
+      { "id": "madrid-salamanca", "name": "Salamanca", "typ": "innenstadt", "gaestemix": { "pendler": 0.25, "studenten": 0.05, "geniesser": 0.55, "touristen": 0.15 }, "mieteBasisWoche": 1500, "passantenFrequenz": 76 },
+      { "id": "madrid-la-latina", "name": "La Latina", "typ": "altstadt", "gaestemix": { "pendler": 0.10, "studenten": 0.15, "geniesser": 0.30, "touristen": 0.45 }, "mieteBasisWoche": 1100, "passantenFrequenz": 84 },
+      { "id": "madrid-azca", "name": "AZCA / Cuatro Torres", "typ": "buero", "gaestemix": { "pendler": 0.70, "studenten": 0.05, "geniesser": 0.20, "touristen": 0.05 }, "mieteBasisWoche": 1300, "passantenFrequenz": 82 },
+      { "id": "madrid-moncloa", "name": "Moncloa", "typ": "uni", "gaestemix": { "pendler": 0.15, "studenten": 0.60, "geniesser": 0.15, "touristen": 0.10 }, "mieteBasisWoche": 650, "passantenFrequenz": 66 }
+    ]
+  }
+]

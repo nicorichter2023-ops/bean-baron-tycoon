@@ -1,0 +1,54 @@
+{
+  "slots": {
+    "maschine": {
+      "name": "Espressomaschine",
+      "stufen": [
+        { "stufe": 1, "titel": "Kompakte Zweigruppen-Maschine", "kostenEinmalig": 1800, "wartungWoche": 8, "effekte": { "zubereitungstempo": 1.0, "kaffeequalitaet": 2, "ausfallrisiko": 0.08 }, "farbvarianten": ["Edelstahl Silber", "Matt Schwarz", "Kupfer Vintage"] },
+        { "stufe": 2, "titel": "Zweigruppen-Maschine mit Profimühle", "kostenEinmalig": 3200, "wartungWoche": 14, "effekte": { "zubereitungstempo": 1.2, "kaffeequalitaet": 3, "ausfallrisiko": 0.06 }, "farbvarianten": ["Edelstahl Silber", "Matt Schwarz", "Kupfer Vintage"] },
+        { "stufe": 3, "titel": "Dreigruppen-Siebträger mit Temperaturstabilität", "kostenEinmalig": 5600, "wartungWoche": 22, "effekte": { "zubereitungstempo": 1.4, "kaffeequalitaet": 4, "ausfallrisiko": 0.04 }, "farbvarianten": ["Edelstahl Silber", "Matt Schwarz", "Kupfer Vintage", "Cremeweiß Retro"] },
+        { "stufe": 4, "titel": "Dualboiler-Maschine mit Zwei-Mühlen-Setup", "kostenEinmalig": 8800, "wartungWoche": 34, "effekte": { "zubereitungstempo": 1.6, "kaffeequalitaet": 4, "ausfallrisiko": 0.025 }, "farbvarianten": ["Edelstahl Silber", "Matt Schwarz", "Kupfer Vintage", "Cremeweiß Retro"] },
+        { "stufe": 5, "titel": "Handgefertigte Premium-Dreigruppe mit Druckprofiling", "kostenEinmalig": 13000, "wartungWoche": 48, "effekte": { "zubereitungstempo": 1.8, "kaffeequalitaet": 5, "ausfallrisiko": 0.01 }, "farbvarianten": ["Edelstahl Silber", "Matt Schwarz", "Kupfer Vintage", "Cremeweiß Retro", "Messing Gold"] }
+      ]
+    },
+    "theke": {
+      "name": "Bedien- und Kuchentheke",
+      "stufen": [
+        { "stufe": 1, "titel": "Einfache Holztheke mit Kleinvitrine", "kostenEinmalig": 1200, "wartungWoche": 5, "effekte": { "snackUmsatzBonus": 0.05, "vitrinenKapazitaet": 8 }, "farbvarianten": ["Eiche Natur", "Weiß Matt", "Anthrazit"] },
+        { "stufe": 2, "titel": "Theke mit gekühlter Kuchenvitrine", "kostenEinmalig": 2400, "wartungWoche": 10, "effekte": { "snackUmsatzBonus": 0.12, "vitrinenKapazitaet": 14 }, "farbvarianten": ["Eiche Natur", "Weiß Matt", "Anthrazit"] },
+        { "stufe": 3, "titel": "Marmor-Look-Theke mit Glasvitrine", "kostenEinmalig": 4200, "wartungWoche": 16, "effekte": { "snackUmsatzBonus": 0.20, "vitrinenKapazitaet": 22 }, "farbvarianten": ["Carrara Weiß", "Nero Schwarz", "Eiche Natur", "Terrazzo"] },
+        { "stufe": 4, "titel": "Patisserie-Theke mit Beleuchtung und Klimazone", "kostenEinmalig": 6800, "wartungWoche": 25, "effekte": { "snackUmsatzBonus": 0.30, "vitrinenKapazitaet": 32 }, "farbvarianten": ["Carrara Weiß", "Nero Schwarz", "Terrazzo", "Messing Akzent"] },
+        { "stufe": 5, "titel": "Designer-Theke mit Showvitrine und Live-Backstation", "kostenEinmalig": 10000, "wartungWoche": 36, "effekte": { "snackUmsatzBonus": 0.42, "vitrinenKapazitaet": 45 }, "farbvarianten": ["Carrara Weiß", "Nero Schwarz", "Terrazzo", "Messing Akzent", "Smaragdgrün"] }
+      ]
+    },
+    "moebel": {
+      "name": "Sitzbereich und Möbel",
+      "stufen": [
+        { "stufe": 1, "titel": "Einfache Tische und Klappstühle", "kostenEinmalig": 1000, "wartungWoche": 4, "effekte": { "sitzplaetze": 12, "verweildauerFaktor": 1.0, "komfortBonus": 0.0 }, "farbvarianten": ["Holz Natur", "Weiß", "Schwarz"] },
+        { "stufe": 2, "titel": "Bistro-Set mit Barhockern", "kostenEinmalig": 2200, "wartungWoche": 8, "effekte": { "sitzplaetze": 20, "verweildauerFaktor": 1.1, "komfortBonus": 0.05 }, "farbvarianten": ["Holz Natur", "Weiß", "Schwarz", "Petrol"] },
+        { "stufe": 3, "titel": "Gepolsterte Sitzbänke und Hochtische", "kostenEinmalig": 3900, "wartungWoche": 13, "effekte": { "sitzplaetze": 32, "verweildauerFaktor": 1.25, "komfortBonus": 0.10 }, "farbvarianten": ["Cognac Leder", "Samt Grün", "Grau Stoff", "Holz Natur"] },
+        { "stufe": 4, "titel": "Loungebereich mit Sesseln und Steckdosen", "kostenEinmalig": 6200, "wartungWoche": 20, "effekte": { "sitzplaetze": 45, "verweildauerFaktor": 1.4, "komfortBonus": 0.16 }, "farbvarianten": ["Cognac Leder", "Samt Grün", "Grau Stoff", "Samt Bordeaux"] },
+        { "stufe": 5, "titel": "Designer-Interieur mit Lounge und Co-Working-Zone", "kostenEinmalig": 9200, "wartungWoche": 30, "effekte": { "sitzplaetze": 60, "verweildauerFaktor": 1.6, "komfortBonus": 0.25 }, "farbvarianten": ["Cognac Leder", "Samt Grün", "Samt Bordeaux", "Skandi Hell", "Industrial Dunkel"] }
+      ]
+    },
+    "waende_licht": {
+      "name": "Wände, Licht und Akustik",
+      "stufen": [
+        { "stufe": 1, "titel": "Frischer Anstrich und Standardlampen", "kostenEinmalig": 700, "wartungWoche": 3, "effekte": { "ambienteBonus": 0.03, "fotoFaktor": 1.0 }, "farbvarianten": ["Cremeweiß", "Hellgrau", "Sandbeige"] },
+        { "stufe": 2, "titel": "Pendelleuchten und Wandbilder", "kostenEinmalig": 1500, "wartungWoche": 6, "effekte": { "ambienteBonus": 0.08, "fotoFaktor": 1.1 }, "farbvarianten": ["Cremeweiß", "Waldgrün", "Terrakotta", "Hellgrau"] },
+        { "stufe": 3, "titel": "Akustikpaneele und warmes Lichtkonzept", "kostenEinmalig": 2800, "wartungWoche": 10, "effekte": { "ambienteBonus": 0.15, "fotoFaktor": 1.3 }, "farbvarianten": ["Waldgrün", "Terrakotta", "Nachtblau", "Holzlamellen"] },
+        { "stufe": 4, "titel": "Designwand mit Pflanzen und Neon-Akzenten", "kostenEinmalig": 4600, "wartungWoche": 16, "effekte": { "ambienteBonus": 0.24, "fotoFaktor": 1.6 }, "farbvarianten": ["Waldgrün", "Nachtblau", "Holzlamellen", "Neon Rosé"] },
+        { "stufe": 5, "titel": "Signature-Interieur mit Lichtinszenierung und Fotospot", "kostenEinmalig": 7000, "wartungWoche": 24, "effekte": { "ambienteBonus": 0.35, "fotoFaktor": 2.0 }, "farbvarianten": ["Waldgrün", "Nachtblau", "Holzlamellen", "Neon Rosé", "Marmor Gold"] }
+      ]
+    },
+    "terrasse": {
+      "name": "Terrasse und Außenbereich",
+      "stufen": [
+        { "stufe": 1, "titel": "Zwei Stehtische vor der Tür", "kostenEinmalig": 600, "wartungWoche": 3, "effekte": { "zusatzPlaetzeSommer": 4, "wetterSchutzProzent": 0 }, "farbvarianten": ["Metall Schwarz", "Holz Natur", "Weiß"] },
+        { "stufe": 2, "titel": "Bistro-Terrasse mit Sonnenschirmen", "kostenEinmalig": 1600, "wartungWoche": 6, "effekte": { "zusatzPlaetzeSommer": 10, "wetterSchutzProzent": 15 }, "farbvarianten": ["Metall Schwarz", "Holz Natur", "Weiß", "Salbeigrün"] },
+        { "stufe": 3, "titel": "Terrasse mit Markise und Windschutz", "kostenEinmalig": 3200, "wartungWoche": 11, "effekte": { "zusatzPlaetzeSommer": 18, "wetterSchutzProzent": 40 }, "farbvarianten": ["Beige Streifen", "Anthrazit", "Salbeigrün", "Terrakotta"] },
+        { "stufe": 4, "titel": "Überdachter Außenbereich mit Heizstrahlern", "kostenEinmalig": 5400, "wettwartungWoche": 18, "wartungWoche": 18, "effekte": { "zusatzPlaetzeSommer": 28, "wetterSchutzProzent": 65 }, "farbvarianten": ["Anthrazit", "Salbeigrün", "Terrakotta", "Holz Natur"] },
+        { "stufe": 5, "titel": "Ganzjahres-Gartenlounge mit Glasdach und Begrünung", "kostenEinmalig": 8500, "wartungWoche": 28, "effekte": { "zusatzPlaetzeSommer": 40, "wetterSchutzProzent": 90 }, "farbvarianten": ["Anthrazit", "Salbeigrün", "Holz Natur", "Glas Klar", "Schwarzstahl"] }
+      ]
+    }
+  }
+}

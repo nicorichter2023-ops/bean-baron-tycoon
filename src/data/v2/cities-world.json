@@ -1,0 +1,192 @@
+[
+  {
+    "id": "new-york",
+    "name": "New York",
+    "land": "USA",
+    "region": "AMERICAS",
+    "bevoelkerung": 8260000,
+    "kaufkraft": 1.6,
+    "kaffeekultur": 1.4,
+    "mietindex": 2.2,
+    "gaestemix": { "pendler": 0.35, "studenten": 0.15, "geniesser": 0.20, "touristen": 0.30 },
+    "nachbarschaften": [
+      { "id": "new-york-midtown", "name": "Midtown Manhattan", "typ": "buero", "gaestemix": { "pendler": 0.55, "studenten": 0.03, "geniesser": 0.12, "touristen": 0.30 }, "mieteBasisWoche": 2200, "passantenFrequenz": 100 },
+      { "id": "new-york-financial-district", "name": "Financial District", "typ": "buero", "gaestemix": { "pendler": 0.65, "studenten": 0.05, "geniesser": 0.15, "touristen": 0.15 }, "mieteBasisWoche": 2000, "passantenFrequenz": 90 },
+      { "id": "new-york-greenwich-village", "name": "Greenwich Village", "typ": "uni", "gaestemix": { "pendler": 0.10, "studenten": 0.45, "geniesser": 0.25, "touristen": 0.20 }, "mieteBasisWoche": 1700, "passantenFrequenz": 85 },
+      { "id": "new-york-soho", "name": "SoHo", "typ": "innenstadt", "gaestemix": { "pendler": 0.15, "studenten": 0.10, "geniesser": 0.30, "touristen": 0.45 }, "mieteBasisWoche": 2200, "passantenFrequenz": 95 },
+      { "id": "new-york-williamsburg", "name": "Williamsburg", "typ": "wohnen", "gaestemix": { "pendler": 0.25, "studenten": 0.15, "geniesser": 0.45, "touristen": 0.15 }, "mieteBasisWoche": 1300, "passantenFrequenz": 76 },
+      { "id": "new-york-south-street-seaport", "name": "South Street Seaport", "typ": "hafen", "gaestemix": { "pendler": 0.20, "studenten": 0.05, "geniesser": 0.25, "touristen": 0.50 }, "mieteBasisWoche": 1500, "passantenFrequenz": 70 }
+    ]
+  },
+  {
+    "id": "san-francisco",
+    "name": "San Francisco",
+    "land": "USA",
+    "region": "AMERICAS",
+    "bevoelkerung": 808000,
+    "kaufkraft": 1.9,
+    "kaffeekultur": 1.7,
+    "mietindex": 2.0,
+    "gaestemix": { "pendler": 0.33, "studenten": 0.12, "geniesser": 0.30, "touristen": 0.25 },
+    "nachbarschaften": [
+      { "id": "san-francisco-soma", "name": "SoMa", "typ": "buero", "gaestemix": { "pendler": 0.60, "studenten": 0.05, "geniesser": 0.25, "touristen": 0.10 }, "mieteBasisWoche": 1900, "passantenFrequenz": 85 },
+      { "id": "san-francisco-financial-district", "name": "Financial District", "typ": "buero", "gaestemix": { "pendler": 0.65, "studenten": 0.03, "geniesser": 0.20, "touristen": 0.12 }, "mieteBasisWoche": 2000, "passantenFrequenz": 88 },
+      { "id": "san-francisco-union-square", "name": "Union Square", "typ": "innenstadt", "gaestemix": { "pendler": 0.20, "studenten": 0.05, "geniesser": 0.25, "touristen": 0.50 }, "mieteBasisWoche": 2100, "passantenFrequenz": 95 },
+      { "id": "san-francisco-fishermans-wharf", "name": "Fisherman's Wharf", "typ": "hafen", "gaestemix": { "pendler": 0.05, "studenten": 0.05, "geniesser": 0.15, "touristen": 0.75 }, "mieteBasisWoche": 1700, "passantenFrequenz": 92 },
+      { "id": "san-francisco-mission", "name": "Mission District", "typ": "wohnen", "gaestemix": { "pendler": 0.25, "studenten": 0.15, "geniesser": 0.45, "touristen": 0.15 }, "mieteBasisWoche": 1200, "passantenFrequenz": 74 },
+      { "id": "san-francisco-chinatown", "name": "Chinatown", "typ": "altstadt", "gaestemix": { "pendler": 0.15, "studenten": 0.10, "geniesser": 0.30, "touristen": 0.45 }, "mieteBasisWoche": 1100, "passantenFrequenz": 80 }
+    ]
+  },
+  {
+    "id": "chicago",
+    "name": "Chicago",
+    "land": "USA",
+    "region": "AMERICAS",
+    "bevoelkerung": 2660000,
+    "kaufkraft": 1.3,
+    "kaffeekultur": 1.2,
+    "mietindex": 1.3,
+    "gaestemix": { "pendler": 0.38, "studenten": 0.17, "geniesser": 0.25, "touristen": 0.20 },
+    "nachbarschaften": [
+      { "id": "chicago-the-loop", "name": "The Loop", "typ": "buero", "gaestemix": { "pendler": 0.60, "studenten": 0.05, "geniesser": 0.15, "touristen": 0.20 }, "mieteBasisWoche": 1700, "passantenFrequenz": 95 },
+      { "id": "chicago-river-north", "name": "River North", "typ": "innenstadt", "gaestemix": { "pendler": 0.35, "studenten": 0.05, "geniesser": 0.30, "touristen": 0.30 }, "mieteBasisWoche": 1500, "passantenFrequenz": 85 },
+      { "id": "chicago-hyde-park", "name": "Hyde Park", "typ": "uni", "gaestemix": { "pendler": 0.10, "studenten": 0.60, "geniesser": 0.20, "touristen": 0.10 }, "mieteBasisWoche": 700, "passantenFrequenz": 55 },
+      { "id": "chicago-navy-pier", "name": "Navy Pier", "typ": "hafen", "gaestemix": { "pendler": 0.05, "studenten": 0.05, "geniesser": 0.20, "touristen": 0.70 }, "mieteBasisWoche": 1400, "passantenFrequenz": 88 },
+      { "id": "chicago-lincoln-park", "name": "Lincoln Park", "typ": "wohnen", "gaestemix": { "pendler": 0.25, "studenten": 0.20, "geniesser": 0.45, "touristen": 0.10 }, "mieteBasisWoche": 1000, "passantenFrequenz": 65 },
+      { "id": "chicago-old-town", "name": "Old Town", "typ": "altstadt", "gaestemix": { "pendler": 0.15, "studenten": 0.15, "geniesser": 0.45, "touristen": 0.25 }, "mieteBasisWoche": 900, "passantenFrequenz": 68 }
+    ]
+  },
+  {
+    "id": "seattle",
+    "name": "Seattle",
+    "land": "USA",
+    "region": "AMERICAS",
+    "bevoelkerung": 755000,
+    "kaufkraft": 1.6,
+    "kaffeekultur": 1.9,
+    "mietindex": 1.5,
+    "gaestemix": { "pendler": 0.32, "studenten": 0.18, "geniesser": 0.33, "touristen": 0.17 },
+    "nachbarschaften": [
+      { "id": "seattle-downtown", "name": "Downtown", "typ": "innenstadt", "gaestemix": { "pendler": 0.40, "studenten": 0.05, "geniesser": 0.25, "touristen": 0.30 }, "mieteBasisWoche": 1500, "passantenFrequenz": 90 },
+      { "id": "seattle-pike-place", "name": "Pike Place Market", "typ": "altstadt", "gaestemix": { "pendler": 0.10, "studenten": 0.05, "geniesser": 0.30, "touristen": 0.55 }, "mieteBasisWoche": 1800, "passantenFrequenz": 98 },
+      { "id": "seattle-south-lake-union", "name": "South Lake Union", "typ": "buero", "gaestemix": { "pendler": 0.65, "studenten": 0.05, "geniesser": 0.25, "touristen": 0.05 }, "mieteBasisWoche": 1600, "passantenFrequenz": 78 },
+      { "id": "seattle-u-district", "name": "University District", "typ": "uni", "gaestemix": { "pendler": 0.10, "studenten": 0.65, "geniesser": 0.15, "touristen": 0.10 }, "mieteBasisWoche": 800, "passantenFrequenz": 70 },
+      { "id": "seattle-capitol-hill", "name": "Capitol Hill", "typ": "wohnen", "gaestemix": { "pendler": 0.20, "studenten": 0.25, "geniesser": 0.45, "touristen": 0.10 }, "mieteBasisWoche": 950, "passantenFrequenz": 76 },
+      { "id": "seattle-waterfront", "name": "Waterfront", "typ": "hafen", "gaestemix": { "pendler": 0.15, "studenten": 0.05, "geniesser": 0.25, "touristen": 0.55 }, "mieteBasisWoche": 1300, "passantenFrequenz": 82 }
+    ]
+  },
+  {
+    "id": "sao-paulo",
+    "name": "São Paulo",
+    "land": "Brasilien",
+    "region": "TROPICS",
+    "bevoelkerung": 11450000,
+    "kaufkraft": 0.7,
+    "kaffeekultur": 1.6,
+    "mietindex": 0.8,
+    "gaestemix": { "pendler": 0.40, "studenten": 0.18, "geniesser": 0.27, "touristen": 0.15 },
+    "nachbarschaften": [
+      { "id": "sao-paulo-avenida-paulista", "name": "Avenida Paulista", "typ": "buero", "gaestemix": { "pendler": 0.55, "studenten": 0.10, "geniesser": 0.20, "touristen": 0.15 }, "mieteBasisWoche": 1100, "passantenFrequenz": 100 },
+      { "id": "sao-paulo-se", "name": "Sé", "typ": "innenstadt", "gaestemix": { "pendler": 0.55, "studenten": 0.10, "geniesser": 0.15, "touristen": 0.20 }, "mieteBasisWoche": 700, "passantenFrequenz": 95 },
+      { "id": "sao-paulo-vila-madalena", "name": "Vila Madalena", "typ": "wohnen", "gaestemix": { "pendler": 0.15, "studenten": 0.30, "geniesser": 0.40, "touristen": 0.15 }, "mieteBasisWoche": 800, "passantenFrequenz": 72 },
+      { "id": "sao-paulo-butanta", "name": "Butantã (USP)", "typ": "uni", "gaestemix": { "pendler": 0.15, "studenten": 0.65, "geniesser": 0.15, "touristen": 0.05 }, "mieteBasisWoche": 550, "passantenFrequenz": 58 },
+      { "id": "sao-paulo-liberdade", "name": "Liberdade", "typ": "altstadt", "gaestemix": { "pendler": 0.20, "studenten": 0.15, "geniesser": 0.30, "touristen": 0.35 }, "mieteBasisWoche": 650, "passantenFrequenz": 82 },
+      { "id": "sao-paulo-itaim-bibi", "name": "Itaim Bibi", "typ": "hafen", "gaestemix": { "pendler": 0.50, "studenten": 0.05, "geniesser": 0.40, "touristen": 0.05 }, "mieteBasisWoche": 1000, "passantenFrequenz": 70 }
+    ]
+  },
+  {
+    "id": "tokio",
+    "name": "Tokio",
+    "land": "Japan",
+    "region": "APAC",
+    "bevoelkerung": 14000000,
+    "kaufkraft": 1.2,
+    "kaffeekultur": 1.6,
+    "mietindex": 1.8,
+    "gaestemix": { "pendler": 0.45, "studenten": 0.12, "geniesser": 0.23, "touristen": 0.20 },
+    "nachbarschaften": [
+      { "id": "tokio-shinjuku", "name": "Shinjuku", "typ": "innenstadt", "gaestemix": { "pendler": 0.55, "studenten": 0.10, "geniesser": 0.15, "touristen": 0.20 }, "mieteBasisWoche": 2000, "passantenFrequenz": 100 },
+      { "id": "tokio-marunouchi", "name": "Marunouchi", "typ": "buero", "gaestemix": { "pendler": 0.70, "studenten": 0.02, "geniesser": 0.20, "touristen": 0.08 }, "mieteBasisWoche": 2200, "passantenFrequenz": 95 },
+      { "id": "tokio-shibuya", "name": "Shibuya", "typ": "innenstadt", "gaestemix": { "pendler": 0.35, "studenten": 0.25, "geniesser": 0.15, "touristen": 0.25 }, "mieteBasisWoche": 2100, "passantenFrequenz": 100 },
+      { "id": "tokio-asakusa", "name": "Asakusa", "typ": "altstadt", "gaestemix": { "pendler": 0.10, "studenten": 0.05, "geniesser": 0.25, "touristen": 0.60 }, "mieteBasisWoche": 1200, "passantenFrequenz": 88 },
+      { "id": "tokio-hongo", "name": "Hongō (Uni Tokio)", "typ": "uni", "gaestemix": { "pendler": 0.15, "studenten": 0.60, "geniesser": 0.15, "touristen": 0.10 }, "mieteBasisWoche": 900, "passantenFrequenz": 62 },
+      { "id": "tokio-odaiba", "name": "Odaiba", "typ": "hafen", "gaestemix": { "pendler": 0.15, "studenten": 0.10, "geniesser": 0.25, "touristen": 0.50 }, "mieteBasisWoche": 1300, "passantenFrequenz": 72 }
+    ]
+  },
+  {
+    "id": "osaka",
+    "name": "Osaka",
+    "land": "Japan",
+    "region": "APAC",
+    "bevoelkerung": 2750000,
+    "kaufkraft": 1.0,
+    "kaffeekultur": 1.4,
+    "mietindex": 1.2,
+    "gaestemix": { "pendler": 0.38, "studenten": 0.14, "geniesser": 0.24, "touristen": 0.24 },
+    "nachbarschaften": [
+      { "id": "osaka-umeda", "name": "Umeda", "typ": "buero", "gaestemix": { "pendler": 0.60, "studenten": 0.08, "geniesser": 0.17, "touristen": 0.15 }, "mieteBasisWoche": 1600, "passantenFrequenz": 98 },
+      { "id": "osaka-namba", "name": "Namba", "typ": "innenstadt", "gaestemix": { "pendler": 0.25, "studenten": 0.15, "geniesser": 0.20, "touristen": 0.40 }, "mieteBasisWoche": 1500, "passantenFrequenz": 100 },
+      { "id": "osaka-dotonbori", "name": "Dotonbori", "typ": "hafen", "gaestemix": { "pendler": 0.05, "studenten": 0.10, "geniesser": 0.20, "touristen": 0.65 }, "mieteBasisWoche": 1700, "passantenFrequenz": 99 },
+      { "id": "osaka-shinsekai", "name": "Shinsekai", "typ": "altstadt", "gaestemix": { "pendler": 0.10, "studenten": 0.10, "geniesser": 0.25, "touristen": 0.55 }, "mieteBasisWoche": 800, "passantenFrequenz": 78 },
+      { "id": "osaka-suita", "name": "Suita (Uni Osaka)", "typ": "uni", "gaestemix": { "pendler": 0.15, "studenten": 0.60, "geniesser": 0.20, "touristen": 0.05 }, "mieteBasisWoche": 550, "passantenFrequenz": 50 },
+      { "id": "osaka-tennoji", "name": "Tennōji", "typ": "wohnen", "gaestemix": { "pendler": 0.35, "studenten": 0.15, "geniesser": 0.30, "touristen": 0.20 }, "mieteBasisWoche": 850, "passantenFrequenz": 74 }
+    ]
+  },
+  {
+    "id": "seoul",
+    "name": "Seoul",
+    "land": "Südkorea",
+    "region": "APAC",
+    "bevoelkerung": 9330000,
+    "kaufkraft": 1.1,
+    "kaffeekultur": 1.8,
+    "mietindex": 1.5,
+    "gaestemix": { "pendler": 0.35, "studenten": 0.22, "geniesser": 0.25, "touristen": 0.18 },
+    "nachbarschaften": [
+      { "id": "seoul-gangnam", "name": "Gangnam", "typ": "buero", "gaestemix": { "pendler": 0.50, "studenten": 0.10, "geniesser": 0.30, "touristen": 0.10 }, "mieteBasisWoche": 1900, "passantenFrequenz": 98 },
+      { "id": "seoul-myeongdong", "name": "Myeongdong", "typ": "innenstadt", "gaestemix": { "pendler": 0.15, "studenten": 0.10, "geniesser": 0.20, "touristen": 0.55 }, "mieteBasisWoche": 2000, "passantenFrequenz": 100 },
+      { "id": "seoul-hongdae", "name": "Hongdae", "typ": "uni", "gaestemix": { "pendler": 0.10, "studenten": 0.55, "geniesser": 0.20, "touristen": 0.15 }, "mieteBasisWoche": 1300, "passantenFrequenz": 92 },
+      { "id": "seoul-insadong", "name": "Insadong", "typ": "altstadt", "gaestemix": { "pendler": 0.15, "studenten": 0.10, "geniesser": 0.30, "touristen": 0.45 }, "mieteBasisWoche": 1200, "passantenFrequenz": 80 },
+      { "id": "seoul-yeouido", "name": "Yeouido", "typ": "hafen", "gaestemix": { "pendler": 0.65, "studenten": 0.05, "geniesser": 0.20, "touristen": 0.10 }, "mieteBasisWoche": 1500, "passantenFrequenz": 82 },
+      { "id": "seoul-itaewon", "name": "Itaewon", "typ": "wohnen", "gaestemix": { "pendler": 0.20, "studenten": 0.20, "geniesser": 0.30, "touristen": 0.30 }, "mieteBasisWoche": 1000, "passantenFrequenz": 70 }
+    ]
+  },
+  {
+    "id": "singapur",
+    "name": "Singapur",
+    "land": "Singapur",
+    "region": "APAC",
+    "bevoelkerung": 5920000,
+    "kaufkraft": 1.7,
+    "kaffeekultur": 1.3,
+    "mietindex": 2.0,
+    "gaestemix": { "pendler": 0.38, "studenten": 0.12, "geniesser": 0.20, "touristen": 0.30 },
+    "nachbarschaften": [
+      { "id": "singapur-raffles-place", "name": "Raffles Place", "typ": "buero", "gaestemix": { "pendler": 0.70, "studenten": 0.02, "geniesser": 0.20, "touristen": 0.08 }, "mieteBasisWoche": 2200, "passantenFrequenz": 92 },
+      { "id": "singapur-orchard", "name": "Orchard Road", "typ": "innenstadt", "gaestemix": { "pendler": 0.20, "studenten": 0.10, "geniesser": 0.25, "touristen": 0.45 }, "mieteBasisWoche": 2200, "passantenFrequenz": 100 },
+      { "id": "singapur-marina-bay", "name": "Marina Bay", "typ": "hafen", "gaestemix": { "pendler": 0.25, "studenten": 0.05, "geniesser": 0.20, "touristen": 0.50 }, "mieteBasisWoche": 2100, "passantenFrequenz": 96 },
+      { "id": "singapur-chinatown", "name": "Chinatown", "typ": "altstadt", "gaestemix": { "pendler": 0.20, "studenten": 0.10, "geniesser": 0.25, "touristen": 0.45 }, "mieteBasisWoche": 1500, "passantenFrequenz": 86 },
+      { "id": "singapur-kent-ridge", "name": "Kent Ridge (NUS)", "typ": "uni", "gaestemix": { "pendler": 0.15, "studenten": 0.65, "geniesser": 0.15, "touristen": 0.05 }, "mieteBasisWoche": 900, "passantenFrequenz": 60 },
+      { "id": "singapur-tiong-bahru", "name": "Tiong Bahru", "typ": "wohnen", "gaestemix": { "pendler": 0.25, "studenten": 0.10, "geniesser": 0.50, "touristen": 0.15 }, "mieteBasisWoche": 1100, "passantenFrequenz": 58 }
+    ]
+  },
+  {
+    "id": "sydney",
+    "name": "Sydney",
+    "land": "Australien",
+    "region": "APAC",
+    "bevoelkerung": 5310000,
+    "kaufkraft": 1.5,
+    "kaffeekultur": 1.8,
+    "mietindex": 1.7,
+    "gaestemix": { "pendler": 0.30, "studenten": 0.17, "geniesser": 0.28, "touristen": 0.25 },
+    "nachbarschaften": [
+      { "id": "sydney-cbd", "name": "Sydney CBD", "typ": "buero", "gaestemix": { "pendler": 0.60, "studenten": 0.05, "geniesser": 0.20, "touristen": 0.15 }, "mieteBasisWoche": 2000, "passantenFrequenz": 95 },
+      { "id": "sydney-circular-quay", "name": "Circular Quay", "typ": "hafen", "gaestemix": { "pendler": 0.25, "studenten": 0.05, "geniesser": 0.15, "touristen": 0.55 }, "mieteBasisWoche": 2200, "passantenFrequenz": 98 },
+      { "id": "sydney-the-rocks", "name": "The Rocks", "typ": "altstadt", "gaestemix": { "pendler": 0.10, "studenten": 0.05, "geniesser": 0.25, "touristen": 0.60 }, "mieteBasisWoche": 1800, "passantenFrequenz": 90 },
+      { "id": "sydney-surry-hills", "name": "Surry Hills", "typ": "innenstadt", "gaestemix": { "pendler": 0.25, "studenten": 0.15, "geniesser": 0.45, "touristen": 0.15 }, "mieteBasisWoche": 1400, "passantenFrequenz": 80 },
+      { "id": "sydney-newtown", "name": "Newtown", "typ": "uni", "gaestemix": { "pendler": 0.15, "studenten": 0.50, "geniesser": 0.25, "touristen": 0.10 }, "mieteBasisWoche": 1000, "passantenFrequenz": 74 },
+      { "id": "sydney-bondi", "name": "Bondi", "typ": "wohnen", "gaestemix": { "pendler": 0.10, "studenten": 0.10, "geniesser": 0.40, "touristen": 0.40 }, "mieteBasisWoche": 1300, "passantenFrequenz": 76 }
+    ]
+  }
+]
