@@ -30,7 +30,7 @@ const PLACES: Record<Place, { title: string; image: string; subtitle: string }> 
   office: { title: 'Chef-Büro', image: SCENES.office.url, subtitle: 'Finanzen & Beteiligungen' },
   roastery: { title: 'Die Rösterei', image: SCENES.roasteryBase.url, subtitle: 'Von der Bohne zur Marke' },
   port: { title: 'Kaffeehafen', image: SCENES.port.url, subtitle: 'Globale Lieferketten' },
-  exchange: { title: 'Rohstoffbörse', image: SCENES.exchange.url, subtitle: 'Arabica · Robusta · Futures' },
+  exchange: { title: 'Rohstoffbörse', image: SCENES.exchange.url, subtitle: 'Arabica · Robusta · Weltmarkt' },
   farm: { title: 'Kaffee-Ursprung', image: SCENES.farm.url, subtitle: 'Die Welt hinter jeder Tasse' },
   lab: { title: 'Rezeptur-Labor', image: SCENES.cafe.url, subtitle: 'Signature Drinks & Marketing' },
   negotiation: { title: 'Verhandlungsraum', image: SCENES.negotiation.url, subtitle: 'Der nächste große Deal' },

@@ -185,7 +185,7 @@ export function dynastyExit(g: GameState, perks: HeritagePerk[]): ActionResult {
 }
 
 /** Pre-simulation supply phase. Existing farm harvest is routed here, not paid a second time. */
-function prepareSupply(state: GameState): GameState {
+export function prepareSupply(state: GameState): GameState {
   const t = structuredClone(tycoonOf(state)), roastery = { ...state.roastery, beanLots: state.roastery.beanLots.map(l => ({ ...l })) };
   for (const a of state.world.assets.filter(a => a.kind === 'plantation')) {
     const p = MASTER.plantations.find(p => p.id === a.id); if (!p) continue;
@@ -222,7 +222,11 @@ function prepareSupply(state: GameState): GameState {
 /** All master systems settle into the same report and cash journal after the existing engine. */
 export function processTycoonWeek(state: GameState, exp: ExpansionState) {
   if (state.pendingEvent) return { game: state, exp };
-  const prepared = prepareSupply(state), r = processEmpireWeek(prepared, exp);
+  const prepared = prepareSupply(state);
+  return tycoonStage(state, prepared, processEmpireWeek(prepared, exp), exp);
+}
+/** Stage 4: franchise, retail, pop-ups, cargo and city systems settle into the same accounting row. */
+export function tycoonStage(state: GameState, prepared: GameState, r: { game: GameState; exp: ExpansionState }, exp: ExpansionState) {
   if (r.game.week === state.week) return { game: state, exp };
   let g: GameState = { ...r.game, world: { ...r.game.world, occupants: { ...r.game.world.occupants } }, tycoon: tycoonOf(prepared) }, t = structuredClone(tycoonOf(g));
   let revenue = 0, cost = 0, financing = 0;

@@ -8,8 +8,7 @@ import { eur, useGame } from './GameContext';
 const GROUPS = [
   ['research', 'Forschung', MASTER.techTree], ['candidate', 'Talente', MASTER.cSuiteCandidates],
   ['plantation', 'Plantagen', MASTER.plantations], ['tenant', 'Büromieter', MASTER.officeTenants],
-  ['future', 'Preisabsicherung', MASTER.commodityFutures], ['policy', 'Stadtpolitik', MASTER.cityPolitics],
-  ['csr', 'Nachhaltigkeit', MASTER.csrCertifications], ['celebrity', 'Botschafter', MASTER.celebrityEndorsements],
+  ['celebrity', 'Botschafter', MASTER.celebrityEndorsements],
   ['underwriter', 'Börsengang', MASTER.stockMarket.underwriters], ['app', 'BeanPass', MASTER.digitalEcosystem.appTiers],
   ['training', 'Weiterbildung', MASTER.storeHrStandards.trainingTiers],
 ] as const;

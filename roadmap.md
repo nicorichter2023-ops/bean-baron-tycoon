@@ -43,4 +43,5 @@
 - [x] Menüs zusammenfassen, Wischen zwischen Bereichen, Entwicklung mit Forschung zusammenlegen, CTO startet automatisch
 - [x] 2.0 Schritt 2a: neue Daten (20 Städte, 80 Ereignisse, Firmenregeln, Editor) eingebunden, 40 ungenutzte Bausteine entfernt, zentraler Wochen-Einstieg
 - [x] 2.0 Schritt 2b-1: alte Spielstände einmalig verwerfen (Version 9), Migrationen entfernt
-- [ ] 2.0 Schritt 2b-2: innere Wochenkette auflösen, ein Filialmodell, gestrichene Menüs entfernen
+- [x] 2.0 Schritt 2b-2: Wochenberechnung linear (4 Stufen in week.ts), gestrichene Menüs entfernt
+- [ ] 2.0 Filialausstattung auf ein Modell (5 Editor-Slots) – zusammen mit dem neuen Café-Editor (Schritt 5+6)

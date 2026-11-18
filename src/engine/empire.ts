@@ -268,8 +268,9 @@ function patchWeek(g: GameState, income: number, cost: number, notes: string[]):
   if (n.progress?.summary) n = { ...n, progress: { ...n.progress, summary: { ...n.progress.summary, profit: r2(n.progress.summary.profit + net) } } };
   return n;
 }
-export function processEmpireWeek(state: GameState, exp: ExpansionState) {
-  const r = processProgressWeek(state, exp);
+export const processEmpireWeek = (state: GameState, exp: ExpansionState) => empireStage(state, processProgressWeek(state, exp));
+/** Stage 3: supply chain, ventures, auto campaigns and C-level automation. */
+export function empireStage(state: GameState, r: { game: GameState; exp: ExpansionState }) {
   if (r.game.week === state.week) return r;
   const kept = r.game.empire ?? state.empire;
   let g: GameState = { ...r.game, empire: empireOf(kept ? { ...r.game, empire: kept } : r.game) }, x = r.exp, income = 0, cost = 0; const notes: string[] = [];

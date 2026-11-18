@@ -23,7 +23,7 @@ export function MarketTab() {
 
   return (
     <>
-      <Section title="Kaffee-Futures">
+      <Section title="Kaffeepreis Weltmarkt">
         
         <Panel>
           <div className="flex h-20 items-end gap-0.5">{history.slice(-40).map((price, index) => <div key={index} className="flex-1 rounded-t bg-primary/70" style={{ height: `${20 + ((price - min) / (max - min || 1)) * 80}%` }} />)}</div>

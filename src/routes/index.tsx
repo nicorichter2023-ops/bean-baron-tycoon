@@ -28,17 +28,13 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { MenuTrendBoard } from '@/game/MenuTrendBoard';
 import { LogisticsMap } from '@/game/LogisticsMap';
 import { OmnichannelHub } from '@/game/OmnichannelHub';
-import { BeanPayHub } from '@/game/BeanPayHub';
 import { CityPoliticsHub } from '@/game/CityPoliticsHub';
-import { DynastyHall } from '@/game/DynastyHall';
-import { SustainabilityPanel } from '@/game/SustainabilityPanel';
-import { PatentPanel } from '@/game/PatentPanel';
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Bean Baron Tycoon – Kaffee-Imperium" },
-      { name: "description", content: "Baue dein Kaffee-Imperium vom Kiosk zur Dynastie: 20 Städte, Farm-to-Cup, Franchise, Enterprise, BeanPay und Rivalen." },
+      { name: "description", content: "Baue dein Kaffee-Imperium vom Kiosk zum Börsenkonzern: 20 Städte, Farm-to-Cup, Franchise, Enterprise und Rivalen." },
       { property: "og:title", content: "Bean Baron Tycoon – Kaffee-Imperium" },
       { property: "og:description", content: "600 Standorte, Stadtviertel, Konkurrenz und internationale Expansion in Coffee Empire." },
       { property: "og:type", content: "website" },
@@ -56,11 +52,11 @@ const TABS = [
   { id: "finance", label: "Finanzen/HQ", icon: Briefcase },
 ] as const;
 const SECTIONS = {
-  map: [['city', 'Stadtkarte'], ['airport', 'Reisen'], ['rivals', 'Rivalen & Immobilien'], ['politics', 'Stadtrat']],
+  map: [['city', 'Stadtkarte'], ['airport', 'Reisen'], ['rivals', 'Rivalen & Immobilien']],
   empire: [['stores', 'Filialen'], ['menu', 'Menü & Bewertungen'], ['marketing', 'Marketing']],
-  supply: [['roastery', 'Rösterei'], ['market', 'Bohnen & Futures'], ['farms', 'Fincas & Fracht']],
+  supply: [['roastery', 'Rösterei'], ['market', 'Bohnenmarkt'], ['farms', 'Fincas & Fracht']],
   expansion: [['chain', 'Kette'], ['franchise', 'Franchise'], ['b2b', 'Enterprise'], ['retail', 'Supermärkte']],
-  finance: [['accounting', 'Berichte'], ['bank', 'Bank & BeanPay'], ['stocks', 'Aktien & Startups'], ['hq', 'Leitung'], ['research', 'Forschung'], ['progress', 'Fortschritt & Dynastie']],
+  finance: [['accounting', 'Berichte'], ['bank', 'Bank'], ['stocks', 'Aktien & Startups'], ['hq', 'Leitung'], ['research', 'Forschung'], ['progress', 'Fortschritt']],
 } as const;
 
 function Game() {
@@ -81,15 +77,14 @@ function GameWorld() {
   useEffect(() => { document.querySelector('.management-switch [aria-pressed="true"]')?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' }); }, [section]);
   useEffect(() => { if ('serviceWorker' in navigator && import.meta.env.PROD) navigator.serviceWorker.register('/sw.js').catch(() => undefined); }, []);
   const content = section === 'city' ? <MapTab /> : section === 'airport' ? <MapTab airportOnly />
-    : section === 'rivals' ? <><CityPoliticsHub area="rivals" /><div className="mt-5"><CityPoliticsHub area="property" /></div></> : section === 'politics' ? <CityPoliticsHub area="politics" />
+    : section === 'rivals' ? <><CityPoliticsHub area="rivals" /><div className="mt-5"><CityPoliticsHub area="property" /></div></>
     : section === 'menu' ? <><MenuTrendBoard /><div className="mt-5"><MenuTrendBoard reviewsOnly /></div></> : section === 'reviews' ? <MenuTrendBoard reviewsOnly />
-    : section === 'progress' ? <><ProgressPanel /><div className="mt-5"><SustainabilityPanel /></div><div className="mt-5"><DynastyHall /></div></> : section === 'hq' ? <><HQPanel /><div className="mt-5"><SectionFilter.Provider value={['Holding', 'Letzte Woche']}><EmpireTab /></SectionFilter.Provider><MasterCatalog only={['tenant']} embedded title="Büromieter" /></div><ExecEffects /><div className="mt-5 space-y-3"><MasterCatalog only={['training']} embedded title="Weiterbildung" /></div></>
+    : section === 'progress' ? <ProgressPanel /> : section === 'hq' ? <><HQPanel /><div className="mt-5"><SectionFilter.Provider value={['Holding', 'Letzte Woche']}><EmpireTab /></SectionFilter.Provider><MasterCatalog only={['tenant']} embedded title="Büromieter" /></div><ExecEffects /><div className="mt-5 space-y-3"><MasterCatalog only={['training']} embedded title="Weiterbildung" /></div></>
     : section === 'accounting' ? <AccountingPanel />
-    : section === 'research' ? <><ResearchHub /><div className="mt-5"><PatentPanel /></div><div className="mt-5"><LabPanel /></div></>
-    : section === 'marketing' ? <MarketingHub /> : section === 'startups' ? <VentureHub /> : section === 'stocks' ? <><SectionFilter.Provider value={['Aktienmarkt']}><FinanceTab /></SectionFilter.Provider><div className="mt-5"><VentureHub /></div></> : section === 'bank' ? <><SectionFilter.Provider value={['Bankkredit']}><FinanceTab /></SectionFilter.Provider><div className="mt-5"><BeanPayHub /></div></>
+    : section === 'research' ? <><ResearchHub /><div className="mt-5"><LabPanel /></div></>
+    : section === 'marketing' ? <MarketingHub /> : section === 'startups' ? <VentureHub /> : section === 'stocks' ? <><SectionFilter.Provider value={['Aktienmarkt']}><FinanceTab /></SectionFilter.Provider><div className="mt-5"><VentureHub /></div></> : section === 'bank' ? <><SectionFilter.Provider value={['Bankkredit']}><FinanceTab /></SectionFilter.Provider></>
     : section === 'chain' || section === 'franchise' || section === 'b2b' || section === 'retail' ? <OmnichannelHub area={section} />
     : section === 'roastery' || section === 'farms' || section === 'market' ? <LogisticsMap area={section === 'market' ? 'beans' : section} />
-    : section === 'beanpay' ? <BeanPayHub /> : section === 'dynasty' ? <DynastyHall /> : section === 'esg' ? <SustainabilityPanel />
     : <SectionFilter.Provider value={section === 'stores' ? ['Filialen'] : section === 'holding' ? ['Holding', 'Letzte Woche'] : section === 'bank' ? ['Bankkredit'] : ['Aktienmarkt']}>
       {section === 'stores' || section === 'holding' ? <EmpireTab /> : <FinanceTab />}
       {section === 'holding' && <div className="mt-5 space-y-3"><MasterCatalog only={['tenant']} embedded title="Büromieter" /></div>}

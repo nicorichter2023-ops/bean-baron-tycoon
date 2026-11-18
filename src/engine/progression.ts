@@ -158,9 +158,10 @@ export function gateEvent(g: GameState, p: ProgressState): { game: GameState; p:
 }
 
 // ---------- weekly loop ----------
-export function processProgressWeek(state: GameState, exp: ExpansionState) {
+export const processProgressWeek = (state: GameState, exp: ExpansionState) => progressStage(state, processManagementWeek(state, exp));
+/** Stage 2: levers, goals, ranks, achievements and event gating on top of the base week. */
+export function progressStage(state: GameState, result: { game: GameState; exp: ExpansionState }) {
   const p0 = progressOf(state);
-  const result = processManagementWeek(state, exp);
   // base engine drops unknown fields: keep persisted café gear/design/menu
   let g: GameState = result.game.cafe || !state.cafe ? result.game : { ...result.game, cafe: state.cafe };
   if (g.week === state.week) return { game: { ...g, progress: p0 }, exp: result.exp };

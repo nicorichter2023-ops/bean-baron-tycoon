@@ -55,4 +55,4 @@ use the editor.
 - Five primary navigation groups mount each economic hub once; store details are shared across maps, menus and store lists to prevent presentation-specific upgrade actions.
 - Master motifs are individually trimmed transparent files (src/assets/hubs/master/<kind>.webp via masterArt.ts) instead of an atlas, so each fills its frame without white edges. The next-week control lives as the centre item of the bottom nav, so it adds no extra height.
 - C-level hiring runs through job postings in src/engine/recruiting.ts; generated hires persist in world.hired and every perk lookup uses candidateOf, so legacy master-candidate saves keep working.
-- Coffee Empire 2.0 content lives in src/data/v2 (typed via index.ts); the UI calls only simulateWeek in src/engine/week.ts and new systems book cash via ledger.ts — lets the inner wrapper chain be flattened without touching UI.
+- Coffee Empire 2.0 content lives in src/data/v2; the UI calls only simulateWeek in src/engine/week.ts, which runs base/progress/empire/tycoon stages linearly (process*Week wrappers remain only for tests); saves with another schemaVersion are discarded (clean 2.0 start, no migrations).

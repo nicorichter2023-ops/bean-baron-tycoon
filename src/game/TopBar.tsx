@@ -44,7 +44,7 @@ export function TopBar({ onProgress }: { onProgress?: () => void }) {
             <div><small>Ära</small><strong>{masterEra(state)}</strong></div>
             <div><small>Kaffee/kg</small><strong className={up ? 'text-destructive' : 'text-success'}>{price.toFixed(2)} € {up ? '↑' : '↓'}</strong></div>
             <div><small>Cafés</small><strong>{state.stores.length}</strong></div>
-            <div><small>BeanPay</small><strong>{compact(t.beanpay.balance)}</strong></div>
+            <div><small>Woche</small><strong>{state.week}</strong></div>
           </div>
           <Button variant="outline" size="sm" onClick={() => setRadar(true)}>{weather.season} · Wetter der nächsten Wochen</Button>
         </div>}
