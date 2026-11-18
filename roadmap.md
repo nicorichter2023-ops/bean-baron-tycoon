@@ -45,6 +45,8 @@
 - [x] 2.0 Schritt 2b-1: alte Spielstände einmalig verwerfen (Version 9), Migrationen entfernt
 - [x] 2.0 Schritt 2b-2: Wochenberechnung linear (4 Stufen in week.ts), gestrichene Menüs entfernt
 - [x] 2.0 Schritt 2b-3: Restlogik von BeanPay, Patenten, Stadtrat, Bio-Siegel, Mikrokrediten, Dynastie und Futures entfernt
+- [x] 2.0 13 Master-Szenen (4 Titelbilder, 4 Café-Stufen, Terrasse, 4 Regionalkarten) gemalt; Titel+Räume eingebaut
+- [ ] 2.0 Regionalkarten mit neu berechneten Standort-Pins einbauen
 - [ ] 2.0 Filialausstattung auf ein Modell (5 Editor-Slots) – zusammen mit dem neuen Café-Editor (Schritt 5+6)
 - [x] 2.0 Schritt 3: 3 Speicherplätze
 - [x] Externe Prompts Schritt 4 + 9 kopierfertig
