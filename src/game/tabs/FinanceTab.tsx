@@ -2,7 +2,7 @@ import { useState } from "react";
 import { HubHeader } from '@/game/HubHeader';
 import { Banknote, Building, Lock, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { buyShares, repayLoan, resetGame, sellShares, takeLoan } from "@/engine";
+import { activeSlot, buyShares, repayLoan, resetGame, sellShares, setActiveSlot, slotSummaries, takeLoan } from "@/engine";
 import { createInitialState } from "@/data";
 import { eur, useGame } from "../GameContext";
 import { Empty, Panel, Section } from "../ui";
@@ -51,7 +51,15 @@ export function FinanceTab() {
         })}
       </Section>
 
-      <Section title="Spielstand"><Button variant="ghost" className="w-full text-muted-foreground" onClick={() => { if (confirm("Spielstand wirklich löschen?")) { resetGame(); set(() => createInitialState()); } }}><RotateCcw /> Neues Spiel</Button></Section>
+      <Section title="Spielstand">
+        <div className="grid grid-cols-3 gap-2">
+          {slotSummaries().map((info) => <Button key={info.slot} variant={info.slot === activeSlot() ? "default" : "outline"} className="h-auto min-h-14 flex-col gap-0 py-2" onClick={() => { if (info.slot !== activeSlot()) { setActiveSlot(info.slot); window.location.reload(); } }}>
+            <strong>Platz {info.slot}</strong>
+            <small className="text-xs opacity-80">{info.empty ? "leer" : `Woche ${info.week} · ${info.stores} Cafés`}</small>
+          </Button>)}
+        </div>
+        <Button variant="ghost" className="mt-2 w-full text-muted-foreground" onClick={() => { if (confirm(`Spielstand auf Platz ${activeSlot()} wirklich löschen?`)) { resetGame(); set(() => createInitialState()); } }}><RotateCcw /> Neues Spiel auf Platz {activeSlot()}</Button>
+      </Section>
     </>
   );
 }

@@ -1,3 +1,4 @@
+import { slotKey } from './save';
 // Erweiterung: Rezeptur-Labor & Marketing. Eigener Speicherstand, damit engine.ts/types.ts unverändert bleiben.
 import type { GameState, Store } from './types';
 import { campaignMultiplier } from './world';
@@ -105,13 +106,13 @@ export function startCampaign(game: GameState, exp: ExpansionState, kind: Campai
 
 export function loadExpansion(): ExpansionState {
   try {
-    const raw = typeof localStorage !== 'undefined' ? localStorage.getItem(EXPANSION_KEY) : null;
+    const raw = typeof localStorage !== 'undefined' ? localStorage.getItem(slotKey(EXPANSION_KEY)) : null;
     if (!raw) return createExpansion();
     const data = JSON.parse(raw);
     return { ...createExpansion(), ...data, schemaVersion: EXPANSION_SCHEMA };
   } catch { return createExpansion(); }
 }
-export const saveExpansion = (exp: ExpansionState) => { try { localStorage.setItem(EXPANSION_KEY, JSON.stringify(exp)); } catch { /* voll */ } };
+export const saveExpansion = (exp: ExpansionState) => { try { localStorage.setItem(slotKey(EXPANSION_KEY), JSON.stringify(exp)); } catch { /* voll */ } };
 
 /** Durchschnitt von Gästen und Umsatz in Wochen mit vs. ohne laufende Kampagne. */
 export function compareCampaignWeeks(history: WeekRecord[]) {
