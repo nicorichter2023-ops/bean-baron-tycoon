@@ -44,12 +44,12 @@ export default function PixiCityMap({ onSelect }: { onSelect?: (lot: Lot) => voi
         }
         g.position.set(cx, cy);
         g.eventMode = "static"; g.cursor = "pointer";
-        g.on("pointertap", () => onSelect?.(lot));
+        g.on("pointertap", () => { if (moved < 8) onSelect?.(lot); });
         world.addChild(g);
       }
       // Pan + Pinch
       const pts = new Map<number, { x: number; y: number }>();
-      let lastDist = 0;
+      let lastDist = 0; let moved = 0;
       const el = app.canvas;
       el.style.touchAction = "none";
       const zoomAt = (f: number, px: number, py: number) => {
@@ -57,10 +57,10 @@ export default function PixiCityMap({ onSelect }: { onSelect?: (lot: Lot) => voi
         world.position.set(px - (px - world.x) * k, py - (py - world.y) * k); world.scale.set(z);
       };
       zoomRef.current = (f) => zoomAt(f, app!.screen.width / 2, app!.screen.height / 2);
-      el.addEventListener("pointerdown", (e) => { el.setPointerCapture(e.pointerId); pts.set(e.pointerId, { x: e.offsetX, y: e.offsetY }); });
+      el.addEventListener("pointerdown", (e) => { moved = 0; el.setPointerCapture(e.pointerId); pts.set(e.pointerId, { x: e.offsetX, y: e.offsetY }); });
       el.addEventListener("pointermove", (e) => {
         const p = pts.get(e.pointerId); if (!p) return;
-        if (pts.size === 1) { world.x += e.offsetX - p.x; world.y += e.offsetY - p.y; }
+        moved += Math.abs(e.offsetX - p.x) + Math.abs(e.offsetY - p.y); if (pts.size === 1) { world.x += e.offsetX - p.x; world.y += e.offsetY - p.y; }
         p.x = e.offsetX; p.y = e.offsetY;
         if (pts.size === 2) {
           const [a, b] = [...pts.values()] as [{ x: number; y: number }, { x: number; y: number }]; const d = Math.hypot(a.x - b.x, a.y - b.y);

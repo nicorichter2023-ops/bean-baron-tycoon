@@ -57,7 +57,7 @@ function KartePage() {
       <AnimatePresence>{pop && <CoinPopup key={pop.id} {...pop} />}</AnimatePresence>
       <AnimatePresence>{news && <NewspaperEvent {...news} onClose={() => setNews(null)} />}</AnimatePresence>
       <MotionSheet open={!!lot} onClose={() => setLot(null)}>
-        {lot && <><h3 className="text-lg font-semibold">Grundstück {lot.x}/{lot.y}</h3><p className="text-sm">Typ: {lot.kind} · {lot.floors} Etage(n)</p>
+        {lot && <><h3 className="text-lg font-semibold">Grundstück {lot.x}/{lot.y}</h3><p className="text-sm">Typ: {({ street: "Straße", empty: "Freier Bauplatz", cafe: "Kaffeehaus", roastery: "Rösterei", house: "Wohnhaus", park: "Park" } as const)[lot.kind]} · {lot.floors} Etage(n)</p>
         <button className="mt-3 h-11 w-full rounded bg-secondary" onClick={() => setLot(null)}>Schließen</button></>}
       </MotionSheet>
     </div>
