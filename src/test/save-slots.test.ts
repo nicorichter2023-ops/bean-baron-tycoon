@@ -16,7 +16,7 @@ describe('3 Speicherplätze', () => {
     saveGame({ ...createInitialState(), cash: 111 }, 1);
     saveGame({ ...createInitialState(), cash: 222 }, 2);
     setActiveSlot(2); resetGame();
-    expect(slotSummaries()[1].empty).toBe(true);
+    expect(slotSummaries()[1]?.empty).toBe(true);
     expect(loadGame(1).cash).toBe(111);
   });
 });
