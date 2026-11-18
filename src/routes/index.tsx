@@ -28,7 +28,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { MenuTrendBoard } from '@/game/MenuTrendBoard';
 import { LogisticsMap } from '@/game/LogisticsMap';
 import { OmnichannelHub } from '@/game/OmnichannelHub';
-import { CityPoliticsHub } from '@/game/CityPoliticsHub';
+import { RivalsHub } from '@/game/RivalsHub';
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -77,7 +77,7 @@ function GameWorld() {
   useEffect(() => { document.querySelector('.management-switch [aria-pressed="true"]')?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' }); }, [section]);
   useEffect(() => { if ('serviceWorker' in navigator && import.meta.env.PROD) navigator.serviceWorker.register('/sw.js').catch(() => undefined); }, []);
   const content = section === 'city' ? <MapTab /> : section === 'airport' ? <MapTab airportOnly />
-    : section === 'rivals' ? <><CityPoliticsHub area="rivals" /><div className="mt-5"><CityPoliticsHub area="property" /></div></>
+    : section === 'rivals' ? <><RivalsHub area="rivals" /><div className="mt-5"><RivalsHub area="property" /></div></>
     : section === 'menu' ? <><MenuTrendBoard /><div className="mt-5"><MenuTrendBoard reviewsOnly /></div></> : section === 'reviews' ? <MenuTrendBoard reviewsOnly />
     : section === 'progress' ? <ProgressPanel /> : section === 'hq' ? <><HQPanel /><div className="mt-5"><SectionFilter.Provider value={['Holding', 'Letzte Woche']}><EmpireTab /></SectionFilter.Provider><MasterCatalog only={['tenant']} embedded title="Büromieter" /></div><ExecEffects /><div className="mt-5 space-y-3"><MasterCatalog only={['training']} embedded title="Weiterbildung" /></div></>
     : section === 'accounting' ? <AccountingPanel />

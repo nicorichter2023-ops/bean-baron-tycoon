@@ -3,7 +3,7 @@ import { createInitialState } from '@/data';
 import { MASTER } from '@/data/master';
 import { createExpansion } from '@/engine/expansion';
 import type { GameState } from '@/engine/types';
-import { configureTreasury, dynastyExit, enableBeanPay, grantFranchise, lobbyBill, processTycoonWeek, signEnterprise, startPatent, tycoonOf } from '@/engine/tycoon';
+import { grantFranchise, processTycoonWeek, signEnterprise, tycoonOf } from '@/engine/tycoon';
 import { createManagement, balanceSheet } from '@/engine/management';
 import { openStaffedStore, upgradeSupply } from '@/engine/empire';
 import { demandEffects, weatherAt, propertyMarketFactor } from '@/engine/tycoonState';
@@ -22,26 +22,9 @@ describe('Konsolidierte Master-Mechaniken', () => {
     if (!free) throw new Error('Franchise-Standort fehlt');
     const r = grantFranchise(g, free); expect(r.ok).toBe(true); expect(r.state.cash).toBe(g.cash + 50000); expect(tycoonOf(r.state).franchises[0]?.royalty).toBe(.06);
   });
-  it('BeanPay-Guthaben ist eine Verbindlichkeit und keine Umsatzbuchung', () => {
-    let g = enableBeanPay({ ...stores(61), stores: stores(61).stores.map(s => ({ ...s, customersServedLastWeek: 1000 })) }).state;
-    g = configureTreasury(g, .6).state;
-    const r = processTycoonWeek(g, createExpansion()).game, bp = tycoonOf(r).beanpay, row = r.management.history.at(-1);
-    if (!row) throw new Error('Wochenbericht fehlt');
-    expect(bp.balance).toBeGreaterThan(0); expect(balanceSheet(r).customerLiability).toBe(bp.balance); expect(row.financing).toBeGreaterThanOrEqual(bp.balance);
-  });
   it('Enterprise-SLA verlangt mindestens den vertraglichen Cupping-Score', () => {
     const g = rich(); expect(signEnterprise(g, 'hotel').ok).toBe(false);
     expect(signEnterprise({ ...g, tycoon: { ...tycoonOf(g), roastScore: 90 } }, 'hotel').state.b2b.contracts[0]?.minimumScore).toBe(90);
-  });
-  it('Lobbyismus kostet 50.000 € und ändert die Zustimmung um 25 Prozentpunkte', () => {
-    const g = rich(), r = lobbyBill(g, true); expect(r.state.cash).toBe(g.cash - 50000); expect(tycoonOf(r.state).bills['berlin']?.support).toBe(.77);
-  });
-  it('Dynastie-Exit braucht Ära 4 und genau zwei Vermächtnisse', () => {
-    const g = stores(61); expect(dynastyExit(g, ['roast']).ok).toBe(false);
-    const r = dynastyExit(g, ['roast', 'tech']); expect(r.ok).toBe(true); expect(tycoonOf(r.state).dynasty.generation).toBe(2); expect(tycoonOf(r.state).roastScore).toBe(89); expect(tycoonOf(r.state).beanpay.enabled).toBe(true);
-  });
-  it('Hardware-Patente starten erst ab Ära 2', () => {
-    expect(startPatent(rich(), 'brew').ok).toBe(false); expect(startPatent(stores(6), 'brew').ok).toBe(true);
   });
   it('Sommerhitze steigert Kaltgetränke um 150 % und senkt Heißgetränke um 40 %', () => {
     const g = rich(), store = g.stores[0]; if (!store) throw new Error('Filiale fehlt');
@@ -71,7 +54,7 @@ describe('Konsolidierte Master-Mechaniken', () => {
   });
   it('61 Cafés und Vertriebskanäle laufen 52 Wochen mit exakt abgestimmtem Cashflow', () => {
     let g = stores(61), exp = createExpansion();
-    g = { ...g, cash: 100_000_000, management: createManagement(100_000_000, balanceSheet(g).inventory), roastery: { ...g.roastery, capacityKgPerWeek: 20000 }, tycoon: { ...tycoonOf(g), beanpay: { ...tycoonOf(g).beanpay, enabled: true }, patents: ['brew', 'drum', 'energy'], licensePatents: true } };
+    g = { ...g, cash: 100_000_000, management: createManagement(100_000_000, balanceSheet(g).inventory), roastery: { ...g.roastery, capacityKgPerWeek: 20000 } };
     for (let i = 0; i < 52; i++) {
       g = { ...g, pendingEvent: null }; const r = processTycoonWeek(g, exp); g = r.game; exp = r.exp;
       const row = g.management.history.at(-1); if (!row) throw new Error('Bericht fehlt');

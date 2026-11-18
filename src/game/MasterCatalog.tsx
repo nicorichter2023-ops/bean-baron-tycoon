@@ -30,7 +30,7 @@ const LABELS: Record<string, string> = {
 function Values({ data }: { data: Record<string, unknown> }) {
   return <dl className="catalog-values">{Object.entries(data).filter(([k]) => !['description', 'bio', 'name', 'id'].includes(k)).map(([key, value]) => <div key={key}><dt>{LABELS[key] ?? key}</dt><dd>{value !== null && typeof value === 'object' ? <Values data={value as Record<string, unknown>} /> : typeof value === 'number' ? value.toLocaleString('de-DE') : String(value ?? '—')}</dd></div>)}</dl>;
 }
-const HUB_KINDS = ['research', 'celebrity', 'csr', 'app'];
+const HUB_KINDS = ['research', 'celebrity', 'app'];
 /** `only` embeds a subset inside the research/marketing hubs; the default view shows the remaining corporate catalogs. */
 export function MasterCatalog({ only, embedded = false, title }: { only?: CatalogKind[]; embedded?: boolean; title?: string } = {}) {
   const { state, perform } = useGame();
@@ -44,7 +44,7 @@ export function MasterCatalog({ only, embedded = false, title }: { only?: Catalo
     {kind === 'research' && state.world.research.length > 0 && <div className="research-progress">{state.world.research.map(r => <p key={r.id}>{MASTER.techTree.find(t => t.id === r.id)?.name} · noch {Math.max(0, r.finishWeek - state.week)} Wochen</p>)}</div>}
     <div className="catalog-grid">{group[2].filter(item => JSON.stringify(item).toLowerCase().includes(query.toLowerCase())).map(item => {
       const entry = item as unknown as Record<string, unknown>, id = String(entry['id'] ?? entry['tier']), name = String(entry['name'] ?? entry['contractName']);
-      const active = kind === 'research' ? state.world.technologies.includes(id) || state.world.research.some(r => r.id === id) : kind === 'candidate' ? state.world.candidates.includes(id) : kind === 'app' ? state.world.appTier >= Number(id) : state.world.assets.some(a => a.kind === kind && a.id === id && a.endWeek > state.week && (kind !== 'policy' || a.cityId === state.city.id));
+      const active = kind === 'research' ? state.world.technologies.includes(id) || state.world.research.some(r => r.id === id) : kind === 'candidate' ? state.world.candidates.includes(id) : kind === 'app' ? state.world.appTier >= Number(id) : state.world.assets.some(a => a.kind === kind && a.id === id && a.endWeek > state.week);
       const price = Math.round(Number(entry['researchCost'] ?? entry['signingBonus'] ?? entry['purchasePrice'] ?? entry['contractFee'] ?? entry['lobbyingCost'] ?? entry['initialCost'] ?? entry['signingFee'] ?? entry['trainingCostPerStaff'] ?? 0) * (kind === 'research' ? 1 - executivePerk(state,'CTO','techCostDiscount') : 1));
       return <article className="catalog-item" key={id}><div className="flex items-start justify-between gap-3"><h2>{name}</h2>{active && <Check className="shrink-0 text-success" size={18} />}</div><p className="text-sm text-muted-foreground">{String(entry['description'] ?? entry['bio'] ?? '')}</p><div className="catalog-summary">{price > 0 ? eur(price) + (kind === 'training' ? ' / Person' : '') : kind === 'underwriter' ? 'Emissionsmandat' : 'Aktivierung'}{entry['weeklySalary'] ? ` · ${eur(Number(entry['weeklySalary']))}/Wo` : ''}</div>
         <details><summary>Alle Kennzahlen</summary><Values data={entry} /></details>

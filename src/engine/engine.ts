@@ -310,7 +310,7 @@ function processStore(
   const capacity =
     (GAME_CONFIG.TIER_CAPACITY[tier] ?? 0) * staffingRatio * (1 + avgSkill / 600) * cultureBoost * equipment.capacity * location.capacity * upgrades.capacity * master.capacity;
 
-  const policyBoost = game.world.assets.filter(a => a.kind === 'policy' && a.cityId === city.id && a.endWeek > game.week).reduce((n, a) => n + ((MASTER.cityPolitics.find(p => p.id === a.id) as { revenueBuff?: number } | undefined)?.revenueBuff ?? 0), 0);
+  const policyBoost = 0;
   const celebrityBoost = game.world.assets.filter(a => a.kind === 'celebrity' && a.endWeek > game.week).reduce((n, a) => n + (MASTER.celebrityEndorsements.find(p => p.id === a.id)?.clienteleBoost ?? 0), 0);
   let served = Math.max(0, Math.min(Math.round(rawDemand * equipment.demand * location.demand * upgrades.demand * master.demand * (1 + policyBoost + celebrityBoost)), Math.floor(capacity)));
   let stockLimited = false;
@@ -358,7 +358,7 @@ function processRoastery(
   const roastedStockKg = Math.max(0, roastery.roastedStockKg);
   const productionBoost = game?.tycoon ? 2 ** (game.empire?.supply.roaster ?? 0) : 1;
   const capacity = Math.max(0, roastery.capacityKgPerWeek) * productionBoost;
-  const yieldFactor = 1 - clamp(roastery.roastLossPercent * (game?.tycoon?.patents.includes('drum') ? .75 : 1), 0, 60) / 100;
+  const yieldFactor = 1 - clamp(roastery.roastLossPercent, 0, 60) / 100;
 
   const roasterBoost = 1 + average(roastery.employees.map((e) => e.skill)) / 500;
   const maxInput = capacity * roasterBoost;
@@ -611,10 +611,9 @@ export function calculateAssetValuation(state: GameState): number {
       acquiredRivalValue +
       (state.world?.assets.reduce((n, a) => n + a.bookValue, 0) ?? 0) +
       (state.tycoon?.landlords.reduce((n, l) => n + l.value, 0) ?? 0) +
-      (state.tycoon?.microloans.reduce((n, l) => n + l.amount, 0) ?? 0) +
       b2bValue +
       brandValue -
-      state.debt - (state.tycoon?.beanpay.balance ?? 0),
+      state.debt,
   );
 }
 

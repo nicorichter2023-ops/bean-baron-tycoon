@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { MASTER } from '@/data/master';
-import { billFor, lobbyBill, launchSpy, respondRival, secureCompany, tycoonOf, buyRivalBuilding, landlordAction } from '@/engine/tycoon';
+import { launchSpy, respondRival, secureCompany, tycoonOf, buyRivalBuilding, landlordAction } from '@/engine/tycoon';
 import { useGame, eur } from './GameContext';
 import { HubHeader } from './HubHeader';
 import { MasterCatalog } from './MasterCatalog';
 import { SystemIcon } from './MasterIcons';
 import { captureRivalContract } from '@/engine/tycoon';
 
-export function CityPoliticsHub({ area }: { area: 'rivals' | 'property' }) {
-  const { state, perform } = useGame(), t = tycoonOf(state), bill = billFor(state);
+export function RivalsHub({ area }: { area: 'rivals' | 'property' }) {
+  const { state, perform } = useGame(), t = tycoonOf(state);
   const [rival, setRival] = useState(MASTER.competitors[0]?.id ?? ''), [objective, setObjective] = useState<'recipe' | 'contract' | 'finance'>('recipe');
   return <div className="space-y-5"><HubHeader art={area === 'rivals' ? 'rivals' : 'property'} eyebrow={state.city.name} title={area === 'rivals' ? 'Wettbewerb & Wirtschaftsspionage' : area === 'property' ? 'Immobilien & Vermietermacht' : ''} />
     {area === 'rivals' && <><section><h2 className="master-title"><SystemIcon kind="rival" />Aktive Rivalenaktionen</h2>{!t.rivals.length && <p className="text-sm text-muted-foreground">Derzeit keine aktive Gegenkampagne.</p>}<div className="master-grid">{t.rivals.map((r, i) => <article className="master-item" key={`${r.rivalId}-${r.kind}-${i}`}><strong>{MASTER.competitors.find(c => c.id === r.rivalId)?.name}</strong><p>{r.kind === 'price' ? 'Preiskrieg · Kaffee 1,99 €' : r.kind === 'pr' ? 'Negative Presse' : 'Headhunting'}</p><small>Noch {Math.max(0, r.until - state.week)} Wochen</small><Button variant="outline" disabled={r.resolved} onClick={() => perform(g => respondRival(g, i))}>{r.resolved ? 'Abgewehrt' : `Gegenmaßnahme · ${eur(r.kind === 'price' ? 5000 : 10000)}`}</Button></article>)}</div></section><section className="master-band"><h2 className="master-title"><SystemIcon kind="spy" />Detektiv-Auftrag</h2><div className="master-form"><label>Konkurrent<select aria-label="Spionage-Ziel" value={rival} onChange={e => setRival(e.target.value)}>{MASTER.competitors.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}</select></label><label>Auftrag<select value={objective} onChange={e => setObjective(e.target.value as typeof objective)}><option value="recipe">Röstprofil aufdecken</option><option value="contract">B2B-Angebote einsehen</option><option value="finance">Finanzschwäche prüfen</option></select></label><Button onClick={() => perform(g => launchSpy(g, rival, objective))}>Beauftragen · 75.000 €</Button></div><p className="text-sm text-muted-foreground">4 Wochen · 12 % Entdeckungsrisiko · 30.000 € mögliche Strafe</p><Button variant="outline" disabled={t.security} onClick={() => perform(secureCompany)}>{t.security ? 'IP- & Personal-Schutz aktiv' : 'Rezepturtresor & Personalbindung · 20.000 €'}</Button></section>{t.spies.map(s => <p key={s.rivalId}>Operation · {MASTER.competitors.find(c => c.id === s.rivalId)?.name} · noch {s.finishWeek - state.week} Wochen</p>)}{t.intel.map(i => <p key={i} className="text-sm text-success">Erkenntnis: {i.split(':')[1] === 'recipe' ? 'Röstprofil' : i.split(':')[1] === 'contract' ? 'B2B-Konditionen' : 'Übernahmechance'}</p>)}</>}

@@ -57,12 +57,12 @@ export function executivePerk(g: GameState, role: string, perk: string): number 
 }
 export function researchDuration(g: GameState, weeks: number) { return Math.max(1, Math.ceil(weeks / (1 + executivePerk(g, 'CTO', 'weeklyResearchPoints') / 100))); }
 export const campaignMultiplier = (g: GameState) => 1 + executivePerk(g, 'CMO', 'campaignEffectivenessBonus');
-export type CatalogKind = 'research' | 'candidate' | 'plantation' | 'tenant' | 'future' | 'policy' | 'csr' | 'celebrity' | 'underwriter' | 'training' | 'app';
+export type CatalogKind = 'research' | 'candidate' | 'plantation' | 'tenant' | 'celebrity' | 'underwriter' | 'training' | 'app';
 export function catalogAction(g: GameState, kind: CatalogKind, id: string): ActionResult {
   if (g.pendingEvent) return outcome(g, 'Bitte zuerst das Wochenereignis entscheiden.');
   let cost = 0, name = '', duration = 100000, bookValue = 0, remainingKg = 0;
   let world: WorldState = { ...g.world }, reputation = g.brandReputation;
-  if (world.assets.some(a => a.kind === kind && a.id === id && (kind !== 'policy' || a.cityId === g.city.id) && a.endWeek > g.week)) return outcome(g, 'Bereits aktiv.');
+  if (world.assets.some(a => a.kind === kind && a.id === id && a.endWeek > g.week)) return outcome(g, 'Bereits aktiv.');
   if (kind === 'research') {
     const t = MASTER.techTree.find(t => t.id === id); if (!t) return outcome(g, 'Forschung nicht gefunden.');
     if (world.technologies.includes(id) || world.research.some(r => r.id === id)) return outcome(g, 'Bereits erforscht oder in Arbeit.');
@@ -85,19 +85,6 @@ export function catalogAction(g: GameState, kind: CatalogKind, id: string): Acti
     const a = MASTER.officeTenants.find(a => a.id === id); if (!a) return outcome(g, 'Mieter nicht gefunden.');
     if (g.era !== 'global_empire') return outcome(g, 'Bürovermietung benötigt ein globales Imperium.');
     name = a.name; duration = a.leaseWeeks;
-  } else if (kind === 'future') {
-    const a = MASTER.commodityFutures.find(a => a.id === id); if (!a) return outcome(g, 'Kontrakt nicht gefunden.');
-    cost = a.contractFee; name = a.contractName; duration = a.contractWeeks; remainingKg = a.protectedVolumeKg;
-  } else if (kind === 'policy') {
-    const a = MASTER.cityPolitics.find(a => a.id === id); if (!a) return outcome(g, 'Initiative nicht gefunden.');
-    cost = a.lobbyingCost; name = a.name; duration = a.durationWeeks;
-    if (g.cash < cost) return outcome(g, 'Nicht genug Barvermögen.');
-    // Stable draw per city, proposal and week. Rejected lobbying still costs money.
-    const draw = stableHash(`${g.city.id}-${id}-${g.week}`) % 10000 / 10000;
-    if (draw >= a.approvalChance) return outcome({ ...g, cash: g.cash - cost }, `${name}: Antrag abgelehnt; Lobbyingkosten bezahlt.`, true);
-  } else if (kind === 'csr') {
-    const a = MASTER.csrCertifications.find(a => a.id === id); if (!a) return outcome(g, 'Zertifikat nicht gefunden.');
-    cost = a.initialCost; name = a.name; reputation += a.reputationGain;
   } else if (kind === 'celebrity') {
     const a = MASTER.celebrityEndorsements.find(a => a.id === id); if (!a) return outcome(g, 'Botschafter nicht gefunden.');
     cost = a.signingFee; name = a.name; duration = a.contractWeeks; reputation += a.reputationBoost;
@@ -143,9 +130,7 @@ export function worldWeeklyFlows(g: GameState) {
   for (const a of g.world.assets.filter(a => a.startWeek < g.week && a.endWeek >= g.week)) {
     if (a.kind === 'plantation') { const p = MASTER.plantations.find(p => p.id === a.id); if (p) { upkeep += p.weeklyOperatingCost; if ((g.week - a.startWeek) % p.harvestIntervalWeeks === 0) harvest += p.annualYieldKg * p.harvestIntervalWeeks / 52; } }
     if (a.kind === 'tenant') { const p = MASTER.officeTenants.find(p => p.id === a.id); if (p) income += p.requiredAreaSqm * p.rentPerSqmWeekly; }
-    if (a.kind === 'csr') upkeep += MASTER.csrCertifications.find(p => p.id === a.id)?.weeklyMaintenance ?? 0;
     if (a.kind === 'celebrity') upkeep += MASTER.celebrityEndorsements.find(p => p.id === a.id)?.weeklyRetainer ?? 0;
-    if (a.kind === 'policy') income += (MASTER.cityPolitics.find(p => p.id === a.id) as { fixedB2BWeeklyRevenue?: number } | undefined)?.fixedB2BWeeklyRevenue ?? 0;
   }
   return { income, upkeep, salaries, harvest };
 }
@@ -154,15 +139,7 @@ export function worldWeeklyFlows(g: GameState) {
 export function applyWorldSupply(g: GameState): GameState {
   const flows = worldWeeklyFlows(g);
   const assets = g.world.assets.map(a => ({ ...a }));
-  let savings = 0;
-  if (!g.roastery.owned) {
-    let kg = g.stores.reduce((n, s) => n + s.customersServedLastWeek * .018 * (s.equipment.grinder ? .9 : 1) * worldEffects(g).beanFactor, 0);
-    for (const a of assets.filter(a => a.kind === 'future' && a.endWeek >= g.week && a.remainingKg > 0)) {
-      const p = MASTER.commodityFutures.find(p => p.id === a.id); if (!p) continue;
-      const used = Math.min(kg, a.remainingKg); kg -= used; a.remainingKg -= used;
-      savings += used * Math.max(0, g.market.futuresPricePerKg - p.lockPricePerKg) * 1.15 * 1.25 / .84;
-    }
-  }
+  const savings = 0;
   // Harvest is valued at the current commodity price and retained in the ordinary bean inventory.
   const r = g.lastReport;
   const discount = Math.round(savings * 100) / 100;

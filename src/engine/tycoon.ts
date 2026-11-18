@@ -1,11 +1,10 @@
 import type { ActionResult, GameState } from './types';
 import { createTycoon, tycoonOf, hash, farmScore, franchiseReady, masterEra, propertyDiscount, esgScore, trendAt, vibeScore, weatherAt, type TycoonState, type FarmSetup } from './tycoonState';
-import { ENTERPRISE, RETAIL, PATENTS, FARM_METHODS, type HeritagePerk } from '@/data/tycoonContent';
+import { ENTERPRISE, RETAIL, FARM_METHODS } from '@/data/tycoonContent';
 import { MASTER, buildingById } from '@/data/master';
 import { processEmpireWeek, acquireRivalWithStores, isExec } from './empire';
 import { catalogAction } from './world';
 import { calculateCompanyValuation, signB2BContract } from './engine';
-import { createInitialState } from '@/data/initialState';
 import { createExpansion, type ExpansionState } from './expansion';
 export { tycoonOf, weatherAt, trendAt, masterEra, franchiseReady, farmScore, esgScore, vibeScore } from './tycoonState';
 const money = (v: number) => Math.round(v * 100) / 100;
@@ -101,26 +100,6 @@ export function retailAction(g: GameState, id: string, chain: string, promotion:
   if (!line || (!promotion && line.shelf >= 3)) return no(g, 'Regalplatz bereits maximiert oder Produkt fehlt.');
   return changed(g, { ...t, retail: t.retail.map(r => r === line ? { ...r, shelf: promotion ? r.shelf : r.shelf + 1, promotionUntil: promotion ? g.week + 4 : r.promotionUntil } : r) }, promotion ? 'Vier Wochen 20 % Regalrabatt.' : 'Besserer Regalplatz ausgehandelt.', promotion ? 8000 : 20000);
 }
-export function enableBeanPay(g: GameState): ActionResult {
-  const t = tycoonOf(g);
-  if (t.beanpay.enabled) return no(g, 'BeanPay ist schon aktiv.');
-  if (masterEra(g) < 4 && g.world.appTier === 0 && !t.dynasty.perks.includes('tech')) return no(g, 'BeanPay benötigt eine erforschte Kunden-App oder Ära 4.');
-  return changed(g, { ...t, beanpay: { ...t.beanpay, enabled: true } }, 'BeanPay gestartet.', t.dynasty.perks.includes('tech') ? 0 : 25000);
-}
-export function configureTreasury(g: GameState, reserve: number, bonus = false): ActionResult {
-  const t = tycoonOf(g);
-  if (!t.beanpay.enabled || !Number.isFinite(reserve) || reserve < .6 || reserve > 1) return no(g, 'BeanPay benötigt mindestens 60 % Rückzahlungsreserve.');
-  return changed(g, { ...t, beanpay: { ...t.beanpay, reserve, bonusUntil: bonus ? g.week + 4 : t.beanpay.bonusUntil } }, bonus ? 'Treuepunkte-Kampagne für vier Wochen aktiv.' : 'Rückzahlungsreserve angepasst.', bonus ? 3500 : 0);
-}
-export function startPatent(g: GameState, id: string): ActionResult {
-  const t = tycoonOf(g), p = PATENTS.find(p => p.id === id);
-  if (!p || t.patents.includes(id) || t.patentProject) return no(g, 'Projekt nicht verfügbar oder bereits in Arbeit.');
-  if (!g.roastery.owned || masterEra(g) < 2) return no(g, 'Hardware-Labor benötigt Ära 2 und eine Rösterei.');
-  return changed(g, { ...t, patentProject: { id, finishWeek: g.week + (isExec(g, 'cto') ? Math.ceil(p.weeks * .7) : p.weeks) } }, 'Hardware-Forschung gestartet.', p.cost);
-}
-export function togglePatentLicenses(g: GameState): ActionResult {
-  const t = tycoonOf(g); return changed(g, { ...t, licensePatents: !t.licensePatents }, 'Patent-Lizenzierung geändert.');
-}
 export function buyRivalBuilding(g: GameState, id: string): ActionResult {
   const t = tycoonOf(g), b = buildingById(id), rivalId = g.world.occupants[id];
   if (!b || !rivalId || t.landlords.some(l => l.districtId === id)) return no(g, 'Rivalen-Immobilie nicht verfügbar.');
@@ -131,18 +110,6 @@ export function landlordAction(g: GameState, id: string, evict: boolean): Action
   const t = tycoonOf(g);
   if (!t.landlords.some(l => l.districtId === id)) return no(g, 'Diese Immobilie gehört dir nicht.');
   return changed(g, { ...t, landlords: t.landlords.map(l => l.districtId === id ? { ...l, multiplier: evict ? l.multiplier : 2, evict } : l) }, evict ? 'Kündigung zum Mietvertragsende vorgemerkt.' : 'Rivalenmiete verdoppelt.');
-}
-export function billFor(g: GameState, cityId = g.city.id) {
-  const saved = tycoonOf(g).bills[cityId];
-  if (saved && (saved.voteWeek >= g.week || saved.activeUntil >= g.week)) return saved;
-  const cycle = Math.floor((g.week - 1) / 12), kinds = ['cup', 'terrace', 'rent'] as const;
-  return { cityId, kind: kinds[cycle % 3] ?? 'cup', voteWeek: cycle * 12 + 4, support: .52, activeUntil: cycle * 12 + 12, passed: false };
-}
-export function lobbyBill(g: GameState, support: boolean): ActionResult {
-  const t = tycoonOf(g), b = billFor(g);
-  if (g.week >= b.voteWeek) return no(g, 'Die Abstimmung ist bereits abgeschlossen.');
-  const influence = t.dynasty.perks.includes('diplomat') ? .3125 : .25;
-  return changed(g, { ...t, bills: { ...t.bills, [g.city.id]: { ...b, support: Math.max(0, Math.min(1, b.support + (support ? influence : -influence))) } } }, 'Lobbyisten beeinflussen die bevorstehende Abstimmung.', 50000);
 }
 export function launchSpy(g: GameState, rivalId: string, objective: 'recipe' | 'contract' | 'finance'): ActionResult {
   const t = tycoonOf(g);
@@ -158,30 +125,9 @@ export function secureCompany(g: GameState): ActionResult {
   const t = tycoonOf(g); if (t.security) return no(g, 'IP- und Personal-Schutz ist schon aktiv.');
   return changed(g, { ...t, security: true }, 'Rezepturtresor und Personalbindung aktiv.', 20000);
 }
-export function certify(g: GameState, verified: boolean): ActionResult {
-  const t = tycoonOf(g); if (t.certification === (verified ? 'verified' : 'pseudo')) return no(g, 'Zertifizierung bereits aktiv.');
-  return changed(g, { ...t, certification: verified ? 'verified' : 'pseudo' }, verified ? 'Unabhängig geprüfte Bio-Zertifizierung erworben.' : 'Ungeprüftes Label aktiv – Enthüllungsrisiko.', verified ? 30000 : 3000);
-}
-export function microloan(g: GameState, farmId: string): ActionResult {
-  const t = tycoonOf(g);
-  if (!MASTER.plantations.some(f => f.id === farmId) || t.microloans.some(l => l.farmId === farmId)) return no(g, 'Kooperative nicht verfügbar.');
-  return changed(g, { ...t, microloans: [...t.microloans, { farmId, amount: 20000, dueWeek: g.week + 52 }] }, 'Agrar-Mikrokredit vergeben · Vorkaufsrecht und 3 % Jahreszins.', 20000);
-}
 export function setDividend(g: GameState, rate: number): ActionResult {
   if (!g.capitalMarkets.isPublic || ![0, .1, .25].includes(rate)) return no(g, 'Dividendenpolitik nur für börsennotierte Unternehmen.');
   return changed(g, { ...tycoonOf(g), dividendRate: rate }, 'Dividendenpolitik geändert.');
-}
-export function heritagePoints(g: GameState) {
-  const t = tycoonOf(g), cities = new Set(g.stores.map(s => s.cityId)).size;
-  return Math.max(0, Math.floor(calculateCompanyValuation(g) / 100000) + cities * 100 + esgScore(g) * 5 + t.patents.length * 100 + (g.progress?.achievements.length ?? 0) * 10);
-}
-export function dynastyExit(g: GameState, perks: HeritagePerk[]): ActionResult {
-  const allowed: HeritagePerk[] = ['diplomat', 'roast', 'property', 'tech'];
-  if (masterEra(g) < 4 || new Set(perks).size !== 2 || perks.some(p => !allowed.includes(p))) return no(g, 'Generationenwechsel ab Ära 4; genau zwei Vermächtnisse wählen.');
-  const fresh = createInitialState(), t = createTycoon(), old = tycoonOf(g);
-  t.dynasty = { generation: old.dynasty.generation + 1, points: old.dynasty.points + heritagePoints(g), perks };
-  t.beanpay.enabled = perks.includes('tech'); t.roastScore = perks.includes('roast') ? 89 : 84;
-  return ok({ ...fresh, tycoon: t }, 'Der Erbe beginnt mit zwei dauerhaften Dynastie-Vorteilen.');
 }
 
 /** Pre-simulation supply phase. Existing farm harvest is routed here, not paid a second time. */
@@ -199,7 +145,7 @@ export function prepareSupply(state: GameState): GameState {
   t.cargo = t.cargo.map(c => {
     if (c.arrival !== state.week + 1) return c;
     if (c.mode === 'sea' && hash(`${c.id}-${c.arrival}-port`) % 13 === 0) { t.news.push(`Hafenkrise: ${c.origin} verspätet sich um eine Woche.`); return { ...c, arrival: c.arrival + 1 }; }
-    return { ...c, cost: money(c.cost + (t.dynasty.perks.includes('diplomat') ? 0 : c.kg * .15)) };
+    return { ...c, cost: money(c.cost + c.kg * .15) };
   });
   const arriving = t.cargo.filter(c => c.arrival <= state.week + 1);
   let total = roastery.rawBeanStockKg, score = t.inventoryScore;
@@ -215,7 +161,7 @@ export function prepareSupply(state: GameState): GameState {
   const a = state.market.beanVarieties.find(b => b.id === blend.beanA), b = state.market.beanVarieties.find(b => b.id === blend.beanB);
   const blendReady = a && b && roastery.beanLots.some(l => l.beanId === a.id && l.quantityKg > 0) && roastery.beanLots.some(l => l.beanId === b.id && l.quantityKg > 0);
   const quality = blendReady ? a.qualityScore * blend.percentA / 100 + b.qualityScore * (1 - blend.percentA / 100) : score;
-  t.roastScore = money(Math.min(100, Math.max(80, quality + (t.dynasty.perks.includes('roast') ? 5 : 0))));
+  t.roastScore = money(Math.min(100, Math.max(80, quality)));
   return { ...state, tycoon: t, roastery };
 }
 
@@ -271,36 +217,12 @@ export function tycoonStage(state: GameState, prepared: GameState, r: { game: Ga
     const income = 2200 + hash(`${p.id}-${g.week}`) % 1200; revenue += income; cost += 650; channels.popups += income;
     g.brandReputation = Math.min(100, g.brandReputation + .2); return { ...p, revenue: income };
   });
-  const bp = t.beanpay;
-  if (bp.enabled || g.world.appTier > 0) {
-    bp.enabled = true;
-    const guests = g.stores.reduce((n, s) => n + s.customersServedLastWeek, 0), newUsers = Math.round(guests * .025 * (bp.bonusUntil >= g.week ? 1.5 : 1));
-    bp.users += newUsers;
-    const target = bp.users * 32.5, change = money((target - bp.balance) * .2), oldBalance = bp.balance;
-    bp.balance = money(Math.max(0, bp.balance + change)); financing += bp.balance - oldBalance;
-    bp.interest = money(Math.min(bp.balance * bp.reserve, Math.max(0, g.cash + financing - cost)) * bp.yieldAnnual / 52);
-    channels.treasury = bp.interest; revenue += bp.interest;
-    notes.push(`BeanPay: ${money(bp.balance - oldBalance).toLocaleString('de-DE')} € Kundenguthaben als Verbindlichkeit · ${bp.interest.toLocaleString('de-DE')} € Zinsen.`);
-  }
-  if (t.patentProject && t.patentProject.finishWeek <= g.week) { t.patents.push(t.patentProject.id); notes.push('Hardware-Patent erteilt.'); t.patentProject = null; }
-  if (t.licensePatents) { channels.patents = PATENTS.filter(p => t.patents.includes(p.id)).reduce((n, p) => n + p.income, 0); revenue += channels.patents; }
   for (const l of t.landlords) {
     if (l.evict && l.endWeek <= g.week) { delete g.world.occupants[l.districtId]; notes.push('Rivalenmietvertrag ausgelaufen: Standort freigegeben.'); }
     else if (g.world.occupants[l.districtId] === l.rivalId) { const rent = money((buildingById(l.districtId)?.weeklyRent ?? 0) * l.multiplier); revenue += rent; channels.rent += rent; }
   }
   for (const a of g.world.assets.filter(a => a.kind === 'plantation')) {
     if (t.farms[a.id]?.leased && g.week > a.startWeek + 1) cost += money((MASTER.plantations.find(p => p.id === a.id)?.purchasePrice ?? 0) * .08 / 52);
-  }
-  for (const city of g.cities.filter(c => c.id === g.city.id || g.stores.some(s => s.cityId === c.id))) {
-    const current = billFor({ ...g, tycoon: t }, city.id), previous = state.tycoon?.bills[city.id];
-    const b = current.voteWeek < g.week && !previous ? { ...current, passed: hash(`${city.id}-${current.voteWeek}`) % 100 / 100 < current.support } : current;
-    if (b.voteWeek === g.week) { b.passed = hash(`${city.id}-${b.voteWeek}`) % 100 / 100 < b.support; notes.push(`${city.name}: Stadtrat ${b.passed ? 'beschließt' : 'verwirft'} ${b.kind === 'cup' ? 'Einwegbecher-Abgabe' : b.kind === 'rent' ? 'Gewerbemietbremse' : 'Terrassen-Verordnung'}.`); }
-    t.bills[city.id] = b;
-    if (!b.passed || b.voteWeek > g.week || b.activeUntil < g.week) continue;
-    const cafes = g.stores.filter(s => s.cityId === city.id);
-    if (b.kind === 'cup' && !g.cafe?.research.done.includes('s1')) cost += cafes.reduce((n, s) => n + s.customersServedLastWeek * .2, 0);
-    if (b.kind === 'terrace') cost += cafes.filter(s => (g.cafe?.stores[s.id]?.gear.terrace ?? 0) > 0).reduce((n, s) => n + s.weeklyRevenue * .02, 0);
-    if (b.kind === 'rent') revenue += cafes.filter(s => !s.propertyBookValue).reduce((n, s) => n + (buildingById(s.districtId)?.weeklyRent ?? 0) * .1, 0);
   }
   const newlyOpened = state.stores.filter(s => s.openedAtWeek >= state.week - 1);
   if ((newlyOpened.length > 0 || g.week % 10 === 0) && g.week % 3 === 0) {
@@ -326,8 +248,6 @@ export function tycoonStage(state: GameState, prepared: GameState, r: { game: Ga
     else { t.intel = [...new Set([...t.intel, `${spy.rivalId}:${spy.objective}`])]; if (spy.objective === 'recipe') t.inventoryScore = Math.min(100, t.inventoryScore + 2); notes.push(`Operation abgeschlossen: ${spy.objective === 'recipe' ? 'Röstprofil verbessert' : spy.objective === 'contract' ? 'B2B-Konditionen aufgedeckt' : 'Übernahmechance aufgedeckt'}.`); }
   }
   t.spies = t.spies.filter(s => s.finishWeek > g.week);
-  if (t.certification === 'pseudo' && hash(`esg-${g.week}`) % 26 === 0) { t.scandalUntil = g.week + 8; g.brandReputation = Math.max(0, g.brandReputation - 15); cost += 15000; notes.push('Greenwashing enthüllt: Boykott und 15.000 € Strafe.'); }
-  t.microloans = t.microloans.filter(l => { if (l.dueWeek <= g.week) { financing += l.amount; revenue += l.amount * .03; notes.push('Agrar-Mikrokredit zurückgezahlt.'); return false; } return true; });
   const trend = trendAt(g.week), adopted = t.trends[trend.id];
   if (adopted && g.week <= trend.until) {
     const cups = Math.round(g.stores.reduce((n, s) => n + s.customersServedLastWeek, 0) * .06);
@@ -342,10 +262,6 @@ export function tycoonStage(state: GameState, prepared: GameState, r: { game: Ga
     return { week: g.week, storeId: s.id, stars, text: short ? 'Guter Kaffee, aber die Wartezeit ist zu lang.' : vibe >= 75 ? 'Die Einrichtung passt zum Viertel. Hier komme ich gerne wieder.' : t.roastScore >= 90 ? 'Außergewöhnliche Bohnen und tolle Aromen.' : 'Solider Kaffee. Die Atmosphäre könnte besser passen.', tag: short ? 'Wartezeit' : vibe >= 75 ? 'Vibe-Match' : 'Qualität' };
   }), ...t.reviews].slice(0, 60);
   if (isExec(g, 'cmo') && !t.trends[trend.id] && g.week <= trend.startWeek + 2 && g.cash - cost > 10000) { t.trends[trend.id] = { adoptedWeek: g.week, price: 7.5 }; cost += 600; notes.push('CMO nimmt den viralen Trend in die Saisonkarte auf.'); }
-  if (isExec(g, 'cto') && !t.patentProject && g.roastery.owned && masterEra(g) >= 2) {
-    const p = PATENTS.find(p => !t.patents.includes(p.id));
-    if (p && g.cash - cost > p.cost * 4) { t.patentProject = { id: p.id, finishWeek: g.week + Math.ceil(p.weeks * .7) }; cost += p.cost; notes.push(`CTO startet Hardware-Projekt „${p.name}“.`); }
-  }
   if (g.capitalMarkets.isPublic) cost += Math.max(0, g.lastReport?.netIncome ?? 0) * t.dividendRate;
   t.channels = channels; t.news = notes.slice(-30);
   const tax = money(Math.max(0, revenue - cost) * .15), net = money(revenue - cost - tax);

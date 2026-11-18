@@ -1,5 +1,4 @@
 import type { GameState, Store } from './types';
-import type { HeritagePerk } from '@/data/tycoonContent';
 import { FARM_METHODS, PROCESSES, TREND_DRINKS } from '@/data/tycoonContent';
 import { MASTER, buildingById } from '@/data/master';
 
@@ -11,29 +10,24 @@ export interface Review { week: number; storeId: string; stars: number; text: st
 export interface PopUp { id: string; cityId: string; hotspot: string; until: number; revenue: number }
 export interface RivalMove { rivalId: string; cityId: string; until: number; kind: 'price' | 'pr' | 'headhunt'; resolved: boolean }
 export interface Landlord { districtId: string; rivalId: string; value: number; multiplier: number; endWeek: number; evict: boolean }
-export interface Bill { cityId: string; kind: 'cup' | 'terrace' | 'rent'; voteWeek: number; support: number; activeUntil: number; passed: boolean }
 export interface Spy { rivalId: string; objective: 'recipe' | 'contract' | 'finance'; finishWeek: number }
 export interface TycoonState {
   farms: Record<string, FarmSetup>; cargo: Cargo[]; inventoryScore: number; roastScore: number; roastProfile: 'light' | 'medium' | 'dark';
   blend: { name: string; beanA: string; beanB: string; percentA: number }; auction: { week: number; beanId: string; score: number; kg: number; bid: number; bidder: string | null; settled: boolean } | null;
   franchises: Franchise[]; retail: RetailLine[]; reviews: Review[]; popups: PopUp[]; trends: Record<string, { adoptedWeek: number; price: number }>;
-  beanpay: { enabled: boolean; users: number; balance: number; reserve: number; yieldAnnual: number; bonusUntil: number; interest: number };
-  patents: string[]; patentProject: { id: string; finishWeek: number } | null; licensePatents: boolean;
-  rivals: RivalMove[]; landlords: Landlord[]; bills: Record<string, Bill>; spies: Spy[]; intel: string[]; security: boolean;
-  microloans: { farmId: string; amount: number; dueWeek: number }[]; certification: 'none' | 'verified' | 'pseudo'; scandalUntil: number;
-  dynasty: { generation: number; points: number; perks: HeritagePerk[] }; dividendRate: number;
-  channels: { franchise: number; b2b: number; retail: number; patents: number; popups: number; treasury: number; rent: number }; news: string[];
+  rivals: RivalMove[]; landlords: Landlord[]; spies: Spy[]; intel: string[]; security: boolean;
+  dividendRate: number;
+  channels: { franchise: number; b2b: number; retail: number; popups: number; rent: number }; news: string[];
 }
 export function createTycoon(): TycoonState {
   return { farms: {}, cargo: [], inventoryScore: 84, roastScore: 84, roastProfile: 'medium', blend: { name: 'Hausmischung', beanA: '', beanB: '', percentA: 70 }, auction: null,
-    franchises: [], retail: [], reviews: [], popups: [], trends: {}, beanpay: { enabled: false, users: 0, balance: 0, reserve: .6, yieldAnnual: .038, bonusUntil: 0, interest: 0 },
-    patents: [], patentProject: null, licensePatents: false, rivals: [], landlords: [], bills: {}, spies: [], intel: [], security: false, microloans: [], certification: 'none', scandalUntil: 0,
-    dynasty: { generation: 1, points: 0, perks: [] }, dividendRate: 0,
-    channels: { franchise: 0, b2b: 0, retail: 0, patents: 0, popups: 0, treasury: 0, rent: 0 }, news: [] };
+    franchises: [], retail: [], reviews: [], popups: [], trends: {},
+    rivals: [], landlords: [], spies: [], intel: [], security: false, dividendRate: 0,
+    channels: { franchise: 0, b2b: 0, retail: 0, popups: 0, rent: 0 }, news: [] };
 }
 export const tycoonOf = (g: GameState): TycoonState => {
   const base = createTycoon(), t = g.tycoon;
-  return t ? { ...base, ...t, beanpay: { ...base.beanpay, ...t.beanpay }, dynasty: { ...base.dynasty, ...t.dynasty }, channels: { ...base.channels, ...t.channels } } : base;
+  return t ? { ...base, ...t, channels: { ...base.channels, ...t.channels } } : base;
 };
 export const hash = (s: string) => [...s].reduce((n, c) => (Math.imul(n, 31) + c.charCodeAt(0)) >>> 0, 7);
 export function weatherAt(week: number, cityId = 'berlin') {
@@ -50,7 +44,7 @@ export function trendAt(week: number) {
 }
 export const masterEra = (g: GameState) => g.stores.length > 60 ? 4 : g.stores.length > 20 ? 3 : g.stores.length > 5 ? 2 : 1;
 export const franchiseReady = (g: GameState) => masterEra(g) >= 3 || g.stores.filter(s => s.weeklyRevenue > 0).length >= 15;
-export const propertyDiscount = (g: GameState) => tycoonOf(g).dynasty.perks.includes('property') ? .8 : 1;
+export const propertyDiscount = (_g: GameState) => 1;
 export function propertyMarketFactor(g: GameState, cityId: string) {
   if (!g.tycoon) return 1;
   const stylish = g.stores.filter(s => s.cityId === cityId && vibeScore(g, s) >= 70);
@@ -60,7 +54,7 @@ export function propertyMarketFactor(g: GameState, cityId: string) {
 }
 export function farmScore(g: GameState, id: string) {
   const p = MASTER.plantations.find(x => x.id === id), setup = tycoonOf(g).farms[id];
-  return Math.min(100, Math.max(80, (p?.cupQualityScore ?? 84) + (FARM_METHODS.find(m => m.id === setup?.method)?.quality ?? 0) + (PROCESSES.find(m => m.id === setup?.process)?.quality ?? 0) + (tycoonOf(g).dynasty.perks.includes('roast') ? 5 : 0)));
+  return Math.min(100, Math.max(80, (p?.cupQualityScore ?? 84) + (FARM_METHODS.find(m => m.id === setup?.method)?.quality ?? 0) + (PROCESSES.find(m => m.id === setup?.process)?.quality ?? 0)));
 }
 export function vibeScore(g: GameState, s: Store) {
   const b = buildingById(s.districtId), sc = g.cafe?.stores[s.id], style = Math.floor((sc?.design?.style ?? 0) / 4);
@@ -77,10 +71,10 @@ export function demandEffects(g: GameState, s: Store) {
   const review = t.reviews.find(r => r.storeId === s.id), rating = review ? .9 + review.stars * .04 : 1;
   const rivals = t.rivals.filter(r => !r.resolved && r.cityId === s.cityId && r.until >= g.week + 1);
   const profile = buildingById(s.districtId)?.clientele === 'creatives' && t.roastProfile === 'light' ? 1.06 : 1;
-  return { demand: temperature * (weather.rain ? .7 : 1) * hype * rating * (.85 + vibeScore(g, s) / 300) * profile * (rivals.some(r => r.kind === 'price') ? .88 : 1) * (t.scandalUntil >= g.week + 1 ? .65 : 1),
-    capacity: t.patents.includes('brew') ? 1 / .75 : 1, beans: t.patents.includes('energy') ? .75 : 1 };
+  return { demand: temperature * (weather.rain ? .7 : 1) * hype * rating * (.85 + vibeScore(g, s) / 300) * profile * (rivals.some(r => r.kind === 'price') ? .88 : 1),
+    capacity: 1, beans: 1 };
 }
 export function esgScore(g: GameState) {
   const t = tycoonOf(g);
-  return Math.min(100, Math.max(0, 20 + (t.certification === 'verified' ? 30 : 0) + Object.values(t.farms).reduce((n, f) => n + (FARM_METHODS.find(m => m.id === f.method)?.esg ?? 0), 0) + t.microloans.length * 5 + g.world.assets.filter(a => a.kind === 'csr').length * 5 - (t.scandalUntil >= g.week ? 40 : 0)));
+  return Math.min(100, Math.max(0, 20 + Object.values(t.farms).reduce((n, f) => n + (FARM_METHODS.find(m => m.id === f.method)?.esg ?? 0), 0) + g.world.assets.filter(a => a.kind === 'csr').length * 5));
 }

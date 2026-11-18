@@ -54,10 +54,6 @@ describe('Masterdaten und internationale Standorte', () => {
     const legacy = { ...r.state }; delete legacy.tycoon;
     expect(applyWorldSupply({...legacy,week:27}).roastery.rawBeanStockKg).toBe(17000);
   });
-  it('Preisabsicherung kostet 12000 und verbraucht nur die tatsächlich geschützte Menge', () => {
-    const r=catalogAction(createInitialState(),'future','future_arabica_santos_6m'); expect(r.state.cash).toBe(38000);
-    const next=applyWorldSupply(processTurn(r.state)); expect(next.world.assets[0]?.remainingKg).toBeLessThan(20000); expect(next.lastReport?.costBeans).toBeLessThan(processTurn(r.state).lastReport?.costBeans ?? 0);
-  });
   it('Konkurrenz expandiert über echte Wochen und lässt eigene Standorte unangetastet', () => {
     const g=createInitialState(); let next=g;
     for(let week=2;week<=20;week++) next=advanceWorld({...next,week});
