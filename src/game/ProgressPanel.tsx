@@ -3,6 +3,7 @@ import { useGame, eur } from './GameContext';
 import { ACHIEVEMENTS, RANK_LABEL, nextHint, progressOf, rankProgress, setSettings, type EventFrequency } from '@/engine/progression';
 import { RANKS, rk, openCityIds } from '@/engine/unlocks';
 import { PROGRESS_ICONS, rankArt } from './sheetArt';
+import { SaveSlots } from './SaveSlots';
 
 const TUTORIAL = ['Willkommen! Tippe auf der Karte auf deine erste Filiale, um sie dir anzusehen.', 'Tippe unten in der Mitte auf den runden „Weiter“-Knopf, um eine Woche zu spielen.', 'Erfülle die Wochenziele – jedes Ziel bringt Bonusgeld.', 'Baue deine Filiale aus: Jede der 7 Stufen bringt mehr Umsatz.', 'Neue Ränge schalten Städte, Stufen und Spielhebel frei.'];
 const fmt = (k: string, v: number) => k === 'valuation' || k === 'weeklyRevenue' ? eur(v) : Math.floor(v).toLocaleString('de-DE');
@@ -41,5 +42,6 @@ export function ProgressPanel() {
       <div className="flex flex-wrap gap-1"><Button size="sm" variant={p.settings.reduceMotion ? 'secondary' : 'ghost'} aria-pressed={p.settings.reduceMotion} onClick={() => set(g => setSettings(g, { reduceMotion: !p.settings.reduceMotion }))}>Ruhige Bewegungen</Button>
         <Button size="sm" variant={p.settings.highContrast ? 'secondary' : 'ghost'} aria-pressed={p.settings.highContrast} onClick={() => set(g => setSettings(g, { highContrast: !p.settings.highContrast }))}>Hoher Kontrast</Button></div>
     </section>
+    <SaveSlots />
   </div>;
 }
