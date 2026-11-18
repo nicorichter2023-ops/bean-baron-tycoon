@@ -49,7 +49,7 @@ function KartePage() {
       </div>
       <footer className="flex items-center gap-2 p-2">
         <div className="h-10 w-24">
-          <ResponsiveContainer><LineChart data={s.stocks[0].history.map((v) => ({ v }))}><Line dataKey="v" dot={false} stroke="currentColor" /></LineChart></ResponsiveContainer>
+          <ResponsiveContainer><LineChart data={(s.stocks[0]?.history ?? []).map((v) => ({ v }))}><Line dataKey="v" dot={false} stroke="currentColor" /></LineChart></ResponsiveContainer>
         </div>
         <GiSailboat /><GiFactory /><GiCog />
         <button className="ml-auto h-11 rounded-full bg-primary px-5 text-primary-foreground" onClick={week}>Nächste Woche</button>

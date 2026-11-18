@@ -63,7 +63,7 @@ export default function PixiCityMap({ onSelect }: { onSelect?: (lot: Lot) => voi
         if (pts.size === 1) { world.x += e.offsetX - p.x; world.y += e.offsetY - p.y; }
         p.x = e.offsetX; p.y = e.offsetY;
         if (pts.size === 2) {
-          const [a, b] = [...pts.values()]; const d = Math.hypot(a.x - b.x, a.y - b.y);
+          const [a, b] = [...pts.values()] as [{ x: number; y: number }, { x: number; y: number }]; const d = Math.hypot(a.x - b.x, a.y - b.y);
           if (lastDist) zoomAt(d / lastDist, (a.x + b.x) / 2, (a.y + b.y) / 2); lastDist = d;
         }
       });
