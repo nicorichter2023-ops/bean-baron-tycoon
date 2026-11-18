@@ -3,6 +3,7 @@ import { HubHeader } from '@/game/HubHeader';
 import { Banknote, Building, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { buyShares, repayLoan, sellShares, takeLoan } from "@/engine";
+import { LivingMarket } from '../LivingMarket';
 import { eur, useGame } from "../GameContext";
 import { Empty, Panel, Section } from "../ui";
 import { COMPANY_ARTWORK } from "../artwork";
@@ -22,6 +23,7 @@ export function FinanceTab() {
 
   return (
     <>
+      <LivingMarket />
       <Section title="Bankkredit">
         <Panel><div className="flex items-center gap-3 text-sm"><Banknote className="h-6 w-6 text-primary" />
           <div className="flex-1"><div className="font-semibold">Schulden {eur(state.debt)}</div><div className="text-xs text-muted-foreground">Zins {(effectiveInterestRate(state) * 100).toFixed(3)}% pro Woche · Rahmen bis {eur(Math.max(250000, state.companyValuation))}</div></div></div>

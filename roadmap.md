@@ -50,3 +50,14 @@
 - [ ] 2.0 Filialausstattung auf ein Modell (5 Editor-Slots) – zusammen mit dem neuen Café-Editor (Schritt 5+6)
 - [x] 2.0 Schritt 3: 3 Speicherplätze
 - [x] Externe Prompts Schritt 4 + 9 kopierfertig
+
+## Coffee Empire 2.0 Restumsetzung
+- [x] 1 Bildmängel: Kiosk-Hintergrund durchsichtig (Schild-Text bleibt als Ladenschild)
+- [x] 2 Weltereignisse + Börse im Wochenablauf, Bericht = Kasse
+- [x] 5a Weltmarkt-Ansicht mit Nachrichten, Aktienkauf/-verkauf, Venture
+- [ ] 3 Café-Editor 5 Ausbau-Bereiche
+- [ ] 4 Vier Säulen
+- [ ] 5b VC-Runden, PE-Übernahme, IPO bedienbar
+- [ ] 6 Animierter Wochenabschluss
+- [ ] 7 Audit 52/300 Wochen
+- [ ] 8 Feinschliff

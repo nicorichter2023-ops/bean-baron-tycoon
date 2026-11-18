@@ -6,7 +6,7 @@ import type { ManagementState } from './management';
 import type { StoreEquipment } from './equipment';
 import type { WorldState } from './world';
 import type { ProgressState } from './progression';
-export type SchemaVersion = 9;
+export type SchemaVersion = 10;
 
 export type ModuleId = 'core_cafe' | 'roastery' | 'b2b_trade' | 'capital_markets';
 export type Biome = 'european_classic' | 'modern_industrial' | 'asian_zen' | 'tropical_colonial';
@@ -244,6 +244,7 @@ export interface GameState {
   cafe?: import('./cafe').CafeState;
   empire?: import('./empire').EmpireState;
   tycoon?: import('./tycoonState').TycoonState;
+  living?: import('./v2').LivingState;
 }
 
 export interface ActionResult {
