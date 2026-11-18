@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { TransformWrapper, TransformComponent, type ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 import { MASTER, type MasterBuilding } from '@/data/master';
-import { CITY_SPOTS, cityMapImage } from '@/data/cityMaps';
+import { citySpots, cityMapImage } from '@/data/cityMaps';
 import { useGame } from './GameContext';
 import { Button } from '@/components/ui/button';
 import { tycoonOf, vibeScore } from '@/engine/tycoon';
@@ -28,7 +28,7 @@ export function PhotoCityMap({ cityId, cityName, airportCode, buildings, onBuild
     return () => window.removeEventListener('resize', reset);
   }, []);
   const src = cityMapImage(cityId);
-  const spots = CITY_SPOTS[cityId] ?? [];
+  const spots = citySpots(cityId);
   if (!src) { onError(); return null; }
   const airport = spots[30] ?? [12, 92];
   return <div className="nyc-photo-map" data-labels={labels} data-map-mode={mode}>

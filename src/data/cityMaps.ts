@@ -1,3 +1,4 @@
+// 2.0: regional painted portrait maps (emea/americas/apac/tropics) with shared land pins; legacy per-city maps below remain as reference.
 // Painted city maps (New-York style) and 30 land pin positions + airport (last entry), in % of the image.
 import nyc from '../assets/nyc-city-map.jpg';
 const files = import.meta.glob('../assets/maps/*.jpg', { eager: true, import: 'default' }) as Record<string, string>;
@@ -23,7 +24,22 @@ export const CITY_SPOTS: Record<string, [number, number][]> = {
   zuerich: [[33.1, 11.5], [90.5, 12.7], [49.9, 21.3], [79.9, 21.8], [94.7, 27.1], [50.8, 27.2], [65.2, 27.9], [51.9, 32.9], [76.8, 33.0], [92.8, 33.8], [6.5, 35.3], [52.0, 38.5], [9.7, 43.9], [20.7, 44.6], [49.3, 45.0], [92.3, 46.1], [24.7, 49.7], [63.0, 50.3], [9.9, 50.4], [94.8, 51.2], [9.9, 55.2], [38.9, 56.0], [22.8, 56.1], [61.8, 56.5], [77.0, 57.3], [61.7, 61.7], [20.9, 62.1], [36.7, 66.6], [76.7, 67.3], [89.9, 67.3], [77.4, 73.2]],
   new_york: [[66.8, 4.6], [79.5, 6.9], [93.1, 10.9], [48.2, 11.0], [62.8, 16.0], [91.5, 17.4], [80.8, 17.5], [62.5, 23.6], [78.4, 23.9], [64.4, 28.2], [21.1, 29.3], [63.1, 33.9], [63.2, 38.5], [22.3, 38.7], [92.8, 38.9], [50.8, 39.6], [33.5, 45.2], [48.7, 45.5], [77.9, 46.4], [23.1, 49.6], [37.6, 51.6], [76.5, 51.6], [61.1, 55.1], [94.4, 55.1], [78.5, 56.2], [23.0, 57.0], [38.3, 57.4], [37.7, 62.7], [48.9, 63.4], [79.7, 66.6], [7.4, 90.3]]
 } as Record<string, [number, number][]>;
+import emea from '../assets/v2/maps/emea.webp';
+import americas from '../assets/v2/maps/americas.webp';
+import apac from '../assets/v2/maps/apac.webp';
+import tropics from '../assets/v2/maps/tropics.webp';
+const REGION_MAP = { emea, americas, apac, tropics } as const;
+export const REGION_SPOTS: Record<keyof typeof REGION_MAP, [number, number][]> = {"emea": [[10.0, 7.0], [30.0, 7.0], [50.0, 7.0], [70.0, 7.0], [90.0, 7.0], [15.0, 19.2], [35.0, 19.2], [55.0, 19.2], [75.0, 19.2], [10.0, 31.4], [30.0, 31.4], [50.0, 31.4], [70.0, 31.4], [90.0, 31.4], [15.0, 43.6], [35.0, 43.6], [55.0, 43.6], [75.0, 43.6], [10.0, 55.8], [30.0, 55.8], [50.0, 55.8], [70.0, 55.8], [90.0, 55.8], [15.0, 68.0], [35.0, 68.0], [55.0, 68.0], [75.0, 68.0], [10.0, 80.2], [30.0, 80.2], [50.0, 80.2], [70.0, 80.2]], "americas": [[10.0, 7.0], [30.0, 7.0], [50.0, 7.0], [70.0, 7.0], [90.0, 7.0], [15.0, 19.2], [35.0, 19.2], [55.0, 19.2], [75.0, 19.2], [10.0, 31.4], [30.0, 31.4], [50.0, 31.4], [70.0, 31.4], [90.0, 31.4], [15.0, 43.6], [35.0, 43.6], [55.0, 43.6], [75.0, 43.6], [10.0, 55.8], [30.0, 55.8], [50.0, 55.8], [70.0, 55.8], [90.0, 55.8], [15.0, 68.0], [35.0, 68.0], [55.0, 68.0], [75.0, 68.0], [10.0, 80.2], [30.0, 80.2], [50.0, 80.2], [70.0, 80.2]], "apac": [[10.0, 7.0], [30.0, 7.0], [50.0, 7.0], [70.0, 7.0], [90.0, 7.0], [15.0, 19.2], [35.0, 19.2], [55.0, 19.2], [75.0, 19.2], [10.0, 31.4], [30.0, 31.4], [50.0, 31.4], [70.0, 31.4], [90.0, 31.4], [15.0, 43.6], [35.0, 43.6], [55.0, 43.6], [75.0, 43.6], [10.0, 55.8], [30.0, 55.8], [50.0, 55.8], [70.0, 55.8], [90.0, 55.8], [15.0, 68.0], [35.0, 68.0], [55.0, 68.0], [75.0, 68.0], [10.0, 80.2], [30.0, 80.2], [50.0, 80.2], [70.0, 80.2]], "tropics": [[10.0, 7.0], [30.0, 7.0], [50.0, 7.0], [70.0, 7.0], [15.0, 19.2], [35.0, 19.2], [55.0, 19.2], [75.0, 19.2], [10.0, 31.4], [30.0, 31.4], [50.0, 31.4], [70.0, 31.4], [90.0, 31.4], [15.0, 43.6], [35.0, 43.6], [55.0, 43.6], [75.0, 43.6], [10.0, 55.8], [30.0, 55.8], [50.0, 55.8], [70.0, 55.8], [90.0, 55.8], [15.0, 68.0], [35.0, 68.0], [55.0, 68.0], [75.0, 68.0], [10.0, 80.2], [30.0, 80.2], [50.0, 80.2], [70.0, 80.2], [90.0, 80.2]]} as Record<keyof typeof REGION_MAP, [number, number][]>;
+const CITY_REGION: Record<string, keyof typeof REGION_MAP> = {
+  new_york: 'americas', san_francisco: 'americas', chicago: 'americas', seattle: 'americas', sao_paulo: 'tropics', singapur: 'tropics',
+  tokio: 'apac', osaka: 'apac', seoul: 'apac', sydney: 'apac',
+};
+export function cityRegion(cityId: string): keyof typeof REGION_MAP { return CITY_REGION[cityId.replace(/-/g, '_')] ?? 'emea'; }
+export function citySpots(cityId: string): [number, number][] { return REGION_SPOTS[cityRegion(cityId)]; }
 export function cityMapImage(cityId: string): string | undefined {
+  return REGION_MAP[cityRegion(cityId)];
+}
+export function legacyCityMapImage(cityId: string): string | undefined {
   if (cityId === 'new_york') return nyc;
   return files[`../assets/maps/${cityId}.jpg`];
 }
