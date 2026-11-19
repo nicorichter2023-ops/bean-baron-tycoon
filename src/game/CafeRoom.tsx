@@ -18,7 +18,7 @@ export function CafeRoom({ store, design, gear, view = 'room' }: { store: Store;
   const d = design ?? designOf(cafe);
   const levels = gear ?? cafe.gear;
   const foundation = modularFoundation(sceneGroup(stage));
-  const modular = Boolean(foundation && !failed);
+  const modular = false; void foundation; void failed;
   const src = modular ? foundation : view === 'terrace' ? terraceScene(d.terrace, DESIGN_STYLES[d.style]?.mood) : roomScene(stage, d.style);
   const label = view === 'terrace' ? `Terrasse · ${TERRACE_STYLES[d.terrace]?.name}` : `${stg(stage - 1).label} · ${DESIGN_MOODS[DESIGN_STYLES[d.style]?.mood ?? 0]} · ${DESIGN_STYLES[d.style]?.name}`;
   return <div className={`cafe-room cafe-room-scene ${modular ? 'cafe-modular' : ''}`} data-stage={stage} data-view={view} aria-label={`${store.name} · ${label}`}>

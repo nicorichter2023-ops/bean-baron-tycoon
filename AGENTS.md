@@ -46,7 +46,7 @@ use the editor.
 - Store stages refine engine tiers (stages map onto tiers 1/2/3) instead of replacing them, so the base engine and old saves stay valid.
 - Café depth (menu, 5-level gear, decor, barista XP, 32 research nodes, rival pressure) lives in src/engine/cafe.ts + cafeContent.ts, persisted as GameState.cafe and applied in processProgressWeek; gear syncs legacy equipment upwards only so old effects and saves stay valid.
 - City maps: painted per-city images with precomputed land pin spots in src/data/cityMaps.ts; isometric scene is the fallback when an image fails.
-- Map pins and focus jumps open property sheets. CaféRoom layers fixed painted foundations and modularCafeArt equipment from saved gear or editor drafts; shared gearArt keeps purchase imagery aligned. Old painted rooms remain image-error fallbacks; checkout commits once through engine/editor.ts.
+- Map pins and focus jumps open property sheets. CaféRoom shows one complete painted scene per stage group and design style (same room, redrawn per change), no layered parts; checkout commits once through engine/editor.ts.
 - Empire layer (ventures, supply upgrades, chain actions, property/rival deals, auto campaigns, C-level automation) lives in src/engine/empire.ts as optional GameState.empire; weekly play runs through processEmpireWeek, which wraps processProgressWeek and patches the same accounting row so extra cash reconciles.
 - Research and marketing each have exactly one hub (ResearchHub, MarketingHub); MasterCatalog embeds subsets via `only`, and café views link there instead of duplicating panels.
 
