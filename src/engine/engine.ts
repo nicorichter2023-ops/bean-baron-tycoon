@@ -324,7 +324,7 @@ function processStore(
   const revenue = round2(served * Math.max(0, store.pricePerCup) * location.margin);
   const salaries = round2(staff.reduce((sum, e) => sum + Math.max(0, e.salaryWeekly), 0));
   const rent = round2(
-    Math.max(0, district.rentWeekly) * propertyMarketFactor(game, city.id) * (store.propertyBookValue ? 0 : buildingById(district.id) ? 1 : (GAME_CONFIG.TIER_RENT_FACTOR[tier] ?? 1)),
+    Math.max(0, district.rentWeekly) * propertyMarketFactor(game, city.id) * (store.propertyBookValue ? 0 : buildingById(district.id) ? Math.min(1, GAME_CONFIG.TIER_RENT_FACTOR[tier] ?? 1) : (GAME_CONFIG.TIER_RENT_FACTOR[tier] ?? 1)),
   );
 
   return {
@@ -692,7 +692,7 @@ function finalizeAction(state: GameState): GameState {
 }
 
 export function storeOpeningCost(district: District, tier: StoreTier): number {
-  return Math.round(GAME_CONFIG.STORE_OPENING_COST[tier] + district.rentWeekly * (buildingById(district.id) ? 1 : GAME_CONFIG.TIER_RENT_FACTOR[tier]) * 2);
+  return Math.round(GAME_CONFIG.STORE_OPENING_COST[tier] + district.rentWeekly * (buildingById(district.id) ? Math.min(1, GAME_CONFIG.TIER_RENT_FACTOR[tier]) : GAME_CONFIG.TIER_RENT_FACTOR[tier]) * 2);
 }
 
 export function openStore(

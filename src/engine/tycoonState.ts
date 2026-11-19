@@ -50,7 +50,7 @@ export function propertyMarketFactor(g: GameState, cityId: string) {
   const stylish = g.stores.filter(s => s.cityId === cityId && vibeScore(g, s) >= 70);
   if (stylish.length < 3) return 1;
   const age = Math.max(0, g.week - Math.max(...stylish.map(s => s.openedAtWeek)));
-  return 1 + Math.min(1.5, age / 260 * 1.5);
+  return 1 + Math.min(0.35, age / 260 * 0.35); // gentrification: capped so rising rent cannot outgrow flat café revenue
 }
 export function farmScore(g: GameState, id: string) {
   const p = MASTER.plantations.find(x => x.id === id), setup = tycoonOf(g).farms[id];

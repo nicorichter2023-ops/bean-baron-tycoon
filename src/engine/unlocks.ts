@@ -29,8 +29,8 @@ export const RANKS: { name: string; req: RankReq; maxStage: Stage; cities: numbe
   { name: 'Nationale Marke', req: { stores: 10, cities: 3, reputation: 55, valuation: 1_800_000, weeklyRevenue: 24_000 }, maxStage: 6, cities: 9, unlocks: ['Rösterei-Café', '+2 Städte'] },
   { name: 'Kaffeekonzern', req: { stores: 15, cities: 5, reputation: 62, valuation: 5_000_000, weeklyRevenue: 40_000 }, maxStage: 7, cities: 13, unlocks: ['Flagship', '+4 Städte'] },
   { name: 'Internationale Marke', req: { stores: 22, cities: 8, reputation: 70, valuation: 14_000_000, weeklyRevenue: 70_000 }, maxStage: 7, cities: 16, unlocks: ['+3 Städte'] },
-  { name: 'Weltmarke', req: { stores: 32, cities: 12, reputation: 78, valuation: 40_000_000, weeklyRevenue: 120_000 }, maxStage: 7, cities: 20, unlocks: ['Alle Städte'] },
-  { name: 'Kaffee-Imperium', req: { stores: 45, cities: 16, reputation: 86, valuation: 100_000_000, weeklyRevenue: 200_000 }, maxStage: 7, cities: 20, unlocks: ['Endziel erreicht'] },
+  { name: 'Weltmarke', req: { stores: 32, cities: 12, reputation: 78, valuation: 22_000_000, weeklyRevenue: 120_000 }, maxStage: 7, cities: 20, unlocks: ['Alle Städte'] },
+  { name: 'Kaffee-Imperium', req: { stores: 45, cities: 16, reputation: 86, valuation: 50_000_000, weeklyRevenue: 200_000 }, maxStage: 7, cities: 20, unlocks: ['Endziel erreicht'] },
 ];
 export const rk = (i: number) => RANKS[Math.max(0, Math.min(9, i))] ?? RANKS[0]!;
 export type LeverId = 'hours' | 'focus' | 'specialization' | 'loyalty' | 'beanContract';

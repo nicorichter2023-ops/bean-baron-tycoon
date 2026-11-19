@@ -4,7 +4,6 @@ import { Map, Ship, Building2, Briefcase } from 'lucide-react';
 import { HUD } from "@/game/sheetArt";
 import { GameProvider, useGame } from "@/game/GameContext";
 import { Button } from "@/components/ui/button";
-import { SceneView, type Place } from "@/game/SceneView";
 import { TopBar, NextWeekButton } from "@/game/TopBar";
 import { MapTab } from "@/game/tabs/MapTab";
 import { EventDialog } from "@/game/EventDialog";
@@ -64,7 +63,6 @@ function Game() {
 function GameWorld() {
   const { loaded } = useGame();
   const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("map");
-  const [place, setPlace] = useState<Place>('cafe');
   const [section, setSection] = useState('city');
   const [progressOpen, setProgressOpen] = useState(false);
   const [splash, setSplash] = useState(true);
@@ -100,7 +98,7 @@ function GameWorld() {
         <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card/95 backdrop-blur pb-[env(safe-area-inset-bottom)]">
           <div className="mx-auto grid max-w-3xl grid-cols-5">
             {TABS.map((t, i) => (<Fragment key={t.id}>{i === 2 && <NextWeekButton />}
-              <Button variant="ghost" aria-label={t.label} aria-current={tab === t.id ? 'page' : undefined} onClick={() => { setTab(t.id); setSection(SECTIONS[t.id][0][0]); setPlace('cafe'); window.scrollTo(0, 0); }} className={`nav-tab flex h-16 flex-col items-center gap-1 py-2.5 text-[11px] transition ${tab === t.id ? "text-primary" : "text-muted-foreground"}`}>
+              <Button variant="ghost" aria-label={t.label} aria-current={tab === t.id ? 'page' : undefined} onClick={() => { setTab(t.id); setSection(SECTIONS[t.id][0][0]); window.scrollTo(0, 0); }} className={`nav-tab flex h-16 flex-col items-center gap-1 py-2.5 text-[11px] transition ${tab === t.id ? "text-primary" : "text-muted-foreground"}`}>
                 <><t.icon className="h-6 w-6" />{t.label}</>
               </Button></Fragment>
             ))}

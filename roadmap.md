@@ -27,7 +27,8 @@
 - [x] 12 Getränke/10 Snacks, Barista-XP, 32 Forschungsziele, Ausstattung 5 Stufen, Rivalen-Eskalation
 - [x] Bedienung vereinfachen, Balance 300 Wochen
 
-- [ ] Endgame-Feinbalance aller 10 Ränge – benötigt repräsentative aktive Spielstrategie und gewünschtes Tempo; geprüfter vorsichtiger Ausbau erreicht Rang 3 nach 300 Wochen
+- [x] Endgame-Feinbalance: Kiosk-Miete in großen Gebäuden halbiert, Gentrifizierung gedeckelt, Rang 9/10 angepasst; ambitionierter Spieler erreicht Rang 10 in Woche ~241
+- [x] Aufräumen: ~11 MB alte Karten/Raumbilder, modularer Editor, ungenutzte Szenenansicht entfernt; Gesamtbewertung farbig
 - [x] Karte randlos, Kontextfenster für Frei/Rivalen, Goldsterne, gemalte Räume je Stufe (7) mit Editor-Ebenen
 - [x] Gemeinsame Café-Schublade für Karte, Filialliste, Menü und Bewertungen; 48 Raumdesigns und neue Konzern-Illustrationen integriert
 - [x] Gesammelte Kartenfehler: grauen Rand verhindern, alte eigene Standorte auf der Karte sichtbar machen, Frei/Rivalen-Kontext prüfen

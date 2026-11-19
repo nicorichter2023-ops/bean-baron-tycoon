@@ -58,3 +58,4 @@ use the editor.
 - Coffee Empire 2.0 content lives in src/data/v2; the UI calls only simulateWeek in src/engine/week.ts, which runs base/progress/empire/tycoon stages linearly (process*Week wrappers remain only for tests); saves with another schemaVersion are discarded (clean 2.0 start, no migrations).
 - v2 world events/market run last in simulateWeek (livingStage, GameState.living), booking into the same report row.
 - Browser feedback is opt-in in game/feedback.ts; newGame resets both state stores. Offline uses generateSW and game/offline.ts guards, so previews stay uncached.
+- Kiosks pay tier-scaled master-building rent; gentrification is capped (endgame-pacing test guards rank 10).

@@ -28,7 +28,7 @@ describe('Masterdaten und internationale Standorte', () => {
   });
   it('Paris-01 hat 12200 Wochenmiete und 7550000 Immobilienpreis', () => {
     const g={...createInitialState(),cash:10000000}, d=MASTER_CITIES.find(c=>c.id==='paris')?.districts[0]; if(!d) throw Error('Standort fehlt');
-    expect(storeOpeningCost(d,1)).toBe(36400);
+    expect(storeOpeningCost(d,1)).toBe(24200);
     const next=openStore(g,'paris','paris-01',1,true).state; expect(next.cash).toBe(2438000); expect(next.stores.at(-1)?.propertyBookValue).toBe(7550000);
     expect(balanceSheet(next).stores-balanceSheet(g).stores).toBe(7588000);
   });

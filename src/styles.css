@@ -758,19 +758,6 @@ html[data-contrast="high"] { --muted-foreground: var(--foreground); --border: va
 .editor-levels small { display: block; color: var(--muted-foreground); font-size: .65rem; }
 .editor-level-number { width: 24px; flex: none; font-weight: 800; color: var(--primary); }
 .cafe-scene-canvas { position: absolute; inset: 0; }
-.cafe-modular .cafe-scene-canvas { inset: auto; width: min(100%, calc(min(30dvh, 300px) * 4 / 3)); aspect-ratio: 4 / 3; top: 50%; left: 50%; transform: translate(-50%, -50%); }
-.cafe-modular .cafe-photo-title { max-width: calc(100% - 16px); white-space: normal; font-size: .65rem; line-height: 1.25; }
-.cafe-detail-scene .cafe-modular .cafe-scene-canvas { width: 100%; }
-.cafe-modular .room-base { transform: none; filter: none; object-fit: contain; }
-.cafe-part { position: absolute; object-fit: contain; height: auto; pointer-events: none; }
-.cafe-part-espresso { width: 15%; left: 36%; bottom: 53%; z-index: 3; }
-.cafe-part-grinder { width: 6%; left: 30%; bottom: 48%; z-index: 4; }
-.cafe-part-vitrine { width: 14%; left: 15%; bottom: 45%; z-index: 5; }
-.cafe-part-seating { width: 27%; left: 54%; bottom: 18%; z-index: 6; }
-.cafe-part-art { width: 8%; left: 60%; top: 23%; z-index: 1; }
-.cafe-part-terrace { width: 23%; left: 32%; bottom: 8%; z-index: 7; }
-.cafe-modular[data-view="terrace"] .cafe-part-terrace { width: 35%; left: 30%; bottom: 5%; }
-@media (prefers-reduced-motion: no-preference) { .cafe-part { animation: fade-in .25s ease-out; } }
 .market-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .5rem; }
 .market-actions button { white-space: normal; height: auto; min-height: 44px; }
 .week-receipt { position: fixed; z-index: 45; bottom: calc(5.5rem + env(safe-area-inset-bottom)); left: 50%; translate: -50% 0; width: min(340px, calc(100% - 24px)); background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: .75rem 1rem; display: grid; grid-template-columns: 1fr auto; gap: .25rem; animation: receipt-in .3s ease-out both; font-size: .8rem; }
@@ -1006,3 +993,8 @@ html[data-contrast="high"] { --muted-foreground: var(--foreground); --border: va
 .applicant-stats div { display:flex; justify-content:space-between; }
 .applicant-stats dt { color:var(--muted-foreground); }
 .applicant-stats dd { font-weight:700; }
+
+.score-badge { display: inline-block; padding: 0 .4em; border-radius: .4em; font-weight: 800; color: var(--primary-foreground); }
+.score-good { background: var(--success, oklch(0.62 0.15 150)); }
+.score-ok { background: var(--system-gold, oklch(0.8 0.17 75)); color: oklch(0.25 0.03 60); }
+.score-bad { background: var(--destructive); }

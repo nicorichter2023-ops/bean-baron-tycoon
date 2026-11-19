@@ -39,7 +39,7 @@ export function CafeDetail({ store, address, onClose }: { store: Store; address:
     {edit && <CafeEditor store={store} onClose={() => setEdit(false)} />}
     <div className="cafe-detail-body">
       <div className="cafe-detail-scene"><CafeRoom store={store} /></div>
-      <dl className="cafe-kpis"><div><dt>Umsatz</dt><dd>{eur(store.weeklyRevenue)}</dd></div><div><dt>Gäste</dt><dd>{store.customersServedLastWeek}</dd></div><div><dt>Bewertung</dt><dd><Stars v={r.overall} /> {r.overall.toFixed(1)}</dd></div></dl>
+      <dl className="cafe-kpis"><div><dt>Umsatz</dt><dd>{eur(store.weeklyRevenue)}</dd></div><div><dt>Gäste</dt><dd>{store.customersServedLastWeek}</dd></div><div><dt>Bewertung</dt><dd><Stars v={r.overall} /> <span className={`score-badge ${r.overall >= 4 ? 'score-good' : r.overall >= 3 ? 'score-ok' : 'score-bad'}`}>{r.overall.toFixed(1)}</span></dd></div></dl>
       <p className="cafe-detail-greeting">„{greeting}“<small>{boss?.name ?? 'Kein Personal'}</small></p>
       {next && <Button className="cafe-next-upgrade" onClick={() => { if (next.run) perform(next.run); else setEdit(true); }}>Nächstes Upgrade: {next.label}</Button>}
       <nav className="cafe-detail-tabs" style={{ position: 'static' }}>{tabs.map(([id,label]) => <Button key={id} variant={tab === id ? 'secondary' : 'ghost'} aria-pressed={tab === id} onClick={() => setTab(id)}><span>{label}</span></Button>)}</nav>
@@ -52,7 +52,7 @@ export function CafeDetail({ store, address, onClose }: { store: Store; address:
             : propertyPrice(store.districtId) > 0 && <Button className="min-h-11 w-full" disabled={state.cash < propertyPrice(store.districtId)} onClick={() => perform(g => buyProperty(g, store.id))}>Gebäude kaufen · {eur(propertyPrice(store.districtId))} (keine Miete mehr)</Button>}</>}
       </section>
       <section className="cafe-reviews"><h2>KUNDENBEWERTUNGEN</h2><div className="cafe-reviews-grid">
-        <div><strong className={`text-4xl ${r.overall >= 4 ? 'text-success' : r.overall >= 3 ? 'text-[var(--system-gold)]' : 'text-destructive'}`}>{r.overall.toFixed(1)}</strong><Stars v={r.overall} /><small>{r.count} Bewertungen</small></div>
+        <div><strong className={`score-badge text-4xl ${r.overall >= 4 ? 'score-good' : r.overall >= 3 ? 'score-ok' : 'score-bad'}`}>{r.overall.toFixed(1)}</strong><Stars v={r.overall} /><small>{r.count} Bewertungen</small></div>
         <dl>{([['Preis',r.price],['Produkt',r.product],['Service',r.service],['Atmosphäre',r.atmosphere]] as const).map(([l,v]) => <div key={l}><dt>{l}</dt><dd><Stars v={v} /> {v.toFixed(1)}</dd></div>)}</dl>
       </div>
       <div className="cafe-comments">{cafeComments(store).map((c,i) => <article key={i}><Stars v={c.stars} /><p>„{c.text}“</p></article>)}</div></section>
