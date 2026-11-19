@@ -1,3 +1,4 @@
+import { modularGearArt } from './modularCafeArt';
 // Individually cut images from the 10 uploaded sheets under /public/assets/sheets/<sheet>/<index>.webp.
 export type SheetName = 'districts' | 'traffic' | 'interior' | 'menu' | 'storefronts' | 'beans' | 'hud' | 'partners' | 'people';
 export const SHEET_COUNTS: Record<SheetName, number> = { districts: 44, traffic: 49, interior: 38, menu: 46, storefronts: 44, beans: 40, hud: 47, partners: 39, people: 34 };
@@ -83,6 +84,8 @@ export const decorArt = (stage: number) => prog('store-stages', [13, 14, 15, 16]
 
 /** 5-level gear art from the equipment-tiers sheet (espresso 1-5, grinder 6-9, vitrine 10-13, terrace 14-16; seating from store-stages 8-12). */
 export const gearArt = (c: string, level: number) => {
+  const modular = modularGearArt(c, level);
+  if (modular) return modular;
   const l = Math.max(0, Math.min(4, level));
   if (c === 'espresso') return prog('equipment-tiers', 1 + l);
   if (c === 'grinder') return prog('equipment-tiers', 6 + Math.min(3, l));

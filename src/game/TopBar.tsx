@@ -59,8 +59,8 @@ export function TopBar({ onProgress }: { onProgress?: () => void }) {
 export function NextWeekButton() {
   const { state, nextWeek } = useGame();
   const pending = Boolean(state.pendingEvent);
-  return <button type="button" aria-label={pending ? 'Erst Ereignis entscheiden' : 'Nächste Woche starten'} onClick={nextWeek} disabled={pending} className="next-week-dock" data-pending={pending}>
+  return <Button variant="ghost" type="button" aria-label={pending ? 'Erst Ereignis entscheiden' : 'Nächste Woche starten'} onClick={nextWeek} disabled={pending} className="next-week-dock" data-pending={pending}>
     <span className="next-week-orb">{pending ? <Zap aria-hidden /> : <FastForward aria-hidden />}</span>
     <span className="next-week-label">{pending ? 'Ereignis' : 'Weiter'}</span>
-  </button>;
+  </Button>;
 }

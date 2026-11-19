@@ -46,7 +46,7 @@
 - [x] 2.0 Schritt 2b-2: Wochenberechnung linear (4 Stufen in week.ts), gestrichene Menüs entfernt
 - [x] 2.0 Schritt 2b-3: Restlogik von BeanPay, Patenten, Stadtrat, Bio-Siegel, Mikrokrediten, Dynastie und Futures entfernt
 - [x] 2.0 13 Master-Szenen (4 Titelbilder, 4 Café-Stufen, Terrasse, 4 Regionalkarten) gemalt; Titel+Räume eingebaut
-- [ ] 2.0 Regionalkarten mit neu berechneten Standort-Pins einbauen
+- [x] 2.0 Regionalkarten mit neu berechneten Standort-Pins eingebaut (gemeinsame Pins je Region)
 - [ ] 2.0 Filialausstattung auf ein Modell (5 Editor-Slots) – zusammen mit dem neuen Café-Editor (Schritt 5+6)
 - [x] 2.0 Schritt 3: 3 Speicherplätze
 - [x] Externe Prompts Schritt 4 + 9 kopierfertig
@@ -55,9 +55,12 @@
 - [x] 1 Bildmängel: Kiosk-Hintergrund durchsichtig (Schild-Text bleibt als Ladenschild)
 - [x] 2 Weltereignisse + Börse im Wochenablauf, Bericht = Kasse
 - [x] 5a Weltmarkt-Ansicht mit Nachrichten, Aktienkauf/-verkauf, Venture
-- [ ] 3 Café-Editor 5 Ausbau-Bereiche
-- [ ] 4 Vier Säulen
-- [ ] 5b VC-Runden, PE-Übernahme, IPO bedienbar
-- [ ] 6 Animierter Wochenabschluss
-- [ ] 7 Audit 52/300 Wochen
-- [ ] 8 Feinschliff
+- [x] 3a Café-Editor: fünf vorhandene Ausbaubereiche, atomarer Kauf, sichtbare Entwurfsvorschau
+- [ ] 3b Vollständige Wand-/Licht-/Designvarianten und v2-Editor-Datenmodell – weitere Bildfreigabe erforderlich; bestehende Preise unverändert
+- [x] 4 Vier Säulen, zentrale Ausbauaktion
+- [x] 5b VC-Nachfinanzierung, PE-Übernahme/Verkauf und IPO bedienbar; Kauf/Verkauf/Venture im Browser, PE/IPO in Tests geprüft
+- [x] 6 Animierter, überspringbarer Wochenabschluss (Gäste, Umsatz/Gewinn, Kasse/Nachrichten)
+- [x] 7 Audit: 144 Tests; echte 52/300 Wochen, Kasse und Bericht stimmen überein (69.464 €/167.780 € ohne aktive Expansion)
+- [x] 8a Handy/Desktop: Vorschau, Kauf, Wochenwechsel, kein horizontaler Überlauf; Offline-Regeln getestet
+- [ ] 8b Offline-Neuladen der veröffentlichten PWA – benötigt Veröffentlichung, nicht im Entwicklungsmodus prüfbar
+- [x] Modularer Café-Editor: vier freigestellte Grundlagen, 5 Maschinen/Mühlen/Sitzbereiche/Vitrinen und 4 Terrassen eingebunden

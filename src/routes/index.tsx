@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect, useRef, Fragment } from "react";
-import { Map, Coffee, Ship, Building2, Briefcase } from 'lucide-react';
+import { Map, Ship, Building2, Briefcase } from 'lucide-react';
 import { HUD } from "@/game/sheetArt";
 import { GameProvider, useGame } from "@/game/GameContext";
 import { Button } from "@/components/ui/button";
@@ -45,18 +45,16 @@ export const Route = createFileRoute("/")({
 });
 
 const TABS = [
-  { id: "map", label: "Stadt", icon: Map },
-  { id: "empire", label: "Café", icon: Coffee },
-  { id: "supply", label: "Supply", icon: Ship },
-  { id: "expansion", label: "Expansion", icon: Building2 },
-  { id: "finance", label: "Finanzen/HQ", icon: Briefcase },
+  { id: "map", label: "Cafés", icon: Map },
+  { id: "supply", label: "Bohnen", icon: Ship },
+  { id: "expansion", label: "Konzern", icon: Building2 },
+  { id: "finance", label: "HQ", icon: Briefcase },
 ] as const;
 const SECTIONS = {
-  map: [['city', 'Stadtkarte'], ['airport', 'Reisen'], ['rivals', 'Rivalen & Immobilien']],
-  empire: [['stores', 'Filialen'], ['menu', 'Menü & Bewertungen'], ['marketing', 'Marketing']],
+  map: [['city', 'Stadtkarte'], ['stores', 'Filialen'], ['menu', 'Menü'], ['marketing', 'Marketing'], ['airport', 'Reisen'], ['rivals', 'Rivalen & Immobilien']],
   supply: [['roastery', 'Rösterei'], ['market', 'Bohnenmarkt'], ['farms', 'Fincas & Fracht']],
-  expansion: [['chain', 'Kette'], ['franchise', 'Franchise'], ['b2b', 'Enterprise'], ['retail', 'Supermärkte']],
-  finance: [['accounting', 'Berichte'], ['bank', 'Bank'], ['stocks', 'Aktien & Startups'], ['hq', 'Leitung'], ['research', 'Forschung'], ['progress', 'Fortschritt']],
+  expansion: [['stocks', 'Weltmarkt'], ['startups', 'Venture-Runden'], ['chain', 'Kette'], ['franchise', 'Franchise'], ['b2b', 'Enterprise'], ['retail', 'Supermärkte']],
+  finance: [['accounting', 'Berichte'], ['bank', 'Bank'], ['hq', 'Leitung'], ['research', 'Forschung'], ['ipo', 'Börsengang'], ['progress', 'Fortschritt']],
 } as const;
 
 function Game() {
@@ -82,7 +80,7 @@ function GameWorld() {
     : section === 'progress' ? <ProgressPanel /> : section === 'hq' ? <><HQPanel /><div className="mt-5"><SectionFilter.Provider value={['Holding', 'Letzte Woche']}><EmpireTab /></SectionFilter.Provider><MasterCatalog only={['tenant']} embedded title="Büromieter" /></div><ExecEffects /><div className="mt-5 space-y-3"><MasterCatalog only={['training']} embedded title="Weiterbildung" /></div></>
     : section === 'accounting' ? <AccountingPanel />
     : section === 'research' ? <><ResearchHub /><div className="mt-5"><LabPanel /></div></>
-    : section === 'marketing' ? <MarketingHub /> : section === 'startups' ? <VentureHub /> : section === 'stocks' ? <><SectionFilter.Provider value={['Aktienmarkt']}><FinanceTab /></SectionFilter.Provider><div className="mt-5"><VentureHub /></div></> : section === 'bank' ? <><SectionFilter.Provider value={['Bankkredit']}><FinanceTab /></SectionFilter.Provider></>
+    : section === 'marketing' ? <MarketingHub /> : section === 'startups' ? <VentureHub /> : section === 'stocks' ? <SectionFilter.Provider value={['Aktienmarkt']}><FinanceTab /></SectionFilter.Provider> : section === 'ipo' ? <MasterCatalog only={['underwriter']} embedded title="Dein Börsengang" /> : section === 'bank' ? <SectionFilter.Provider value={['Bankkredit']}><FinanceTab /></SectionFilter.Provider>
     : section === 'chain' || section === 'franchise' || section === 'b2b' || section === 'retail' ? <OmnichannelHub area={section} />
     : section === 'roastery' || section === 'farms' || section === 'market' ? <LogisticsMap area={section === 'market' ? 'beans' : section} />
     : <SectionFilter.Provider value={section === 'stores' ? ['Filialen'] : section === 'holding' ? ['Holding', 'Letzte Woche'] : section === 'bank' ? ['Bankkredit'] : ['Aktienmarkt']}>
@@ -99,7 +97,7 @@ function GameWorld() {
         <Sheet open={progressOpen} onOpenChange={setProgressOpen}><SheetContent side="bottom" className="max-h-[85dvh] overflow-y-auto px-0"><SheetHeader className="px-3"><SheetTitle>Fortschritt</SheetTitle></SheetHeader><ProgressPanel /></SheetContent></Sheet>
         <main className="game-main pb-28 pt-[calc(6.25rem+env(safe-area-inset-top))]">{loaded ? <><div className="management-switch" aria-label="Managementbereiche">{SECTIONS[tab].map(([id, label]) => <Button key={id} variant={section === id ? 'secondary' : 'ghost'} aria-pressed={section === id} onClick={() => setSection(id)}>{label}</Button>)}</div><div className="management-content" key={section} onTouchStart={swipeStart} onTouchEnd={e => swipeEnd(e, SECTIONS[tab].map(([id]) => id))}>{content}</div></> : <div className="loading-game">Bean Baron Tycoon …</div>}</main>
         <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card/95 backdrop-blur pb-[env(safe-area-inset-bottom)]">
-          <div className="mx-auto grid max-w-3xl grid-cols-6">
+          <div className="mx-auto grid max-w-3xl grid-cols-5">
             {TABS.map((t, i) => (<Fragment key={t.id}>{i === 2 && <NextWeekButton />}
               <Button variant="ghost" aria-label={t.label} aria-current={tab === t.id ? 'page' : undefined} onClick={() => { setTab(t.id); setSection(SECTIONS[t.id][0][0]); setPlace('cafe'); window.scrollTo(0, 0); }} className={`nav-tab flex h-16 flex-col items-center gap-1 py-2.5 text-[11px] transition ${tab === t.id ? "text-primary" : "text-muted-foreground"}`}>
                 <><t.icon className="h-6 w-6" />{t.label}</>
