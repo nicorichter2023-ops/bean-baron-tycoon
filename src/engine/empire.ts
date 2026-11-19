@@ -223,8 +223,14 @@ export function sellProperty(g: GameState, storeId: string): ActionResult {
 /** Open a store and give it a first barista so it earns from week one. */
 export function openStaffedStore(g: GameState, cityId: string, districtId: string, tier: StoreTier, purchase = false): ActionResult {
   const r = openStore(g, cityId, districtId, tier, purchase); if (!r.ok) return r;
-  const s = r.state.stores.at(-1)!; const h = hireEmployee(r.state, s.id, 'barista');
-  return h.ok ? { ...h, reason: r.reason } : r;
+  const s = r.state.stores.at(-1); if (!s) return no(g, 'Filiale konnte nicht eröffnet werden.');
+  const h = hireEmployee(r.state, s.id, 'barista');
+  return h.ok ? { ...h, reason: r.reason } : no(g, 'Nicht genug Geld für Eröffnung inklusive erstem Barista.');
+}
+/** Quote the very same atomic action; no presentation-side price or wage formula. */
+export function staffedOpeningCost(g: GameState, cityId: string, districtId: string, tier: StoreTier, purchase = false): number {
+  const quote = openStaffedStore({ ...g, cash: 1e12 }, cityId, districtId, tier, purchase);
+  return quote.ok ? Math.round((1e12 - quote.state.cash) * 100) / 100 : Infinity;
 }
 export const takeoverCost = (buildingId: string) => { const b = building(buildingId); return b ? Math.round(b.purchasePrice * 0.25 + b.weeklyRent * 26) : 0; };
 export function takeoverRivalSite(g: GameState, buildingId: string): ActionResult {

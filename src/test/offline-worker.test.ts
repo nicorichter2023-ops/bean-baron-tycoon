@@ -1,37 +1,29 @@
-import { readFileSync } from 'node:fs';
-import { runInNewContext } from 'node:vm';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import { isOfflinePreview } from '@/game/offline';
+import { offlineRuntimeCaching } from '@/game/offlinePolicy';
 
-function worker() {
-  const listeners: Record<string, (event: any) => void> = {};
-  const cache = { match: vi.fn(), put: vi.fn().mockResolvedValue(undefined) };
-  const fetch = vi.fn().mockResolvedValue({ ok: true, type: 'basic', clone: () => ({ cached: true }) });
-  runInNewContext(readFileSync('public/sw.js', 'utf8'), {
-    self: { location: { origin: 'https://coffee.example' }, addEventListener: (name: string, fn: (event: any) => void) => { listeners[name] = fn; } },
-    URL, Response, fetch, caches: { open: () => Promise.resolve(cache) },
-  });
-  return { listeners, cache, fetch };
-}
-function request(path: string, options: { mode?: string; method?: string; auth?: boolean } = {}) {
-  return { url: `https://coffee.example${path}`, method: options.method ?? 'GET', mode: options.mode ?? 'cors', headers: { has: () => options.auth ?? false } };
+function matches(path: string, mode = 'cors', auth = false, method = 'GET') {
+  const url = new URL(path, self.location.origin);
+  const request = { method, mode, headers: { has: () => auth } } as unknown as Request;
+  return offlineRuntimeCaching.filter(rule => rule.urlPattern({ request, url }));
 }
 describe('Öffentlicher Offline-Cache', () => {
-  it('speichert keine API-, authentifizierten oder schreibenden Anfragen', () => {
-    const { listeners } = worker();
-    for (const r of [request('/api/private'), request('/assets/image.webp', { auth: true }), request('/assets/image.webp', { method: 'POST' })]) {
-      const respondWith = vi.fn(); listeners['fetch']?.({ request: r, respondWith }); expect(respondWith).not.toHaveBeenCalled();
-    }
+  it('schließt API, OAuth, Authentifizierung, fremde Hosts und Schreibzugriffe aus', () => {
+    expect(matches('/api/private', 'navigate')).toHaveLength(0);
+    expect(matches('/~oauth', 'navigate')).toHaveLength(0);
+    expect(matches('/assets/image.webp', 'cors', true)).toHaveLength(0);
+    expect(matches('/assets/image.webp', 'cors', false, 'POST')).toHaveLength(0);
+    expect(matches('https://external.example/assets/image.webp')).toHaveLength(0);
   });
-  it('liefert ein bereits geladenes Bild ohne erneute Netzwerkanfrage', async () => {
-    const { listeners, cache, fetch } = worker(); cache.match.mockResolvedValue('cached-image');
-    let pending: Promise<unknown> | undefined;
-    listeners['fetch']?.({ request: request('/__l5e/assets-v1/test/cafe.webp'), respondWith: (p: Promise<unknown>) => { pending = p; } });
-    expect(await pending).toBe('cached-image'); expect(fetch).not.toHaveBeenCalled();
+  it('lädt HTML zuerst aus dem Netz und nur erfolgreiche Antworten in den Cache', () => {
+    expect(matches('/', 'navigate')[0]?.handler).toBe('NetworkFirst');
+    expect(matches('/', 'navigate')[0]?.options.cacheableResponse.statuses).toEqual([200]);
   });
-  it('liefert bei Offline-Navigation die gespeicherte Startseite', async () => {
-    const { listeners, cache, fetch } = worker(); fetch.mockRejectedValue(new Error('offline')); cache.match.mockImplementation((r: unknown) => Promise.resolve(r === '/' ? 'cached-start' : undefined));
-    let pending: Promise<unknown> | undefined;
-    listeners['fetch']?.({ request: request('/new', { mode: 'navigate' }), respondWith: (p: Promise<unknown>) => { pending = p; } });
-    expect(await pending).toBe('cached-start');
+  it('verwendet für unveränderliche Spielgrafiken CacheFirst', () => {
+    expect(matches('/__l5e/assets-v1/test/cafe.webp')[0]?.handler).toBe('CacheFirst');
+  });
+  it('erkennt alle Preview-Arten ohne veröffentlichte Domains auszuschließen', () => {
+    for (const host of ['localhost', 'id-preview--abc.lovable.app', 'preview-2--abc.gpt-eng.com', 'project--3f835c0c-f519-4545-8b81-19f76cadcc30-dev.lovable.app', 'app.lovableproject.com', 'beta.lovable.dev']) expect(isOfflinePreview(host)).toBe(true);
+    for (const host of ['bean-baron-tycoon.lovable.app', 'preview-v2--shop.example.com']) expect(isOfflinePreview(host)).toBe(false);
   });
 });

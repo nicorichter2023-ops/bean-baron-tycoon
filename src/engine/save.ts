@@ -42,8 +42,12 @@ export function slotSummaries(): SlotSummary[] {
   });
 }
 
-export const saveGame = (state: GameState, slot: SaveSlot = activeSlot()) =>
-  localStorage.setItem(slotKey(KEY, slot), JSON.stringify({ ...state, schemaVersion: GAME_CONFIG.SCHEMA_VERSION }));
+export function saveGame(state: GameState, slot: SaveSlot = activeSlot()): boolean {
+  try {
+    localStorage.setItem(slotKey(KEY, slot), JSON.stringify({ ...state, schemaVersion: GAME_CONFIG.SCHEMA_VERSION }));
+    return true;
+  } catch { return false; }
+}
 export const resetGame = (slot: SaveSlot = activeSlot()) => {
   localStorage.removeItem(slotKey(KEY, slot));
   localStorage.removeItem(slotKey("coffee-empire-expansion", slot));

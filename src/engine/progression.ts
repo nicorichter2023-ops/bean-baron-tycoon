@@ -18,7 +18,7 @@ export interface ProgressState {
   achievements: string[]; upgradesDone: number;
   beanContract: { price: number; untilWeek: number } | null;
   eventFrequency: EventFrequency; lastEventWeek: number; eventHistory: { id: string; week: number }[];
-  settings: { fontScale: 1 | 1.15 | 1.3; reduceMotion: boolean; highContrast: boolean };
+  settings: { fontScale: 1 | 1.15 | 1.3; reduceMotion: boolean; highContrast: boolean; sound?: boolean; haptics?: boolean };
   tutorialStep: number; extraCities: string[]; summary: WeekSummary | null;
 }
 const r2 = (n: number) => Math.round(n * 100) / 100;
@@ -42,7 +42,7 @@ export function metrics(g: GameState) {
     weeklyRevenue: g.stores.reduce((n, s) => n + s.weeklyRevenue, 0), guests: g.stores.reduce((n, s) => n + s.customersServedLastWeek, 0) };
 }
 export function rankProgress(g: GameState) {
-  const p = progressOf(g), next = rk(p.rank);
+  const p = progressOf(g), next = RANKS[p.rank];
   if (!next) return { next: null, parts: [], ratio: 1 };
   const m = metrics(g);
   const parts = (Object.keys(next.req) as (keyof typeof next.req)[]).filter(k => next.req[k] > 0).map(k => ({ key: k, have: m[k], need: next.req[k], ok: m[k] >= next.req[k] }));

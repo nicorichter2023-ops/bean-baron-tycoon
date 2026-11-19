@@ -17,8 +17,10 @@ export function WeekSummary() {
   useEffect(() => {
     if (!s || previousWeek.current === state.week) return;
     previousWeek.current = state.week;
-    setStep(0);
+    const reduced = progressOf(state).settings.reduceMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setStep(reduced ? 2 : 0);
     setPulse(true);
+    if (reduced) { const timer = setTimeout(() => setPulse(false), 1800); return () => clearTimeout(timer); }
     const interval = setInterval(() => setStep(n => Math.min(2, n + 1)), 1000);
     const timer = setTimeout(() => setPulse(false), 3400);
     return () => { clearInterval(interval); clearTimeout(timer); };

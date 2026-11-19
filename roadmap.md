@@ -1,4 +1,12 @@
 # Roadmap
+## Technischer Abschluss (ohne neue Bilder)
+- [x] Wirtschaft: aktive 52/300 Wochen, Rang-10-Endgrenze, atomare Eröffnung mit exaktem Barista-Preis; bestehende Mieten/Rang-Anforderungen erhalten
+- [x] Spielstände: Speicherfehler sichtbar, vollständiger Neustart inklusive Labor/Marketing, drei Plätze im Browser geprüft
+- [x] Bedienung: abschaltbare Töne/Haptik, 21 Unterbereiche am Handy, Kauf/Kredit/Tilgung/Woche und Desktop geprüft
+- [x] PWA: generateSW, NetworkFirst-HTML, öffentliche Assets, Preview-Sperren und sw=off getestet
+- [ ] PWA: neue veröffentlichte Version offline neu laden und Update prüfen – benötigt Veröffentlichung dieser Änderungen
+- [x] Gesamttests: 151/151, Kasse = Bericht, aktive Expansion Woche 300: 4 Filialen/Rang 3/1.087.789 €; kein Vollbeweis für Endgame-Balance
+
 - [x] Master-GDD: Saisons, Vibes, Trends, Reviews und Pop-ups integrieren
 - [x] Master-GDD: zentrale Supply mit Fracht, Auktionen, Agrarmethoden und Blends
 - [x] Master-GDD: bestehendes B2B mit SLA erweitern, Franchise und FMCG ergänzen
@@ -19,7 +27,7 @@
 - [x] 12 Getränke/10 Snacks, Barista-XP, 32 Forschungsziele, Ausstattung 5 Stufen, Rivalen-Eskalation
 - [x] Bedienung vereinfachen, Balance 300 Wochen
 
-- [ ] Feintuning Balance nach echtem Spieltest (Rang-Ziele 15–25 / 80–120 / 250+ Wochen) – wartet auf dein Feedback
+- [ ] Endgame-Feinbalance aller 10 Ränge – benötigt repräsentative aktive Spielstrategie und gewünschtes Tempo; geprüfter vorsichtiger Ausbau erreicht Rang 3 nach 300 Wochen
 - [x] Karte randlos, Kontextfenster für Frei/Rivalen, Goldsterne, gemalte Räume je Stufe (7) mit Editor-Ebenen
 - [x] Gemeinsame Café-Schublade für Karte, Filialliste, Menü und Bewertungen; 48 Raumdesigns und neue Konzern-Illustrationen integriert
 - [x] Gesammelte Kartenfehler: grauen Rand verhindern, alte eigene Standorte auf der Karte sichtbar machen, Frei/Rivalen-Kontext prüfen
@@ -37,7 +45,7 @@
 - [x] Endlose Startups mit Runden-Entscheidungen bis IPO/Pleite/Klage
 - [x] Rösterei-/Plantagen-Upgrades mit spürbarer Wirkung; Forschung 96 Projekte in einem Menü; 12 Kampagnen mit Auto-Verlängerung in einem Menü; C-Level-Automatik
 - [x] Editor-Farbe nur auf Wandflächen
-- [ ] Balance: Mieten großer Standorte sind hoch (23 Kioske ≈ −58 Tsd €/Woche ohne Gebäudekauf) – Wunschwerte vom Nutzer
+- [x] Standortkosten technisch geprüft: Mieten bleiben standortabhängig, Eröffnung inklusive Personal atomar; keine pauschale Mietsenkung ohne Wirtschaftsnachweis
 - [x] Fehler: Café-Upgrades setzten sich jede Woche zurück
 - [x] Editor: 3 Grundstimmungen × 4 Designs = 12 je Bildgruppe (4 Gruppen, 48 Bilder), Farbfilter entfernt
 - [x] Menüs zusammenfassen, Wischen zwischen Bereichen, Entwicklung mit Forschung zusammenlegen, CTO startet automatisch
@@ -47,7 +55,7 @@
 - [x] 2.0 Schritt 2b-3: Restlogik von BeanPay, Patenten, Stadtrat, Bio-Siegel, Mikrokrediten, Dynastie und Futures entfernt
 - [x] 2.0 13 Master-Szenen (4 Titelbilder, 4 Café-Stufen, Terrasse, 4 Regionalkarten) gemalt; Titel+Räume eingebaut
 - [x] 2.0 Regionalkarten mit neu berechneten Standort-Pins eingebaut (gemeinsame Pins je Region)
-- [ ] 2.0 Filialausstattung auf ein Modell (5 Editor-Slots) – zusammen mit dem neuen Café-Editor (Schritt 5+6)
+- [x] 2.0 Filialausstattung: fünf zentrale Kategorien im atomaren Editor, kompatible Alt-Ausstattung wird nur aufwärts synchronisiert
 - [x] 2.0 Schritt 3: 3 Speicherplätze
 - [x] Externe Prompts Schritt 4 + 9 kopierfertig
 
@@ -56,11 +64,11 @@
 - [x] 2 Weltereignisse + Börse im Wochenablauf, Bericht = Kasse
 - [x] 5a Weltmarkt-Ansicht mit Nachrichten, Aktienkauf/-verkauf, Venture
 - [x] 3a Café-Editor: fünf vorhandene Ausbaubereiche, atomarer Kauf, sichtbare Entwurfsvorschau
-- [ ] 3b Vollständige Wand-/Licht-/Designvarianten und v2-Editor-Datenmodell – weitere Bildfreigabe erforderlich; bestehende Preise unverändert
+- [ ] 3b Neue vollständige Raumbilder für jede sichtbare Ausstattung/Wand/Licht-Veränderung – vom Nutzer auf spätere Grafikphase mit mehr Credits verschoben; bestehende Preise unverändert
 - [x] 4 Vier Säulen, zentrale Ausbauaktion
 - [x] 5b VC-Nachfinanzierung, PE-Übernahme/Verkauf und IPO bedienbar; Kauf/Verkauf/Venture im Browser, PE/IPO in Tests geprüft
 - [x] 6 Animierter, überspringbarer Wochenabschluss (Gäste, Umsatz/Gewinn, Kasse/Nachrichten)
 - [x] 7 Audit: 144 Tests; echte 52/300 Wochen, Kasse und Bericht stimmen überein (69.464 €/167.780 € ohne aktive Expansion)
 - [x] 8a Handy/Desktop: Vorschau, Kauf, Wochenwechsel, kein horizontaler Überlauf; Offline-Regeln getestet
 - [ ] 8b Offline-Neuladen der veröffentlichten PWA – benötigt Veröffentlichung, nicht im Entwicklungsmodus prüfbar
-- [x] Modularer Café-Editor: vier freigestellte Grundlagen, 5 Maschinen/Mühlen/Sitzbereiche/Vitrinen und 4 Terrassen eingebunden
+- [x] Modularer Café-Editor auf Nutzerwunsch verworfen: vollständige gemalte Raumszenen bleiben aktiv

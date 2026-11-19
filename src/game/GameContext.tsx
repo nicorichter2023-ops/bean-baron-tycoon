@@ -6,6 +6,8 @@ import { translateEngineNote } from "./logMessages";
 import { createExpansion, loadExpansion, saveExpansion, type ExpansionState } from "@/engine/expansion";
 import { recordManagementAction } from '@/engine/management';
 import { simulateWeek } from '@/engine/week';
+import { progressOf } from '@/engine/progression';
+import { playFeedback } from './feedback';
 
 type Ctx = {
   state: GameState;
@@ -15,6 +17,7 @@ type Ctx = {
   loaded: boolean;
   exp: ExpansionState;
   setBoth: (fn: (state: GameState, exp: ExpansionState) => { game: GameState; exp: ExpansionState } | string) => void;
+  newGame: () => void;
 };
 
 const GameCtx = createContext<Ctx | null>(null);
@@ -30,16 +33,33 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setLoaded(true);
   }, []);
 
+  const persist = (game: GameState) => {
+    if (!saveGame(game)) toast.error('Spielstand konnte nicht gespeichert werden. Bitte Speicherplatz freigeben; nicht neu laden.');
+  };
+  const newGame = () => {
+    const game = createInitialState(), expansion = createExpansion();
+    persist(game); saveExpansion(expansion);
+    setState(game); setExp(expansion);
+  };
+  useEffect(() => {
+    const click = (event: MouseEvent) => {
+      const button = event.target instanceof Element ? event.target.closest('button') : null;
+      if (button && !button.disabled) playFeedback('click', progressOf(state).settings);
+    };
+    document.addEventListener('click', click);
+    return () => document.removeEventListener('click', click);
+  }, [state.progress?.settings]);
   const set = (fn: (current: GameState) => GameState) => setState((current) => {
     const next = recordManagementAction(current, fn(current));
-    saveGame(next);
+    persist(next);
     return next;
   });
 
   const perform = (action: (current: GameState) => ActionResult) => setState((current) => {
     const raw = action(current);
     const result = raw.ok ? { ...raw, state: recordManagementAction(current, raw.state) } : raw;
-    if (result.ok) saveGame(result.state);
+    if (result.ok) persist(result.state);
+    playFeedback(result.ok ? 'success' : 'error', progressOf(current).settings);
     const message = translateEngineNote(result.reason);
     if (result.ok) toast.success(message);
     else toast.error(message);
@@ -48,15 +68,17 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const setBoth: Ctx["setBoth"] = (fn) => {
     const result = fn(state, exp);
-    if (typeof result === "string") { toast.error(result); return; }
+    if (typeof result === "string") { toast.error(result); playFeedback('error', progressOf(state).settings); return; }
     const game = recordManagementAction(state, result.game);
-    saveGame(game); saveExpansion(result.exp);
+    persist(game); saveExpansion(result.exp);
+    playFeedback('success', progressOf(game).settings);
     setState(game); setExp(result.exp);
   };
   const nextWeek = () => {
     const result = simulateWeek(state, exp);
     const turned = result.game;
-    saveGame(result.game); saveExpansion(result.exp);
+    persist(result.game); saveExpansion(result.exp);
+    if (turned.week > state.week) playFeedback('week', progressOf(turned).settings);
     setState(result.game); setExp(result.exp);
     if (turned.week > state.week) window.__lovableEvents?.track?.("project.week_completed", {
       week: turned.week,
@@ -69,7 +91,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     });
     if (result.exp.lastBonus && turned.week > state.week) toast.success(`Labor & Marketing: +${eur(result.exp.lastBonus)}`);
   };
-  return <GameCtx.Provider value={{ state, set, perform, nextWeek, loaded, exp, setBoth }}>{children}</GameCtx.Provider>;
+  return <GameCtx.Provider value={{ state, set, perform, nextWeek, loaded, exp, setBoth, newGame }}>{children}</GameCtx.Provider>;
 }
 
 export function useGame() {

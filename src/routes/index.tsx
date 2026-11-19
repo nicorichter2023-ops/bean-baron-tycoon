@@ -29,6 +29,7 @@ import { MenuTrendBoard } from '@/game/MenuTrendBoard';
 import { LogisticsMap } from '@/game/LogisticsMap';
 import { OmnichannelHub } from '@/game/OmnichannelHub';
 import { RivalsHub } from '@/game/RivalsHub';
+import { registerOffline } from '@/game/offline';
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -73,7 +74,7 @@ function GameWorld() {
     if (Math.abs(dx) < 70 || Math.abs(dy) > Math.abs(dx) * 0.6) return; const i = ids.indexOf(section), next = ids[i + (dx < 0 ? 1 : -1)];
     if (next) { setSection(next); window.scrollTo(0, 0); } };
   useEffect(() => { document.querySelector('.management-switch [aria-pressed="true"]')?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' }); }, [section]);
-  useEffect(() => { if ('serviceWorker' in navigator && import.meta.env.PROD) navigator.serviceWorker.register('/sw.js').catch(() => undefined); }, []);
+  useEffect(() => { void registerOffline().catch(() => undefined); }, []);
   const content = section === 'city' ? <MapTab /> : section === 'airport' ? <MapTab airportOnly />
     : section === 'rivals' ? <><RivalsHub area="rivals" /><div className="mt-5"><RivalsHub area="property" /></div></>
     : section === 'menu' ? <><MenuTrendBoard /><div className="mt-5"><MenuTrendBoard reviewsOnly /></div></> : section === 'reviews' ? <MenuTrendBoard reviewsOnly />

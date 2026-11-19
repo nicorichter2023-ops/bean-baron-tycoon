@@ -1,0 +1,5 @@
+/** Shared Workbox policy: never store API, OAuth or authenticated responses. */
+export const offlineRuntimeCaching = [
+  { urlPattern: ({ request, url }: { request: Request; url: URL }) => request.method === 'GET' && request.mode === 'navigate' && url.origin === self.location.origin && !request.headers.has('authorization') && !/^\/(?:api\/|~oauth)/.test(url.pathname) && !url.pathname.includes('__server'), handler: 'NetworkFirst' as const, options: { cacheName: 'coffee-empire-pages', cacheableResponse: { statuses: [200] }, expiration: { maxEntries: 8 } } },
+  { urlPattern: ({ request, url }: { request: Request; url: URL }) => request.method === 'GET' && url.origin === self.location.origin && !request.headers.has('authorization') && !url.pathname.includes('__server') && (url.pathname.startsWith('/assets/') || url.pathname.startsWith('/__l5e/assets-v1/')), handler: 'CacheFirst' as const, options: { cacheName: 'coffee-empire-assets', cacheableResponse: { statuses: [200] }, expiration: { maxEntries: 240, maxAgeSeconds: 30 * 24 * 60 * 60 } } },
+];

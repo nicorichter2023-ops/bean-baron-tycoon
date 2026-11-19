@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ArrowLeft, Plane, Store, Users, MapPin, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { storeOpeningCost, GAME_CONFIG } from '@/engine';
-import { openStaffedStore, takeoverCost, takeoverRivalSite } from '@/engine/empire';
+import { openStaffedStore, staffedOpeningCost, takeoverCost, takeoverRivalSite } from '@/engine/empire';
 import type { StoreTier } from '@/engine/types';
 import { MASTER, ZONES, CLIENTELE, type MasterBuilding } from '@/data/master';
 import { travelToCity } from '@/engine/world';
@@ -29,7 +29,7 @@ export function MapTab({ airportOnly = false }: { airportOnly?: boolean }) {
   const occupant = selected ? state.world.occupants[selected.id] : undefined;
   const rival = MASTER.competitors.find(c => c.id === occupant);
   const district = city.districts.find(d => d.id === selected?.id);
-  const cost = selected && district ? purchase ? selected.purchasePrice + GAME_CONFIG.STORE_OPENING_COST[tier] : storeOpeningCost(district, tier) : 0;
+  const cost = selected && district ? staffedOpeningCost(state, city.id, selected.id, tier, purchase) : 0;
   const choose = (b: MasterBuilding) => { setSelected(b); setTier(1); setPurchase(false); setManage(state.stores.some(s => s.districtId === b.id)); };
   return <>
     {flight && <FlightOverlay from={flight.from} to={flight.to} onDone={() => setFlight(null)} />}

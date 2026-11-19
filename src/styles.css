@@ -614,6 +614,7 @@ select, input { min-height:44px; }
 html[data-reduce-motion="true"] *, html[data-reduce-motion="true"] *::before, html[data-reduce-motion="true"] *::after { animation:none !important; transition:none !important; }
 html[data-contrast="high"] { --muted-foreground: var(--foreground); --border: var(--foreground); }
 .game-world button, .game-world [role="button"] { min-height: 44px; }
+.game-world button[role="switch"] { min-height: 24px; height: 24px; }
 .nyc-photo-map { position: relative; }
 .photo-map-toggle { position: absolute; z-index: 5; top: .5rem; right: .5rem; min-height: 44px; padding: 0 .9rem; border-radius: 999px; font: 700 12px/1 system-ui; background: color-mix(in oklab, var(--card) 88%, transparent); color: var(--foreground); border: 1px solid var(--border); }
 .nyc-photo-map[data-labels='false'] .ci-pin:not([data-status='own']):not(.ci-pin-airport) span { opacity: .18; }
@@ -840,7 +841,9 @@ html[data-contrast="high"] { --muted-foreground: var(--foreground); --border: va
 .venture-history li { display: flex; justify-content: space-between; gap: .5rem; font-size: .8rem; }
 .venture-history li small { display: block; color: var(--muted-foreground); font-size: .7rem; }
 .venture-history li strong { color: var(--destructive); } .venture-history li[data-win="true"] strong { color: var(--success); }
-.supply-row { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .6rem 0; border-top: 1px solid var(--border); }
+.supply-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; padding: .6rem 0; border-top: 1px solid var(--border); }
+.supply-row > div { flex: 1 1 160px; overflow-wrap: anywhere; }
+.supply-row > button { max-width: 100%; height: auto; white-space: normal; }
 .supply-row > div { display: grid; gap: .15rem; min-width: 0; font-size: .85rem; } .supply-row small { font-size: .72rem; }
 .supply-pips { display: flex; gap: 4px; } .supply-pips i { width: 18px; height: 6px; border-radius: 3px; background: var(--muted); } .supply-pips i[data-on="true"] { background: var(--primary); }
 .research-branch { border: 1px solid var(--border); border-radius: .75rem; background: var(--card); padding: .25rem .75rem; }
