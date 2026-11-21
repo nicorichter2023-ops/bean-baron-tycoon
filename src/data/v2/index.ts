@@ -18,4 +18,3 @@ export const V2_CITIES = [...emea, ...world] as V2City[];
 export const V2_EVENTS = [...eventsA, ...eventsB] as V2Event[];
 export const V2_COMPANY_RULES = companyRules;
 export const EDITOR_SLOTS = editor.slots as unknown as Record<EditorSlot, { name: string; stufen: V2EditorLevel[] }>;
-export const v2CityById = (id: string) => V2_CITIES.find(c => c.id === id);

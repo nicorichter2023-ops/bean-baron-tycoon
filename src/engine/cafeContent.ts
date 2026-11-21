@@ -88,8 +88,6 @@ export const DECOR: Record<DecorSlot, { label: string; sheet: 'decor-a' | 'decor
   sign: { label: 'Schild', sheet: 'decor-b', price: 700, options: [{ name: 'Holzschild', art: 13 }, { name: 'Neon-Tasse', art: 14 }, { name: 'Messingschild', art: 15 }, { name: 'Markise', art: 16 }] },
 };
 export const DECOR_SLOTS = Object.keys(DECOR) as DecorSlot[];
-/** CSS tint per wall colour (index into DECOR.wall.options). */
-export const WALL_TINT = ['oklch(0.93 0.03 85)', 'oklch(0.75 0.06 140)', 'oklch(0.62 0.12 45)', 'oklch(0.35 0.07 255)', 'oklch(0.5 0.1 35)', 'oklch(0.3 0.01 250)', 'oklch(0.85 0.05 10)', 'oklch(0.5 0.07 200)'];
 export const BARISTA_LEVELS = [0, 40, 120, 260, 500];
 
 /** Café design editor: 3 complete deco concepts per stage (each with its own seating), colour moods and terrace styles. */

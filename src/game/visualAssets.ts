@@ -5,7 +5,6 @@ export const VISUAL_ASSETS: Record<string, string | undefined> = {
   'new-york-02': undefined,
   'new-york-03': undefined,
   'new-york-04': undefined,
-  'cafe-interior': undefined,
   'espresso-machine': undefined,
 };
 export const newYorkSlot = (cityId: string, index: number) =>

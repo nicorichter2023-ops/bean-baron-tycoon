@@ -3,12 +3,9 @@ import { MASTER_CITIES, MASTER_STARTUPS, MASTER_STOCKS } from './master';
 import type {
   BeanVariety,
   Biome,
-  City,
   GameEvent,
   RiskClass,
   RivalCompany,
-  StartupInvestment,
-  StoreTier,
 } from "@/engine/types";
 
 interface ContentCity {
@@ -54,55 +51,11 @@ export interface GameContent {
 
 export const GAME_CONTENT = rawContent as GameContent;
 
-const clamp = (n: number, min: number, max: number) => Math.min(max, Math.max(min, n));
-const slugify = (value: string) =>
-  value
-    .replace(/ß/g, "ss")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-
-export const LEGACY_CITIES: City[] = GAME_CONTENT.cities.map((city) => ({
-  id: city.id,
-  name: city.name,
-  country: city.country,
-  landmarkName: city.landmarkName,
-  biome: city.biome,
-  purchasingPower: city.purchasingPower,
-  coffeeCultureIndex: Math.round(clamp(city.coffeeCulture * 45, 0, 100)),
-  districts: city.districts.map((district) => {
-    const footTraffic = Math.round(clamp(district.footTraffic * 48, 25, 100));
-    const maxStoreTier: StoreTier = district.footTraffic >= 1.45 ? 3 : district.footTraffic >= 1.05 ? 2 : 1;
-    return {
-      id: `${city.id}-${slugify(district.name)}`,
-      name: district.name,
-      footTraffic,
-      rentWeekly: Math.round(city.baseRent * district.rentMultiplier),
-      competition: Math.round(clamp(22 + footTraffic * 0.42 + city.coffeeCulture * 5, 20, 90)),
-      maxStoreTier,
-    };
-  }),
-}));
-
 export const CITIES = MASTER_CITIES;
 
 export const BEAN_VARIETIES: BeanVariety[] = GAME_CONTENT.beanVarieties;
 export const GAME_EVENTS: GameEvent[] = GAME_CONTENT.events;
 
-const SUCCESS_CHANCE: Record<RiskClass, number> = { low: 72, medium: 52, high: 34, moonshot: 18 };
-export const LEGACY_STARTUPS: StartupInvestment[] = GAME_CONTENT.startups.map((startup) => ({
-  ...startup,
-  riskClass: startup.riskLevel,
-  investedAmount: 0,
-  successChance: SUCCESS_CHANCE[startup.riskLevel],
-  payoutMultiple: Math.round((1.8 + startup.annualGrowthRate * 2.2) * 100) / 100,
-  investedAtWeek: 0,
-  status: "active",
-  acquired: false,
-  acquiredAtWeek: null,
-}));
 export const STARTUPS = MASTER_STARTUPS;
 
 const totalMarketCap = GAME_CONTENT.publicCompanies.reduce((sum, company) => sum + company.marketCap, 0);

@@ -864,10 +864,10 @@ html[data-contrast="high"] { --muted-foreground: var(--foreground); --border: va
 :root { --system-green: oklch(.61 .15 158); --system-blue: oklch(.55 .14 239); --system-gold: oklch(.69 .15 82); --system-red: oklch(.58 .2 27); --system-ink: oklch(.4 .025 250); --map-route: oklch(.48 .14 195); }
 .dark { --system-green: oklch(.77 .14 158); --system-blue: oklch(.75 .1 239); --system-gold: oklch(.82 .15 82); --system-red: oklch(.75 .15 27); --system-ink: oklch(.8 .025 250); }
 .system-icon { color: var(--system-ink); flex-shrink: 0; }
-.system-plantation,.system-esg,.system-beanpay { color: var(--system-green); }
-.system-ship,.system-air,.system-b2b,.system-franchise,.system-fx { color: var(--system-blue); }
-.system-cupping,.system-review,.system-patent,.system-dynasty { color: var(--system-gold); }
-.system-rival,.system-trend,.system-curfew { color: var(--system-red); }
+.system-plantation { color: var(--system-green); }
+.system-ship,.system-air,.system-b2b,.system-franchise { color: var(--system-blue); }
+.system-cupping,.system-review { color: var(--system-gold); }
+.system-rival,.system-trend { color: var(--system-red); }
 .master-heading { display: flex; gap: 1rem; align-items: center; padding: .5rem 0 1rem; border-bottom: 1px solid var(--border); }
 .master-heading > div:last-child { min-width: 0; }
 .master-heading h1 { font: 700 1.4rem/1.2 var(--font-display); }

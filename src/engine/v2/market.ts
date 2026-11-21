@@ -107,7 +107,6 @@ const WERT_MAX = 1e12;
 const MARKT_VOL = 0.018;
 const IDIO_ANTEIL = 0.8;
 const PRIVAT_AUSFALL_FAKTOR = 0.5;
-const RUNDEN_COOLDOWN = 26;
 const RUNDEN_MAX_SPRUNG = 3;
 const PE_MARGEN_FAKTOR = 0.8;
 const PE_EXIT_ABSCHLAG = 0.85;
@@ -316,25 +315,6 @@ function runde(
     letzteRundeWoche: woche,
   };
   return { firma, note: `${c.name}: ${label} mit Bewertung ${fmtGeld(neu)}` };
-}
-
-export function fundingRound(
-  state: MarketState,
-  firmaId: number,
-  ctx: MarketCtx,
-  rundenKey: RundenKey = "series_a",
-): MarketResult {
-  const c = state.firmen.find((f) => f.id === firmaId);
-  if (!c || !istPrivat(c)) return ergebnis(state, [], ["Finanzierungsrunde nur für private Firmen möglich"]);
-  if (c.letzteRundeWoche !== undefined && ctx.woche - c.letzteRundeWoche < RUNDEN_COOLDOWN) {
-    return ergebnis(state, [], [`${c.name}: letzte Runde liegt noch nicht lange genug zurück`]);
-  }
-  const regel: PhasenRegel | undefined = REGELN.lebenszyklusPhasen[c.phase];
-  if (regel && c.wochenInPhase < regel.dauerWochenMin) {
-    return ergebnis(state, [], [`${c.name}: noch nicht reif für die nächste Runde`]);
-  }
-  const res = runde(c, rundenKey, sicherRng(ctx), ctx.woche);
-  return ergebnis(ersetze(state, res.firma), [], [res.note]);
 }
 
 // ---------- IPO ----------
@@ -742,17 +722,6 @@ export function exitPrivateEquity(state: MarketState, firmaId: number): MarketRe
     [{ konto: "uebernahme", betrag: erloes, grund: `Exit ${c.name} (${Math.round(PE_EXIT_ABSCHLAG * 100)} % der Bewertung)` }],
     [`${c.name}: verkauft für ${fmtGeld(erloes)}`],
   );
-}
-
-export function getSynergies(state: MarketState): Record<string, number> {
-  const out: Record<string, number> = {};
-  for (const c of state.firmen) {
-    if (c.phase === "pleite" || c.anteilSpieler < 0.25) continue;
-    const s = brancheById(c.branche).synergie;
-    const wert = zahl(s.wirkungProzent) * c.anteilSpieler;
-    out[s.bereich] = Math.round(((out[s.bereich] ?? 0) + wert) * 100) / 100;
-  }
-  return out;
 }
 
 // ---------- 8) Portfoliowert ----------

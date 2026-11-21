@@ -5,7 +5,7 @@ import type { GameState, Store } from '@/engine/types';
 import { CafeRoom } from './CafeRoom';
 import { CafeEditor } from './CafeEditor';
 import { StoreLeversPanel } from './StoreLeversPanel';
-import { CafeBonusSummary, MenuPanel, StaffPanel } from './CafePanels';
+import { CafeBonusSummary, MenuPanel, RenamePanel, StaffPanel } from './CafePanels';
 import { buyProperty, propertyPrice, sellProperty } from '@/engine/empire';
 import { cafeComments, cafeReviews } from './cafeReviews';
 import { eur, useGame } from './GameContext';
@@ -44,7 +44,7 @@ export function CafeDetail({ store, address, onClose }: { store: Store; address:
       {next && <Button className="cafe-next-upgrade" onClick={() => { if (next.run) perform(next.run); else setEdit(true); }}>Nächstes Upgrade: {next.label}</Button>}
       <nav className="cafe-detail-tabs" style={{ position: 'static' }}>{tabs.map(([id,label]) => <Button key={id} variant={tab === id ? 'secondary' : 'ghost'} aria-pressed={tab === id} onClick={() => setTab(id)}><span>{label}</span></Button>)}</nav>
       <section className="grid gap-3">
-        {tab === 'service' && <><StaffPanel store={store} /><StoreLeversPanel store={store} /></>}
+        {tab === 'service' && <><StaffPanel store={store} /><RenamePanel store={store} /><StoreLeversPanel store={store} /></>}
         {tab === 'product' && <><MenuPanel store={store} /><p className="text-xs text-muted-foreground">Neue Getränke & Snacks schaltest du unter HQ → Forschung frei.</p></>}
         {tab === 'gear' && <Button variant="secondary" className="min-h-11 w-full" onClick={() => setEdit(true)}>Ausbau & Gestaltung öffnen</Button>}
         {tab === 'finance' && <><CafeBonusSummary store={store} /><dl className="cafe-finance"><div><dt>Umsatz letzte Woche</dt><dd>{eur(store.weeklyRevenue)}</dd></div><div><dt>Gäste letzte Woche</dt><dd>{store.customersServedLastWeek}</dd></div><div><dt>Tassenpreis</dt><dd>{eur(store.pricePerCup)}</dd></div><div><dt>Personalkosten / Woche</dt><dd>{eur(store.employees.reduce((s,e) => s + e.salaryWeekly, 0))}</dd></div><div><dt>Anlagenwert</dt><dd>{eur(store.equipment?.bookValue ?? 0)}</dd></div><div><dt>Immobilie</dt><dd>{store.propertyBookValue ? `Eigentum · ${eur(store.propertyBookValue)}` : 'gemietet'}</dd></div></dl>

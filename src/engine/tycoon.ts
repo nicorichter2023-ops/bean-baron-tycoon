@@ -282,4 +282,3 @@ export function takeoverMajority(g: GameState, id: string): ActionResult {
   const inherited = { ...r.state, cash: g.cash, roastery: { ...r.state.roastery, owned: true, capacityKgPerWeek: r.state.roastery.capacityKgPerWeek + 1500 }, b2b: { ...r.state.b2b, contracts: [...r.state.b2b.contracts, { id: `ma-${id}-${g.week}`, partnerName: `${company.name} Bestandskunden`, volumeKgPerWeek: 500, pricePerKg: 18, weeksRemaining: 52, reliability: 95, minimumScore: 84, penaltyRate: .2 }] } };
   return { ...r, state: { ...inherited, companyValuation: calculateCompanyValuation(inherited) } };
 }
-export const newDynastyExpansion = createExpansion;

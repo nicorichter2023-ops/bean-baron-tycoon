@@ -34,7 +34,6 @@ export const leversOf = (g: GameState, s: Store): StoreLevers => {
   const l = progressOf(g).stores[s.id] ?? defaultLevers(s.tier);
   return tierOfStage(l.stage) === s.tier ? l : { ...l, stage: firstStageOfTier(s.tier) };
 };
-export const stageLabel = (g: GameState, s: Store) => stg(leversOf(g, s).stage - 1).label;
 
 // ---------- metrics & ranks ----------
 export function metrics(g: GameState) {
